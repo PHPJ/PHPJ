@@ -1,5 +1,5 @@
 <?php
 /**
- * @author Ura Kozyrev
+ * @author Yury Kozyrev
  */
 require __DIR__ . '/../vendor/autoload.php';
