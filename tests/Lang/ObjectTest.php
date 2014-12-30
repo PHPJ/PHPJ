@@ -65,6 +65,7 @@ class ObjectTest extends Test
     $object = new Object();
 
     $this->assertEquals($object->toString(), $object->toString());
+    $this->assertEquals($object->toString(), (string)$object);
     $this->assertNotEquals($object->toString(), $object->getClone()->toString());
 
     $this->assertStringStartsWith(get_class($object), $object->toString());
