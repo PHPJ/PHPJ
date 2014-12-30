@@ -23,7 +23,7 @@ class Object
 
 
   /**
-   * @param |Object $object
+   * @param Object $object
    * @return bool
    */
   public function equals(Object $object = null)
