@@ -8,7 +8,6 @@ namespace PHPJ\Tests\Lang;
 
 
 use PHPJ\Lang\Object;
-use PHPJ\Tests\Lang\Stub\CloneableObjectStub;
 use PHPJ\Tests\Test;
 use SebastianBergmann\Exporter\Exception;
 
