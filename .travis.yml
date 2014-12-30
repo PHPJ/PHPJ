@@ -14,10 +14,14 @@ before_script:
   - composer install --dev --no-interaction
   - mkdir -p build/logs
 
-after_script:
-  - php vendor/bin/coveralls -v
+script: vendor/bin/phpunit --coverage-clover clover
 
+after_success:
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - php ocular.phar code-coverage:upload --format=php-clover clover
+    
 matrix:
   allow_failures:
     - php: hhvm
   fast_finish: true
+  
