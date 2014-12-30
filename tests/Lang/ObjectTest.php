@@ -8,6 +8,7 @@ namespace PHPJ\Tests\Lang;
 
 
 use PHPJ\Lang\Object;
+use PHPJ\Tests\Lang\Stub\CloneableObjectStub;
 use PHPJ\Tests\Test;
 use SebastianBergmann\Exporter\Exception;
 
@@ -23,6 +24,10 @@ class ObjectTest extends Test
   {
     $object = new Object();
     $clone = $object->getClone();
+    $this->assertTrue($clone !== $object);
+    $this->assertTrue($clone == $object);
+
+    $clone = clone $object;
     $this->assertTrue($clone !== $object);
     $this->assertTrue($clone == $object);
   }

@@ -4,6 +4,10 @@ namespace PHPJ\Lang;
 
 use ReflectionClass;
 
+/**
+ * Class Object
+ * @package PHPJ\Lang
+ */
 class Object
 {
 
