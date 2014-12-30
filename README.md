@@ -16,3 +16,10 @@ http://docs.oracle.com/javase/8/docs/api/
 
 Start from Lang
 http://docs.oracle.com/javase/8/docs/api/java/lang/package-frame.html
+
+## Contribute
+1. fork & clone
+2. ```composer install```
+3. ```vendor/bin/phpunit --debug```
+4. contribute
+5. pull request
