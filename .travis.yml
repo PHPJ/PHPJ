@@ -14,11 +14,11 @@ before_script:
   - composer install --dev --no-interaction
   - mkdir -p build/logs
 
-script: vendor/bin/phpunit --coverage-clover clover
+script: vendor/bin/phpunit --coverage-clover clover.xml
 
 after_success:
     - wget https://scrutinizer-ci.com/ocular.phar
-    - php ocular.phar code-coverage:upload --format=php-clover clover
+    - php ocular.phar code-coverage:upload --format=php-clover clover.xml
     
 matrix:
   allow_failures:

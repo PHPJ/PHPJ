@@ -1,7 +1,10 @@
 # JetBrains IDE
 /.idea/
 
-#Composer
+# Composer
 /vendor/
 /composer.phar
 
+# Build
+ocular.phar
+clover.xml
