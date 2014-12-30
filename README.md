@@ -1,6 +1,8 @@
 PHPJ
 ====
 
+[![Build Status](https://travis-ci.org/PHPJ/PHPJ.svg?branch=master)](https://travis-ci.org/PHPJ/PHPJ)
+
 PHP OOP Core inspired by Java
 
 Sources
