@@ -6,6 +6,7 @@ use ReflectionClass;
 
 /**
  * Class Object
+ *
  * @package PHPJ\Lang
  */
 class Object
@@ -18,6 +19,7 @@ class Object
 
   /**
    * Use __clone to override
+   *
    * @return static
    */
   public final function getClone()
@@ -27,7 +29,8 @@ class Object
 
 
   /**
-   * @param Object $object
+   * @param self $object
+   *
    * @return bool
    */
   public function equals(Object $object = null)
@@ -72,11 +75,11 @@ class Object
 
   /**
    * Final. Use toString() to override
+   *
    * @return string
    */
   public final function __toString()
   {
     return $this->toString();
   }
-
 }
