@@ -97,6 +97,7 @@ class Object
    * string representation of the object
    *
    * @return string
+   * @see    \PHPJ\Lang\Object::toString
    */
   public final function __toString()
   {
