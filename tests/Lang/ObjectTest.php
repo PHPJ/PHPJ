@@ -9,7 +9,6 @@ namespace PHPJ\Tests\Lang;
 
 use PHPJ\Lang\Object;
 use PHPJ\Tests\Test;
-use SebastianBergmann\Exporter\Exception;
 
 class ObjectTest extends Test
 {
