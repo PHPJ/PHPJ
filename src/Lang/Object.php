@@ -17,6 +17,15 @@ class Object
   }
 
   /**
+   * PHP legacy hack method. Retrieves original value.
+   * @return null
+   */
+  public function getOriginalValue()
+  {
+    return null;
+  }
+
+  /**
    * Creates and returns a copy of this object. The precise meaning
    * of "copy" may depend on the class of the object.
    *

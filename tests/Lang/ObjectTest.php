@@ -12,10 +12,15 @@ use PHPJ\Tests\Test;
 
 class ObjectTest extends Test
 {
+  protected function getClassName()
+  {
+    return 'PHPJ\Lang\Object';
+  }
+
   public function testLoad()
   {
-    $this->assertTrue(class_exists('PHPJ\Lang\Object'));
-    $this->assertInstanceOf('PHPJ\Lang\Object', new \PHPJ\Lang\Object());
+    $this->assertTrue(class_exists($this->getClassName()));
+    $this->assertInstanceOf($this->getClassName(), new \PHPJ\Lang\Object());
   }
 
   public function testClone()
@@ -46,7 +51,7 @@ class ObjectTest extends Test
   public function testGetClass()
   {
     $object = new Object();
-    $this->assertEquals('PHPJ\Lang\Object', $object->getClass());
+    $this->assertEquals($this->getClassName(), $object->getClass());
   }
 
   public function testGetClassReflection()
@@ -54,7 +59,7 @@ class ObjectTest extends Test
     $object = new Object();
     $r = $object->getClassReflection();
 
-    $this->assertEquals('PHPJ\Lang\Object', $r->getName());
+    $this->assertEquals($this->getClassName(), $r->getName());
   }
 
   public function testHashCode()
