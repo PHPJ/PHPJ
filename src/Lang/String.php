@@ -27,6 +27,9 @@ class String extends Object
   /** @var  int */
   private $length;
 
+  /** @var  int */
+  private $hash = 0;
+
   /**
    * @param string $string
    */
@@ -51,8 +54,7 @@ class String extends Object
   public function length()
   {
     return Option::fromValue($this->length)->getOrCall(function () {
-      $this->length = strlen($this->value);
-      return $this->length;
+      return $this->length = mb_strlen($this->value);
     });
   }
 
@@ -129,8 +131,7 @@ class String extends Object
    */
   public function trim()
   {
-    $this->value = trim($this->value);
-    return $this;
+    return new String(trim($this->value));
     //                  int len = value . length;
     //        int st = 0;
     //        char[] val = value;    /* avoid getfield opcode */
@@ -147,30 +148,18 @@ class String extends Object
   }
 
   /**
-   * Returns a string that is a substring of this string. The
-   * substring begins with the character at the specified index and
-   * extends to the end of this string. <p>
-   * Examples:
-   * <blockquote><pre>
-   * "unhappy".substring(2) returns "happy"
-   * "Harbison".substring(3) returns "bison"
-   * "emptiness".substring(9) returns "" (an empty string)
-   * </pre></blockquote>
-   *
-   * @param      beginIndex   the beginning index, inclusive.
-   * @return     the specified substring.
-   * @exception  IndexOutOfBoundsException  if
-   *             {@code beginIndex} is negative or larger than the
-   *             length of this {@code String} object.
-   */
-  /**
-   * Returns a string that is a substring of this string. The
-   * substring begins at the specified {@code beginIndex} and
+   * Returns a string that is a substring of this string.
+   * The substring begins at the specified {@code beginIndex}.
+   * In case {@code endIndex} is not specified the substring
+   * extends to the end of this string, otherwise
    * extends to the character at index {@code endIndex - 1}.
    * Thus the length of the substring is {@code endIndex-beginIndex}.
    * <p>
    * Examples:
    * <blockquote><pre>
+   * "unhappy".substring(2) returns "happy"
+   * "Harbison".substring(3) returns "bison"
+   * "emptiness".substring(9) returns "" (an empty string)
    * "hamburger".substring(4, 8) returns "urge"
    * "smiles".substring(1, 5) returns "mile"
    * </pre></blockquote>
@@ -178,7 +167,7 @@ class String extends Object
    * @param      $beginIndex   int - the beginning index, inclusive.
    * @param      $endIndex     int - the ending index, exclusive.
    * @return     String the specified substring.
-   * @exception  IndexOutOfBoundsException  if the
+   * @exception  StringIndexOutOfBoundsException  if the
    *             {@code beginIndex} is negative, or
    *             {@code endIndex} is larger than the length of
    *             this {@code String} object, or
@@ -212,6 +201,32 @@ class String extends Object
   {
     return $this;
   }
+
+  /**
+   * Returns a hash code for this string. The hash code for a
+   * {@code String} object is computed as
+   * <blockquote><pre>
+   * s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
+   * </pre></blockquote>
+   * using {@code int} arithmetic, where {@code s[i]} is the
+   * <i>i</i>th character of the string, {@code n} is the length of
+   * the string, and {@code ^} indicates exponentiation.
+   * (The hash value of the empty string is zero.)
+   *
+   * Java involves 32-bit arithmetic overflow, in PHP we use {@code & 0xffffffff} for that
+   *
+   * @return  int - a hash code value for this object.
+   */
+    public function hashCode(){
+      $h = $this->hash;
+      if ($h == 0 && $this->length() > 0) {
+        for($i = 0; $i < $this->length(); $i++){
+          $h = (int)(31 * $h + ord($this->value[$i])) & 0xffffffff;
+        }
+        $this->hash = $h;
+      }
+      return $h;
+    }
 
   /**
    * Returns the character (Unicode code point) at the specified
@@ -956,33 +971,7 @@ class String extends Object
   //  return startsWith(suffix, value . length - suffix . value . length);
   //}
 
-  /**
-   * Returns a hash code for this string. The hash code for a
-   * {@code String} object is computed as
-   * <blockquote><pre>
-   * s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
-   * </pre></blockquote>
-   * using {@code int} arithmetic, where {@code s[i]} is the
-   * <i>i</i>th character of the string, {@code n} is the length of
-   * the string, and {@code ^} indicates exponentiation.
-   * (The hash value of the empty string is zero.)
-   *
-   * @return  a hash code value for this object.
-   */
-  //    public int hashCode(){
-  //               int h = hash;
-  //        if (h == 0 && value . length > 0) {
-  //          char val[] = value;
-  //
-  //            for (int i = 0; i < value . length {
-  //              ;
-  //            } i++) {
-  //            h = 31 * h + val[i];
-  //            }
-  //            hash = h;
-  //        }
-  //        return h;
-  //    }
+
 
   /**
    * Returns the index within this string of the first occurrence of
