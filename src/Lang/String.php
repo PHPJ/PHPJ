@@ -125,7 +125,7 @@ class String extends Object
    * This method may be used to trim whitespace (as defined above) from
    * the beginning and end of a string.
    *
-   * @return  String A string whose value is this string, with any leading and trailing white
+   * @return  \PHPJ\Lang\String A string whose value is this string, with any leading and trailing white
    *          space removed, or this string if it has no leading or
    *          trailing white space.
    */
@@ -166,7 +166,7 @@ class String extends Object
    *
    * @param      $beginIndex   int - the beginning index, inclusive.
    * @param      $endIndex     int - the ending index, exclusive.
-   * @return     String the specified substring.
+   * @return     \PHPJ\Lang\String the specified substring.
    * @exception  StringIndexOutOfBoundsException  if the
    *             {@code beginIndex} is negative, or
    *             {@code endIndex} is larger than the length of
@@ -179,7 +179,7 @@ class String extends Object
     if ($beginIndex < 0) {
       throw new StringIndexOutOfBoundsException($beginIndex);
     }
-    $endIndex = $endIndex ?: $this->length() - $beginIndex;
+    $endIndex = $endIndex ?: $this->length();
     if ($endIndex > $this->length()) {
       throw new StringIndexOutOfBoundsException($endIndex);
     }
@@ -195,7 +195,7 @@ class String extends Object
   /**
    * This object (which is already a string!) is itself returned.
    *
-   * @return String the string itself.
+   * @return \PHPJ\Lang\String the string itself.
    */
   public function toString()
   {
@@ -227,6 +227,32 @@ class String extends Object
       }
       return $h;
     }
+
+  /**
+   * Compares this string to the specified object.  The result is {@code
+   * true} if and only if the argument is not {@code null} and is a {@code
+   * String} object that represents the same sequence of characters as this
+   * object.
+   *
+   * @param  \PHPJ\Lang\Object anObject
+   *         The object to compare this {@code String} against
+   *
+   * @return  boolean {@code true} if the given object represents a {@code String}
+   *          equivalent to this string, {@code false} otherwise
+   *
+   * @see  \PHPJ\Lang\String::compareTo(String)
+   * @see  \PHPJ\Lang\String::equalsIgnoreCase(String)
+   */
+  public function equals(Object $anObject = null)
+  {
+    if ($this === $anObject) {
+      return true;
+    }
+    if ($anObject instanceof String) {
+      return $this->value === $anObject->value;
+    }
+    return false;
+  }
 
   /**
    * Returns the character (Unicode code point) at the specified
@@ -462,44 +488,7 @@ class String extends Object
   //        return StringCoding . encode(value, 0, value . length);
   //    }
 
-  /**
-   * Compares this string to the specified object.  The result is {@code
-   * true} if and only if the argument is not {@code null} and is a {@code
-   * String} object that represents the same sequence of characters as this
-   * object.
-   *
-   * @param  anObject
-   *         The object to compare this {@code String} against
-   *
-   * @return  {@code true} if the given object represents a {@code String}
-   *          equivalent to this string, {@code false} otherwise
-   *
-   * @see  #compareTo(String)
-   * @see  #equalsIgnoreCase(String)
-   */
-  //    public boolean equals(Object anObject) {
-  //  if (this == anObject) {
-  //    return true;
-  //  }
-  //  if (anObject instanceof String) {
-  //    String anotherString = (String)anObject;
-  //            int n = value . length;
-  //            if (n == anotherString . value . length) {
-  //              char v1[] = value;
-  //                char v2[] = anotherString . value;
-  //                int i = 0;
-  //                while (n-- != 0) {
-  //                  if (v1 {
-  //                    [i] != v2}
-  //                  [i])
-  //                        return false;
-  //                    i++;
-  //                }
-  //                return true;
-  //            }
-  //        }
-  //  return false;
-  //}
+
 
   /**
    * Compares this string to the specified {@code StringBuffer}.  The result
