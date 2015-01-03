@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by IntelliJ IDEA.
- * User: ykmship
- * Date: 03/01/15
- * Time: 12:46 AM
+ * @author Yury Kozyrev [https://github.com/urakozz]
  */
 
 namespace PHPJ\Lang;

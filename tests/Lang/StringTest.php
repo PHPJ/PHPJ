@@ -1,7 +1,6 @@
 <?php
 /**
- * @author ykmship@yandex-team.ru
- * Date: 30/12/14
+ * @author Yury Kozyrev [https://github.com/urakozz]
  */
 
 namespace PHPJ\Tests\Lang;

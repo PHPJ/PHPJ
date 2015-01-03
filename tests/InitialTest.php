@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Yury Kozyrev <ykmship@yandex-team.ru>
+ * @author Yury Kozyrev [https://github.com/urakozz]
  */
 namespace PHPJ\Tests;
 
