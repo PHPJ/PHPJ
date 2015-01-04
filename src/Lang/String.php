@@ -285,17 +285,20 @@ class String extends Object
    * this.length()-anotherString.length()
    * </pre></blockquote>
    *
-   * @param   \PHPJ\Lang\String anotherString the {@code String} to be compared.
+   * @param   \PHPJ\Lang\String $anotherString the {@code String} to be compared.
+   * @param   boolean $fast
+   *
    * @return  int - the value {@code 0} if the argument string is equal to
    *          this string; a value less than {@code 0} if this string
    *          is lexicographically less than the string argument; and a
    *          value greater than {@code 0} if this string is
    *          lexicographically greater than the string argument.
    */
-  public function compareTo(String $anotherString)
+  public function compareTo(String $anotherString, $fast = false)
   {
-    if(0 === strcmp($this->value, $anotherString->value)){
-      return 0;
+    $res = strcmp($this->value, $anotherString->value);
+    if($fast || 0 === $res ){
+      return $res;
     }
 
     return $this->_compareTo($anotherString);
@@ -326,15 +329,17 @@ class String extends Object
    * differences.
    *
    * @param   $str \PHPJ\Lang\String - the {@code String} to be compared.
-   * @return  integer - negative integer, zero, or a positive integer as the
+   * @param   $fast bool
+   *
+   * @return int - negative integer, zero, or a positive integer as the
    *          specified String is greater than, equal to, or less
-   *          than this String, ignoring case considerations.
-
+   * than this String, ignoring case considerations.
    */
-  public function compareToIgnoreCase(String $str)
+  public function compareToIgnoreCase(String $str, $fast = false)
   {
-    if(0 === strcmp(strtolower($this->value), strtolower($str->value))){
-      return 0;
+    $res = strcmp(strtolower($this->value), strtolower($str->value));
+    if($fast || 0 === $res){
+      return $res;
     }
     return $this->_compareToIgnoreCase($str);
   }
