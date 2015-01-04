@@ -294,7 +294,11 @@ class String extends Object
    */
   public function compareTo(String $anotherString)
   {
-    return strcmp($this->value, $anotherString->value);
+    if(0 === strcmp($this->value, $anotherString->value)){
+      return 0;
+    }
+
+    return $this->_compareTo($anotherString);
   }
 
   protected function _compareTo(String $anotherString)
@@ -329,7 +333,10 @@ class String extends Object
    */
   public function compareToIgnoreCase(String $str)
   {
-    return strcmp(strtolower($this->value), strtolower($str->value));
+    if(0 === strcmp(strtolower($this->value), strtolower($str->value))){
+      return 0;
+    }
+    return $this->_compareToIgnoreCase($str);
   }
 
   protected function _compareToIgnoreCase(String $str)
