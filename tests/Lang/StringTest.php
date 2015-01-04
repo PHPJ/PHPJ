@@ -29,10 +29,16 @@ class StringTest extends Test
     $this->string = new String(self::STRING_VALUE);
   }
 
+  public function testSettingsCharset()
+  {
+    $this->assertEquals('UTF-8', ini_get('default_charset'));
+  }
+
+
   public function testLength()
   {
-    $this->assertEquals(mb_strlen($this->string->getOriginalValue()), $this->string->length());
-    $this->assertEquals(mb_strlen($this->string->getOriginalValue()), $this->string->length());
+    $this->assertEquals(strlen($this->string->getOriginalValue()), $this->string->length());
+    $this->assertEquals(strlen($this->string->getOriginalValue()), $this->string->length());
   }
 
   public function testIsEmpty()
