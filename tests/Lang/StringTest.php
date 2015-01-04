@@ -181,6 +181,23 @@ class StringTest extends Test
     $this->assertEquals($diff, $this->string->compareToIgnoreCase(new String(strtolower($string))));
   }
 
+
+  /**
+   * @dataProvider dataCompareTo
+   * @param int $diff
+   * @param string $string
+   */
+  public function testCompareToIgnoreCaseOriginal($diff, $string)
+  {
+    if($string === " String"){
+      $diff = 84;
+    }
+    $r = new \ReflectionClass($this->getClassName());
+    $m = $r->getMethod('_compareToIgnoreCase');
+    $m->setAccessible(true);
+    $this->assertEquals($diff, $m->invoke($this->string, new String(strtolower($string))));
+  }
+
   public function dataCompareTo()
   {
     return [
