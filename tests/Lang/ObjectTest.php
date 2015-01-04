@@ -71,11 +71,13 @@ class ObjectTest extends Test
   {
     $object = new Object();
 
-    $this->assertEquals($object->toString(), $object->toString());
-    $this->assertEquals($object->toString(), (string)$object);
-    $this->assertNotEquals($object->toString(), $object->getClone()->toString());
+    $this->assertInstanceOf('PHPJ\Lang\String', $object->toString());
 
-    $this->assertStringStartsWith(get_class($object), $object->toString());
-    $this->assertStringEndsWith(spl_object_hash($object), $object->toString());
+    $this->assertEquals($object->toString()->getOriginalValue(), $object->toString()->getOriginalValue());
+    $this->assertEquals($object->toString()->getOriginalValue(), (string)$object);
+    $this->assertNotEquals($object->toString()->getOriginalValue(), $object->getClone()->toString()->getOriginalValue());
+
+    $this->assertStringStartsWith(get_class($object), $object->toString()->getOriginalValue());
+    $this->assertStringEndsWith(spl_object_hash($object), $object->toString()->getOriginalValue());
   }
 }

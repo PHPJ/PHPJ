@@ -95,12 +95,11 @@ class Object
    * person to read.
    * It is recommended that all subclasses override this method.
    *
-   * @return string a string representation of the object.
-   * @todo return String
+   * @return \PHPJ\Lang\String a string representation of the object.
    */
   public function toString()
   {
-    return sprintf("%s@%s", $this->getClass(), $this->hashCode());
+    return new String(sprintf("%s@%s", $this->getClass(), $this->hashCode()));
   }
 
   /**
@@ -113,7 +112,7 @@ class Object
    */
   public final function __toString()
   {
-    return $this->toString();
+    return $this->toString()->getOriginalValue();
   }
 
 }
