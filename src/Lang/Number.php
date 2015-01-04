@@ -3,7 +3,7 @@
 namespace PHPJ\Lang;
 
 // TODO determine java.io.Serializable interface
-abstract class Number implements Serializable
+abstract class Number extends Object implements Serializable
 {
   /**
    * Returns the value of the specified number as an <code>int</code>.
