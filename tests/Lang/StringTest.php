@@ -29,12 +29,6 @@ class StringTest extends Test
     $this->string = new String(self::STRING_VALUE);
   }
 
-  public function testLoad()
-  {
-    $this->assertTrue(class_exists($this->getClassName()));
-    $this->assertInstanceOf($this->getClassName(), new String(self::STRING_VALUE));
-  }
-
   public function testLength()
   {
     $this->assertEquals(mb_strlen($this->string->getOriginalValue()), $this->string->length());
@@ -104,7 +98,7 @@ class StringTest extends Test
 
   /**
    * @expectedException \PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException
-   * @dataProvider testSubstringExceptionDataProvider
+   * @dataProvider dataSubstringException
    *
    * @param $beginIndex
    * @param $endIndex
@@ -114,7 +108,7 @@ class StringTest extends Test
     $this->string->substring($beginIndex, $endIndex);
   }
 
-  public function testSubstringExceptionDataProvider()
+  public function dataSubstringException()
   {
     return [
       [-1, 1],
@@ -149,5 +143,71 @@ class StringTest extends Test
     $this->assertFalse($this->string->equals(new Object()));
     $this->assertFalse($this->string->equals(null));
   }
+
+  /**
+   * @dataProvider dataCompareTo
+   * @param int $diff
+   * @param string $string
+   */
+  public function testCompareTo($diff, $string)
+  {
+    $this->assertEquals($diff, $this->string->compareTo(new String($string)));
+  }
+
+  /**
+   * @dataProvider dataCompareTo
+   * @param int $diff
+   * @param string $string
+   */
+  public function testCompareToOriginal($diff, $string)
+  {
+    $r = new \ReflectionClass($this->getClassName());
+    $m = $r->getMethod('_compareTo');
+    $m->setAccessible(true);
+    $this->assertEquals($diff, $m->invoke($this->string, new String($string)));
+  }
+
+  /**
+   * @dataProvider dataCompareTo
+   * @param int $diff
+   * @param string $string
+   */
+  public function testCompareToIgnoreCase($diff, $string)
+  {
+    if($string === " String"){
+      $diff = 84;
+    }
+
+    $this->assertEquals($diff, $this->string->compareToIgnoreCase(new String(strtolower($string))));
+  }
+
+  public function dataCompareTo()
+  {
+    return [
+      [19, "AString"],
+      [1 , "String"],
+      [52, " String"],
+      [11, ""],
+      [-2, "Test Strini"],
+      [0, "Test String"],
+    ];
+  }
+
+//  public function testSmpCasePerformance()
+//  {
+//    $t = microtime(true);
+//    for($i = 0;$i<100000;$i++){
+//      $this->string->compareToIgnoreCase(new String("Test Strini"));
+//      //$c1 = strcasecmp(self::STRING_VALUE, "Test Strini");
+//    }
+//    $t1 = microtime(true) - $t;
+//    $t = microtime(true);
+//    for($i = 0;$i<100000;$i++){
+//      $this->string->_compareToIgnoreCase(new String("test strini"));
+//      //$c2 = strcasecmp(strtolower(self::STRING_VALUE), strtolower("test strini"));
+//    }
+//    $t2 = microtime(true) - $t;
+//    var_dump($t1, $t2);
+//  }
 
 }

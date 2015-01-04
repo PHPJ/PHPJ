@@ -14,11 +14,6 @@ use ReflectionClass;
 class Object
 {
 
-  public function __construct()
-  {
-
-  }
-
   /**
    * PHP legacy hack method. Retrieves original value.
    * @return null

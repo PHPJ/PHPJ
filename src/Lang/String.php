@@ -51,7 +51,7 @@ class String extends Object
   public function length()
   {
     return Option::fromValue($this->length)->getOrCall(function () {
-      return $this->length = mb_strlen($this->value);
+      return $this->length = strlen($this->value);
     });
   }
 
@@ -249,6 +249,116 @@ class String extends Object
       return $this->value === $anObject->value;
     }
     return false;
+  }
+
+  /**
+   * Compares two strings lexicographically.
+   * The comparison is based on the Unicode value of each character in
+   * the strings. The character sequence represented by this
+   * {@code String} object is compared lexicographically to the
+   * character sequence represented by the argument string. The result is
+   * a negative integer if this {@code String} object
+   * lexicographically precedes the argument string. The result is a
+   * positive integer if this {@code String} object lexicographically
+   * follows the argument string. The result is zero if the strings
+   * are equal; {@code compareTo} returns {@code 0} exactly when
+   * the {@link #equals(Object)} method would return {@code true}.
+   * <p>
+   * This is the definition of lexicographic ordering. If two strings are
+   * different, then either they have different characters at some index
+   * that is a valid index for both strings, or their lengths are different,
+   * or both. If they have different characters at one or more index
+   * positions, let <i>k</i> be the smallest such index; then the string
+   * whose character at position <i>k</i> has the smaller value, as
+   * determined by using the &lt; operator, lexicographically precedes the
+   * other string. In this case, {@code compareTo} returns the
+   * difference of the two character values at position {@code k} in
+   * the two string -- that is, the value:
+   * <blockquote><pre>
+   * this.charAt(k)-anotherString.charAt(k)
+   * </pre></blockquote>
+   * If there is no index position at which they differ, then the shorter
+   * string lexicographically precedes the longer string. In this case,
+   * {@code compareTo} returns the difference of the lengths of the
+   * strings -- that is, the value:
+   * <blockquote><pre>
+   * this.length()-anotherString.length()
+   * </pre></blockquote>
+   *
+   * @param   \PHPJ\Lang\String anotherString the {@code String} to be compared.
+   * @return  int - the value {@code 0} if the argument string is equal to
+   *          this string; a value less than {@code 0} if this string
+   *          is lexicographically less than the string argument; and a
+   *          value greater than {@code 0} if this string is
+   *          lexicographically greater than the string argument.
+   */
+  public function compareTo(String $anotherString)
+  {
+    return strcmp($this->value, $anotherString->value);
+  }
+
+  protected function _compareTo(String $anotherString)
+  {
+    $len1 = $this->length();
+    $len2 = $anotherString->length();
+    $lim = Math::min($len1, $len2);
+    $v1 = $this->value;
+    $v2 = $anotherString->value;
+    $k = 0;
+
+    while ($k < $lim) {
+      $c1 = $v1[$k];
+      $c2 = $v2[$k];
+      if ($c1 != $c2) {
+        return ord($c1) - ord($c2);
+      }
+      $k++;
+    }
+    return $len1 - $len2;
+  }
+
+  /**
+   * Compares two strings lexicographically, ignoring case
+   * differences.
+   *
+   * @param   $str \PHPJ\Lang\String - the {@code String} to be compared.
+   * @return  integer - negative integer, zero, or a positive integer as the
+   *          specified String is greater than, equal to, or less
+   *          than this String, ignoring case considerations.
+
+   */
+  public function compareToIgnoreCase(String $str)
+  {
+    return strcmp(strtolower($this->value), strtolower($str->value));
+  }
+
+  protected function _compareToIgnoreCase(String $str)
+  {
+    $len1 = $this->length();
+    $len2 = $str->length();
+    $lim = Math::min($len1, $len2);
+    $v1 = $this->value;
+    $v2 = $str->value;
+    $k = 0;
+
+    while ($k < $lim) {
+      $c1 = $v1[$k];
+      $c2 = $v2[$k];
+      if ($c1 != $c2) {
+        $c1 = strtoupper($c1);
+        $c2 = strtoupper($c2);
+        if ($c1 != $c2) {
+          $c1 = strtolower($c1);
+          $c2 = strtolower($c2);
+          if ($c1 != $c2) {
+            // No overflow because of numeric promotion
+            return ord($c1) - ord($c2);
+          }
+        }
+      }
+      $k++;
+    }
+    return $len1 - $len2;
   }
 
   /**
@@ -608,138 +718,6 @@ class String extends Object
   //          && regionMatches(true, 0, anotherString, 0, value . length);
   //}
 
-  /**
-   * Compares two strings lexicographically.
-   * The comparison is based on the Unicode value of each character in
-   * the strings. The character sequence represented by this
-   * {@code String} object is compared lexicographically to the
-   * character sequence represented by the argument string. The result is
-   * a negative integer if this {@code String} object
-   * lexicographically precedes the argument string. The result is a
-   * positive integer if this {@code String} object lexicographically
-   * follows the argument string. The result is zero if the strings
-   * are equal; {@code compareTo} returns {@code 0} exactly when
-   * the {@link #equals(Object)} method would return {@code true}.
-   * <p>
-   * This is the definition of lexicographic ordering. If two strings are
-   * different, then either they have different characters at some index
-   * that is a valid index for both strings, or their lengths are different,
-   * or both. If they have different characters at one or more index
-   * positions, let <i>k</i> be the smallest such index; then the string
-   * whose character at position <i>k</i> has the smaller value, as
-   * determined by using the &lt; operator, lexicographically precedes the
-   * other string. In this case, {@code compareTo} returns the
-   * difference of the two character values at position {@code k} in
-   * the two string -- that is, the value:
-   * <blockquote><pre>
-   * this.charAt(k)-anotherString.charAt(k)
-   * </pre></blockquote>
-   * If there is no index position at which they differ, then the shorter
-   * string lexicographically precedes the longer string. In this case,
-   * {@code compareTo} returns the difference of the lengths of the
-   * strings -- that is, the value:
-   * <blockquote><pre>
-   * this.length()-anotherString.length()
-   * </pre></blockquote>
-   *
-   * @param   anotherString   the {@code String} to be compared.
-   * @return  the value {@code 0} if the argument string is equal to
-   *          this string; a value less than {@code 0} if this string
-   *          is lexicographically less than the string argument; and a
-   *          value greater than {@code 0} if this string is
-   *          lexicographically greater than the string argument.
-   */
-  //    public int compareTo(String anotherString) {
-  //  int len1 = value . length;
-  //        int len2 = anotherString . value . length;
-  //        int lim = Math . min(len1, len2);
-  //        char v1[] = value;
-  //        char v2[] = anotherString . value;
-  //
-  //        int k = 0;
-  //        while (k < lim) {
-  //          char c1 = v1[k];
-  //            char c2 = v2[k];
-  //            if (c1 != c2) {
-  //              return c1 - c2;
-  //            }
-  //            k++;
-  //        }
-  //        return len1 - len2;
-  //    }
-
-  /**
-   * A Comparator that orders {@code String} objects as by
-   * {@code compareToIgnoreCase}. This comparator is serializable.
-   * <p>
-   * Note that this Comparator does <em>not</em> take locale into account,
-   * and will result in an unsatisfactory ordering for certain locales.
-   * The java.text package provides <em>Collators</em> to allow
-   * locale-sensitive ordering.
-   *
-   * @see     java.text.Collator#compare(String, String)
-   * @since   1.2
-   */
-  //    public static final Comparator<String > CASE_INSENSITIVE_ORDER
-  //  = new CaseInsensitiveComparator();
-  //    private static class CaseInsensitiveComparator
-  //  implements Comparator<String >, java . io . Serializable {
-  //  // use serialVersionUID from JDK 1.2.2 for interoperability
-  //  private
-  //  static final long serialVersionUID = 8575799808933029326L;
-  //
-  //        public int compare(String s1, String s2) {
-  //    int n1 = s1 . length();
-  //            int n2 = s2 . length();
-  //            int min = Math . min(n1, n2);
-  //            for (int i = 0; i < min {
-  //              ;
-  //            } i++) {
-  //      char c1 = s1 . charAt(i);
-  //                char c2 = s2 . charAt(i);
-  //                if (c1 != c2) {
-  //                  c1 = Character . toUpperCase(c1);
-  //                  c2 = Character . toUpperCase(c2);
-  //                  if (c1 != c2) {
-  //                    c1 = Character . toLowerCase(c1);
-  //                    c2 = Character . toLowerCase(c2);
-  //                    if (c1 != c2) {
-  //                      // No overflow because of numeric promotion
-  //                      return c1 - c2;
-  //                    }
-  //                  }
-  //                }
-  //            }
-  //            return n1 - n2;
-  //        }
-  //
-  //        /** Replaces the de-serialized object. */
-  //        private Object readResolve(){ return CASE_INSENSITIVE_ORDER; }
-  //    }
-
-  /**
-   * Compares two strings lexicographically, ignoring case
-   * differences. This method returns an integer whose sign is that of
-   * calling {@code compareTo} with normalized versions of the strings
-   * where case differences have been eliminated by calling
-   * {@code Character.toLowerCase(Character.toUpperCase(character))} on
-   * each character.
-   * <p>
-   * Note that this method does <em>not</em> take locale into account,
-   * and will result in an unsatisfactory ordering for certain locales.
-   * The java.text package provides <em>collators</em> to allow
-   * locale-sensitive ordering.
-   *
-   * @param   str   the {@code String} to be compared.
-   * @return  a negative integer, zero, or a positive integer as the
-   *          specified String is greater than, equal to, or less
-   *          than this String, ignoring case considerations.
-   * @see     java.text.Collator#compare(String, String)
-   * @since   1.2
-   */
-  //    public int compareToIgnoreCase(String str) {
-  //  return CASE_INSENSITIVE_ORDER . compare(this, str);
-  //}
 
   /**
    * Tests if two string regions are equal.

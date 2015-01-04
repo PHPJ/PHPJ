@@ -16,12 +16,6 @@ class ObjectTest extends Test
     return 'PHPJ\Lang\Object';
   }
 
-  public function testLoad()
-  {
-    $this->assertTrue(class_exists($this->getClassName()));
-    $this->assertInstanceOf($this->getClassName(), new \PHPJ\Lang\Object());
-  }
-
   public function testClone()
   {
     $object = new Object();
