@@ -32,13 +32,26 @@ class StringTest extends Test
   public function testSettingsCharset()
   {
     $this->assertEquals(strtolower('UTF-8'), strtolower(ini_get('default_charset')));
+    $this->assertEquals(strtolower('UTF-8'), strtolower(mb_internal_encoding()));
   }
 
 
-  public function testLength()
+  /**
+   * @dataProvider dataLength
+   */
+  public function testLength($length, $value)
   {
-    $this->assertEquals(strlen($this->string->getOriginalValue()), $this->string->length());
-    $this->assertEquals(strlen($this->string->getOriginalValue()), $this->string->length());
+    $this->assertEquals($length, (new String($value))->length());
+  }
+
+  public function dataLength()
+  {
+    return [
+      [11, self::STRING_VALUE ],
+      [6, 'йцукен' ],
+      [5, 'giriş' ],
+      [6, 'Straße' ],
+    ];
   }
 
   public function testIsEmpty()
@@ -54,6 +67,8 @@ class StringTest extends Test
     for($i = 0; $i < mb_strlen(self::STRING_VALUE); $i++){
       $this->assertEquals($str[$i], $this->string->charAt($i));
     }
+    $string = new String("Straße");
+    $this->assertEquals("ß", $string->charAt(4));
   }
 
   /**
@@ -85,6 +100,10 @@ class StringTest extends Test
 
     $string = $this->string->substring($this->string->length());
     $this->assertEquals("", $string->getOriginalValue());
+
+    $string = new String("Straße");
+    $string = $string->substring(4, 5);
+    $this->assertEquals("ß", $string->getOriginalValue());
   }
 
   public function testSubstringTwoParams()
@@ -221,6 +240,7 @@ class StringTest extends Test
       [52, " String"],
       [11, ""],
       [-2, "Test Strini"],
+      //[-8629, "Ś"],
       [0, "Test String"],
     ];
   }
@@ -261,6 +281,11 @@ class StringTest extends Test
     $this->assertEquals($boolean, $this->string->regionMatches($toffset, new String($compareWith), $oofset, $len));
   }
 
+  public function testRegionMatchesMB()
+  {
+    $this->assertEquals(true, (new String("unicode_ç_c"))->regionMatches(8, new String('ßç_'), 1, 2));
+  }
+
   public function dataRegionMatches()
   {
     return array_merge([
@@ -284,6 +309,11 @@ class StringTest extends Test
     $this->assertEquals($boolean, $this->string->regionMatchesIgnoreCase($toffset, new String($compareWith), $oofset, $len));
   }
 
+  public function testRegionMatchesIgnoreCaseMB()
+  {
+    $this->assertEquals(true, (new String("unicode_ç_c"))->regionMatchesIgnoreCase(8, new String('ßÇ_'), 1, 2));
+  }
+
   public function dataRegionMatchesIgnoreCase()
   {
     return array_merge([
@@ -295,6 +325,11 @@ class StringTest extends Test
       [true,  1, "esT", 0, 3],
       [false, 1, "es ", 0, 3],
     ], $this->dataPreValidateRegionMatches());
+  }
+
+  public function testTest()
+  {
+    //var_dump(mb_strlen("tesśй"));
   }
 
 

@@ -51,7 +51,7 @@ class String extends ObjectClass
   public function length()
   {
     return Option::fromValue($this->length)->getOrCall(function () {
-      return $this->length = strlen($this->value);
+      return $this->length = mb_strlen($this->value);
     });
   }
 
@@ -91,7 +91,7 @@ class String extends ObjectClass
     if (($index < 0) || ($index >= $this->length())) {
       throw new StringIndexOutOfBoundsException($index);
     }
-    return $this->value[$index];
+    return mb_substr($this->value, $index, 1);
   }
 
 
@@ -186,7 +186,7 @@ class String extends ObjectClass
     }
     return (($beginIndex == 0) && ($endIndex == $this->length()))
       ? $this
-      : new String(substr($this->value, $beginIndex, $subLen));
+      : new String(mb_substr($this->value, $beginIndex, $subLen));
   }
 
   /**
@@ -217,8 +217,8 @@ class String extends ObjectClass
     public function hashCode(){
       $h = $this->hash;
       if ($h == 0 && $this->length() > 0) {
-        for($i = 0; $i < $this->length(); $i++){
-          $h = (int)(31 * $h + ord($this->value[$i])) & 0xffffffff;
+        foreach(preg_split("//u", $this->value, -1, PREG_SPLIT_NO_EMPTY) as $char){
+          $h = (int)(31 * $h + ord($char)) & 0xffffffff;
         }
         $this->hash = $h;
       }
@@ -314,8 +314,8 @@ class String extends ObjectClass
     $k = 0;
 
     while ($k < $lim) {
-      $c1 = $v1[$k];
-      $c2 = $v2[$k];
+      $c1 = mb_substr($v1,$k,1);
+      $c2 = mb_substr($v2,$k,1);
       if ($c1 != $c2) {
         return ord($c1) - ord($c2);
       }
@@ -344,6 +344,11 @@ class String extends ObjectClass
     return $this->_compareToIgnoreCase($str);
   }
 
+  /**
+   * Correct with non-UTF8 strings
+   * @param \PHPJ\Lang\String $str
+   * @return int
+   */
   protected function _compareToIgnoreCase(String $str)
   {
     $len1 = $this->length();
@@ -728,7 +733,7 @@ class String extends ObjectClass
   {
     return ($this === $anotherString)
       ? true
-      : 0 === strcasecmp($this->value, $anotherString->value);
+      : 0 === strcmp(mb_strtoupper($this->value), mb_strtoupper($anotherString->value));
         //original Java
         //($anotherString !== null)
         //&& ($anotherString->length() == $this->length())
@@ -774,10 +779,9 @@ class String extends ObjectClass
       return false;
     }
 
-    //return 0 === substr_compare($this->value, substr($other->value, $ooffset, $len), $toffset, $len);
     #Original Java
     while ($len-- > 0) {
-      if ($this->value[$toffset++] != $other->value[$ooffset++]) {
+      if (mb_substr($this->value, $toffset++, 1) !== mb_substr($other->value, $ooffset++, 1)) {
         return false;
       }
     }
@@ -838,15 +842,15 @@ class String extends ObjectClass
       return false;
     }
     while ($len-- > 0) {
-      $c1 = $this->value[$toffset++];
-      $c2 = $other->value[$ooffset++];
+      $c1 = mb_substr($this->value, $toffset++, 1);
+      $c2 = mb_substr($other->value, $ooffset++, 1);
       if ($c1 === $c2) {
         continue;
       }
-      if (strtoupper($c1) === strtoupper($c2)) {
+      if (mb_strtoupper($c1) === mb_strtoupper($c2)) {
         continue;
       }
-      if (strtolower($c1) === strtolower($c2)) {
+      if (mb_strtolower($c1) === mb_strtolower($c2)) {
         continue;
       }
       return false;
