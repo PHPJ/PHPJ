@@ -31,7 +31,7 @@ class StringTest extends Test
 
   public function testSettingsCharset()
   {
-    $this->assertEquals('UTF-8', ini_get('default_charset'));
+    $this->assertEquals(strtolower('UTF-8'), strtolower(ini_get('default_charset')));
   }
 
 
