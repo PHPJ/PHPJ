@@ -6,6 +6,7 @@
 namespace PHPJ\Lang;
 
 use PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException;
+use PHPJ\Utils\Locale;
 use PhpOption\Option;
 
 /**
@@ -873,9 +874,10 @@ class String extends ObjectClass
    * Tests if the substring of this string beginning at the
    * specified index starts with the specified prefix.
    *
-   * @param   prefix    the prefix.
-   * @param   toffset   where to begin looking in this string.
-   * @return  {@code true} if the character sequence represented by the
+   * @param   $prefix    \PHPJ\Lang\String the prefix.
+   * @param   $toffset   int where to begin looking in this string.
+   * @return  boolean
+   *          {@code true} if the character sequence represented by the
    *          argument is a prefix of the substring of this object starting
    *          at index {@code toffset}; {@code false} otherwise.
    *          The result is {@code false} if {@code toffset} is
@@ -886,57 +888,28 @@ class String extends ObjectClass
    *          this.substring(toffset).startsWith(prefix)
    *          </pre>
    */
-  //    public boolean startsWith(String prefix, int toffset) {
-  //  char ta[] = value;
-  //        int to = toffset;
-  //        char pa[] = prefix . value;
-  //        int po = 0;
-  //        int pc = prefix . value . length;
-  //        // Note: toffset might be near -1>>>1.
-  //        if ((toffset < 0) || (toffset > value . length - pc)) {
-  //          return false;
-  //        }
-  //        while (--pc >= 0) {
-  //          if (ta {
-  //            [to++] != pa}
-  //          [po++]) {
-  //            return false;
-  //          }
-  //        }
-  //        return true;
-  //    }
+      public function startsWith(String $prefix, $toffset = 0)
+      {
+        return $this->regionMatches($toffset, $prefix, 0, $prefix->length());
+      }
 
-  /**
-   * Tests if this string starts with the specified prefix.
-   *
-   * @param   prefix   the prefix.
-   * @return  {@code true} if the character sequence represented by the
-   *          argument is a prefix of the character sequence represented by
-   *          this string; {@code false} otherwise.
-   *          Note also that {@code true} will be returned if the
-   *          argument is an empty string or is equal to this
-   *          {@code String} object as determined by the
-   *          {@link #equals(Object)} method.
-   * @since   1. 0
-   */
-  //    public boolean startsWith(String prefix) {
-  //  return startsWith(prefix, 0);
-  //}
 
   /**
    * Tests if this string ends with the specified suffix.
    *
-   * @param   suffix   the suffix.
-   * @return  {@code true} if the character sequence represented by the
+   * @param   $suffix   \PHPJ\Lang\String - the suffix.
+   * @return  boolean
+   *          {@code true} if the character sequence represented by the
    *          argument is a suffix of the character sequence represented by
    *          this object; {@code false} otherwise. Note that the
    *          result will be {@code true} if the argument is the
    *          empty string or is equal to this {@code String} object
    *          as determined by the {@link #equals(Object)} method.
    */
-  //    public boolean endsWith(String suffix) {
-  //  return startsWith(suffix, value . length - suffix . value . length);
-  //}
+  public function endsWith(String $suffix)
+  {
+    return $this->startsWith($suffix, $this->length() - $suffix->length());
+  }
 
 
 
@@ -1937,174 +1910,18 @@ class String extends ObjectClass
    * on the Unicode Standard version specified by the {@link java.lang.Character Character}
    * class. Since case mappings are not always 1:1 char mappings, the resulting
    * {@code String} may be a different length than the original {@code String}.
-   * <p>
-   * Examples of lowercase  mappings are in the following table:
-   * <table border="1" summary="Lowercase mapping examples showing language code of locale, upper case, lower case, and description">
-   * <tr>
-   *   <th>Language Code of Locale</th>
-   *   <th>Upper Case</th>
-   *   <th>Lower Case</th>
-   *   <th>Description</th>
-   * </tr>
-   * <tr>
-   *   <td>tr (Turkish)</td>
-   *   <td>&#92;u0130</td>
-   *   <td>&#92;u0069</td>
-   *   <td>capital letter I with dot above -&gt; small letter i</td>
-   * </tr>
-   * <tr>
-   *   <td>tr (Turkish)</td>
-   *   <td>&#92;u0049</td>
-   *   <td>&#92;u0131</td>
-   *   <td>capital letter I -&gt; small letter dotless i </td>
-   * </tr>
-   * <tr>
-   *   <td>(all)</td>
-   *   <td>French Fries</td>
-   *   <td>french fries</td>
-   *   <td>lowercased all chars in String</td>
-   * </tr>
-   * <tr>
-   *   <td>(all)</td>
-   *   <td><img src="doc-files/capiota.gif" alt="capiota"><img src="doc-files/capchi.gif" alt="capchi">
-   *       <img src="doc-files/captheta.gif" alt="captheta"><img src="doc-files/capupsil.gif" alt="capupsil">
-   *       <img src="doc-files/capsigma.gif" alt="capsigma"></td>
-   *   <td><img src="doc-files/iota.gif" alt="iota"><img src="doc-files/chi.gif" alt="chi">
-   *       <img src="doc-files/theta.gif" alt="theta"><img src="doc-files/upsilon.gif" alt="upsilon">
-   *       <img src="doc-files/sigma1.gif" alt="sigma"></td>
-   *   <td>lowercased all chars in String</td>
-   * </tr>
-   * </table>
    *
-   * @param locale use the case transformation rules for this locale
-   * @return the {@code String}, converted to lowercase.
-   * @see     java.lang.String#toLowerCase()
-   * @see     java.lang.String#toUpperCase()
-   * @see     java.lang.String#toUpperCase(Locale)
+   * @param  Locale $locale use the case transformation rules for this locale
+   * @return \PHPJ\Lang\String
+   *          the {@code String}, converted to lowercase.
+   * @see     PHPJ\Lang\String::toUpperCase()
    * @since   1.1
    */
-  //    public String toLowerCase(Locale locale) {
-  //  if (locale == null) {
-  //    throw new NullPointerException();
-  //  }
-  //
-  //  int firstUpper;
-  //        final int len = value . length;
-  //
-  //        /* Now check if there are any characters that need to be changed. */
-  //        scan: {
-  //    for (firstUpper = 0; firstUpper < len;) {
-  //      char c = value[firstUpper];
-  //                if ((c >= Character . MIN_HIGH_SURROGATE)
-  //                    && (c <= Character . MAX_HIGH_SURROGATE)
-  //                ) {
-  //                  int supplChar = codePointAt(firstUpper);
-  //                    if (supplChar != Character . toLowerCase(supplChar)) {
-  //                      break scan;
-  //                    }
-  //                    firstUpper += Character . charCount(supplChar);
-  //                } else {
-  //                  if (c != Character . toLowerCase(c)) {
-  //                    break scan;
-  //                  }
-  //                  firstUpper++;
-  //                }
-  //            }
-  //    return this;
-  //  }
-  //
-  //        char[] result = new char[len];
-  //        int resultOffset = 0;  /* result may grow, so i+resultOffset
-  //                                * is the write location in result */
-  //
-  //        /* Just copy the first few lowerCase characters. */
-  //        System . arraycopy(value, 0, result, 0, firstUpper);
-  //
-  //        String lang = locale . getLanguage();
-  //        boolean localeDependent =
-  //    (lang == "tr" || lang == "az" || lang == "lt");
-  //        char[] lowerCharArray;
-  //        int lowerChar;
-  //        int srcChar;
-  //        int srcCount;
-  //        for (int i = firstUpper; i < len {
-  //          ;
-  //        } i += srcCount) {
-  //    srcChar = (int)value[i];
-  //            if ((char) {
-  //              srcChar >= Character . MIN_HIGH_SURROGATE
-  //              && (char)}srcChar <= Character . MAX_HIGH_SURROGATE) {
-  //      srcChar = codePointAt(i);
-  //      srcCount = Character . charCount(srcChar);
-  //    } else {
-  //      srcCount = 1;
-  //    }
-  //            if (localeDependent
-  //                || srcChar == '\u03A3'
-  //                || // GREEK CAPITAL LETTER SIGMA
-  //                srcChar == '\u0130'
-  //            ) { // LATIN CAPITAL LETTER I WITH DOT ABOVE
-  //              lowerChar = ConditionalSpecialCasing . toLowerCaseEx(this, i, locale);
-  //            } else {
-  //              lowerChar = Character . toLowerCase(srcChar);
-  //            }
-  //            if ((lowerChar == Character . ERROR)
-  //                || (lowerChar >= Character . MIN_SUPPLEMENTARY_CODE_POINT)
-  //            ) {
-  //              if (lowerChar == Character . ERROR) {
-  //                lowerCharArray =
-  //                  ConditionalSpecialCasing . toLowerCaseCharArray(this, i, locale);
-  //              } else {
-  //                if (srcCount == 2) {
-  //                  resultOffset += Character . toChars(lowerChar, result, i + resultOffset) - srcCount;
-  //                  continue;
-  //                } else {
-  //                  lowerCharArray = Character . toChars(lowerChar);
-  //                }
-  //              }
-  //
-  //              /* Grow result if needed */
-  //              int mapLen = lowerCharArray . length;
-  //                if (mapLen > srcCount) {
-  //                  char[] result2 = new char[result . length + mapLen - srcCount];
-  //                    System . arraycopy(result, 0, result2, 0, i + resultOffset);
-  //                    result = result2;
-  //                }
-  //                for (int x = 0; x < mapLen {
-  //                  ;
-  //                } ++x) {
-  //                result[i + resultOffset + x] = lowerCharArray[x];
-  //                }
-  //                resultOffset += (mapLen - srcCount);
-  //            } else {
-  //              result[i + resultOffset] = (char)lowerChar;
-  //            }
-  //        }
-  //        return new String(result, 0, len + resultOffset);
-  //    }
-
-  /**
-   * Converts all of the characters in this {@code String} to lower
-   * case using the rules of the default locale. This is equivalent to calling
-   * {@code toLowerCase(Locale.getDefault())}.
-   * <p>
-   * <b>Note:</b> This method is locale sensitive, and may produce unexpected
-   * results if used for strings that are intended to be interpreted locale
-   * independently.
-   * Examples are programming language identifiers, protocol keys, and HTML
-   * tags.
-   * For instance, {@code "TITLE".toLowerCase()} in a Turkish locale
-   * returns {@code "t\u005Cu0131tle"}, where '\u005Cu0131' is the
-   * LATIN SMALL LETTER DOTLESS I character.
-   * To obtain correct results for locale insensitive strings, use
-   * {@code toLowerCase(Locale.ROOT)}.
-   * <p>
-   * @return  the {@code String}, converted to lowercase.
-   * @see     java.lang.String#toLowerCase(Locale)
-   */
-  //    public String toLowerCase(){
-  //        return toLowerCase(Locale . getDefault());
-  //    }
+  public function toLowerCase(Locale $locale = null)
+  {
+    $locale = $locale ?: Locale::getDefault();
+    return new String(mb_strtolower($this->value));
+  }
 
   /**
    * Converts all of the characters in this {@code String} to upper
@@ -2112,172 +1929,18 @@ class String extends ObjectClass
    * on the Unicode Standard version specified by the {@link java.lang.Character Character}
    * class. Since case mappings are not always 1:1 char mappings, the resulting
    * {@code String} may be a different length than the original {@code String}.
-   * <p>
-   * Examples of locale-sensitive and 1:M case mappings are in the following table.
-   *
-   * <table border="1" summary="Examples of locale-sensitive and 1:M case mappings. Shows Language code of locale, lower case, upper case, and description.">
-   * <tr>
-   *   <th>Language Code of Locale</th>
-   *   <th>Lower Case</th>
-   *   <th>Upper Case</th>
-   *   <th>Description</th>
-   * </tr>
-   * <tr>
-   *   <td>tr (Turkish)</td>
-   *   <td>&#92;u0069</td>
-   *   <td>&#92;u0130</td>
-   *   <td>small letter i -&gt; capital letter I with dot above</td>
-   * </tr>
-   * <tr>
-   *   <td>tr (Turkish)</td>
-   *   <td>&#92;u0131</td>
-   *   <td>&#92;u0049</td>
-   *   <td>small letter dotless i -&gt; capital letter I</td>
-   * </tr>
-   * <tr>
-   *   <td>(all)</td>
-   *   <td>&#92;u00df</td>
-   *   <td>&#92;u0053 &#92;u0053</td>
-   *   <td>small letter sharp s -&gt; two letters: SS</td>
-   * </tr>
-   * <tr>
-   *   <td>(all)</td>
-   *   <td>Fahrvergn&uuml;gen</td>
-   *   <td>FAHRVERGN&Uuml;GEN</td>
-   *   <td></td>
-   * </tr>
-   * </table>
-   * @param locale use the case transformation rules for this locale
-   * @return the {@code String}, converted to uppercase.
-   * @see     java.lang.String#toUpperCase()
-   * @see     java.lang.String#toLowerCase()
-   * @see     java.lang.String#toLowerCase(Locale)
+
+   * @param Locale $locale use the case transformation rules for this locale
+   * @return \PHPJ\Lang\String
+   *          the {@code String}, converted to uppercase.
+   * @see    PHPJ\Lang\String::toLowerCase()
    * @since   1.1
    */
-  //    public String toUpperCase(Locale locale) {
-  //  if (locale == null) {
-  //    throw new NullPointerException();
-  //  }
-  //
-  //  int firstLower;
-  //        final int len = value . length;
-  //
-  //        /* Now check if there are any characters that need to be changed. */
-  //        scan: {
-  //    for (firstLower = 0; firstLower < len;) {
-  //      int c = (int)value[firstLower];
-  //                int srcCount;
-  //                if ((c >= Character . MIN_HIGH_SURROGATE)
-  //                    && (c <= Character . MAX_HIGH_SURROGATE)
-  //                ) {
-  //                  c = codePointAt(firstLower);
-  //                  srcCount = Character . charCount(c);
-  //                } else {
-  //                  srcCount = 1;
-  //                }
-  //                int upperCaseChar = Character . toUpperCaseEx(c);
-  //                if ((upperCaseChar == Character . ERROR)
-  //                    || (c != upperCaseChar)
-  //                ) {
-  //                  break scan;
-  //                }
-  //                firstLower += srcCount;
-  //            }
-  //    return this;
-  //  }
-  //
-  //        /* result may grow, so i+resultOffset is the write location in result */
-  //        int resultOffset = 0;
-  //        char[] result = new char[len]; /* may grow */
-  //
-  //        /* Just copy the first few upperCase characters. */
-  //        System . arraycopy(value, 0, result, 0, firstLower);
-  //
-  //        String lang = locale . getLanguage();
-  //        boolean localeDependent =
-  //    (lang == "tr" || lang == "az" || lang == "lt");
-  //        char[] upperCharArray;
-  //        int upperChar;
-  //        int srcChar;
-  //        int srcCount;
-  //        for (int i = firstLower; i < len {
-  //          ;
-  //        } i += srcCount) {
-  //    srcChar = (int)value[i];
-  //            if ((char) {
-  //              srcChar >= Character . MIN_HIGH_SURROGATE
-  //              && (char)}srcChar <= Character . MAX_HIGH_SURROGATE) {
-  //      srcChar = codePointAt(i);
-  //      srcCount = Character . charCount(srcChar);
-  //    } else {
-  //      srcCount = 1;
-  //    }
-  //            if (localeDependent) {
-  //              upperChar = ConditionalSpecialCasing . toUpperCaseEx(this, i, locale);
-  //            } else {
-  //              upperChar = Character . toUpperCaseEx(srcChar);
-  //            }
-  //            if ((upperChar == Character . ERROR)
-  //                || (upperChar >= Character . MIN_SUPPLEMENTARY_CODE_POINT)
-  //            ) {
-  //              if (upperChar == Character . ERROR) {
-  //                if (localeDependent) {
-  //                  upperCharArray =
-  //                    ConditionalSpecialCasing . toUpperCaseCharArray(this, i, locale);
-  //                } else {
-  //                  upperCharArray = Character . toUpperCaseCharArray(srcChar);
-  //                }
-  //              } else {
-  //                if (srcCount == 2) {
-  //                  resultOffset += Character . toChars(upperChar, result, i + resultOffset) - srcCount;
-  //                  continue;
-  //                } else {
-  //                  upperCharArray = Character . toChars(upperChar);
-  //                }
-  //              }
-  //
-  //              /* Grow result if needed */
-  //              int mapLen = upperCharArray . length;
-  //                if (mapLen > srcCount) {
-  //                  char[] result2 = new char[result . length + mapLen - srcCount];
-  //                    System . arraycopy(result, 0, result2, 0, i + resultOffset);
-  //                    result = result2;
-  //                }
-  //                for (int x = 0; x < mapLen {
-  //                  ;
-  //                } ++x) {
-  //                result[i + resultOffset + x] = upperCharArray[x];
-  //                }
-  //                resultOffset += (mapLen - srcCount);
-  //            } else {
-  //              result[i + resultOffset] = (char)upperChar;
-  //            }
-  //        }
-  //        return new String(result, 0, len + resultOffset);
-  //    }
-
-  /**
-   * Converts all of the characters in this {@code String} to upper
-   * case using the rules of the default locale. This method is equivalent to
-   * {@code toUpperCase(Locale.getDefault())}.
-   * <p>
-   * <b>Note:</b> This method is locale sensitive, and may produce unexpected
-   * results if used for strings that are intended to be interpreted locale
-   * independently.
-   * Examples are programming language identifiers, protocol keys, and HTML
-   * tags.
-   * For instance, {@code "title".toUpperCase()} in a Turkish locale
-   * returns {@code "T\u005Cu0130TLE"}, where '\u005Cu0130' is the
-   * LATIN CAPITAL LETTER I WITH DOT ABOVE character.
-   * To obtain correct results for locale insensitive strings, use
-   * {@code toUpperCase(Locale.ROOT)}.
-   * <p>
-   * @return  the {@code String}, converted to uppercase.
-   * @see     java.lang.String#toUpperCase(Locale)
-   */
-  //    public String toUpperCase(){
-  //        return toUpperCase(Locale . getDefault());
-  //    }
+  public function toUpperCase(Locale $locale = null)
+  {
+    $locale = $locale ?: Locale::getDefault();
+    return new String(mb_strtoupper($this->value));
+  }
 
   /**
    * Converts this string to a new character array.

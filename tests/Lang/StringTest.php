@@ -327,9 +327,67 @@ class StringTest extends Test
     ], $this->dataPreValidateRegionMatches());
   }
 
-  public function testTest()
+  /**
+   * @param $boolean
+   * @param $string
+   * @param $offset
+   * @dataProvider dataStartsWith
+   */
+  public function testStartsWith($boolean, $string, $offset)
   {
-    //var_dump(mb_strlen("tesśй"));
+    $this->assertEquals($boolean, $this->string->startsWith(new String($string), $offset));
+  }
+
+  public function dataStartsWith()
+  {
+    return [
+      [true, "Test", 0],
+      [true, "String", 5],
+      [false, "String", 4],
+    ];
+  }
+
+  /**
+   * @param $boolean
+   * @param $string
+   * @dataProvider dataEndsWith
+   */
+  public function testEndsWith($boolean, $string)
+  {
+    $this->assertEquals($boolean, $this->string->endsWith(new String($string)));
+  }
+
+  public function dataEndsWith()
+  {
+    return [
+      [false, "Test"],
+      [true, "String"],
+      [true, " String"],
+      [false, "String "],
+    ];
+  }
+
+  /**
+   * @dataProvider dataCase
+   */
+  public function testToUpperCase($stringSource, $stringResult)
+  {
+    $this->assertEquals($stringResult, (new String($stringSource))->toUpperCase()->getOriginalValue());
+  }
+  /**
+   * @dataProvider dataCase
+   */
+  public function testToLowerCase($stringResult, $stringSource)
+  {
+    $this->assertEquals($stringResult, (new String($stringSource))->toLowerCase()->getOriginalValue());
+  }
+
+  public function dataCase()
+  {
+    return [
+      ['str str', "STR STR"],
+      ['çśį', "ÇŚĮ"],
+    ];
   }
 
 
