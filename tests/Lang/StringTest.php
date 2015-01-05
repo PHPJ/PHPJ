@@ -216,6 +216,79 @@ class StringTest extends Test
     ];
   }
 
+  /**
+   * @dataProvider dataPreValidateRegionMatches
+   */
+  public function testPreValidateRegionMatches($boolean, $toffset, $compareWith, $oofset,  $len)
+  {
+    $r = new \ReflectionClass($this->getClassName());
+    $m = $r->getMethod('preValidateRegionMatches');
+    $m->setAccessible(true);
+    $this->assertEquals($boolean, $m->invoke($this->string, $toffset, new String($compareWith), $oofset, $len));
+  }
+
+  public function dataPreValidateRegionMatches()
+  {
+    return [
+      [true,  0 , self::STRING_VALUE, 0, 1],
+      [true,  0, self::STRING_VALUE, 0, strlen(self::STRING_VALUE)],
+      [false, -1, self::STRING_VALUE, 0, 1],
+      [false, 0 , self::STRING_VALUE, -1, 1],
+      [false, strlen(self::STRING_VALUE), self::STRING_VALUE, 0, 1],
+      [false, 0, self::STRING_VALUE, strlen(self::STRING_VALUE), 1],
+      [false, 0, self::STRING_VALUE, 0, strlen(self::STRING_VALUE)+1],
+    ];
+  }
+
+  /**
+   * @param $boolean boolean
+   * @param $compareWith string
+   * @dataProvider dataRegionMatches
+   */
+  public function testRegionMatches($boolean, $toffset, $compareWith, $oofset,  $len)
+  {
+    $this->assertEquals($boolean, $this->string->regionMatches($toffset, new String($compareWith), $oofset, $len));
+  }
+
+  public function dataRegionMatches()
+  {
+    return array_merge([
+      [true,  1, "est", 0, 1],
+      [true,  1, "eST", 0, 1],
+      [true,  1, "esT", 0, 2],
+      [true,  1, "est", 0, 2],
+      [true,  1, "est", 0, 3],
+      [false, 1, "es ", 0, 3],
+      [false, 1, "esT", 0, 3],
+    ], $this->dataPreValidateRegionMatches());
+  }
+
+  /**
+   * @param $boolean boolean
+   * @param $compareWith \PHPJ\Lang\String
+   * @dataProvider dataRegionMatchesIgnoreCase
+   */
+  public function testRegionMatchesIgnoreCase($boolean, $toffset, $compareWith, $oofset,  $len)
+  {
+    $this->assertEquals($boolean, $this->string->regionMatchesIgnoreCase($toffset, new String($compareWith), $oofset, $len));
+  }
+
+  public function dataRegionMatchesIgnoreCase()
+  {
+    return array_merge([
+      [true,  1, "est", 0, 1],
+      [true,  1, "EST", 0, 1],
+      [true,  1, "EST", 0, 2],
+      [true,  1, "est", 0, 2],
+      [true,  1, "est", 0, 3],
+      [true,  1, "esT", 0, 3],
+      [false, 1, "es ", 0, 3],
+    ], $this->dataPreValidateRegionMatches());
+  }
+
+
+
+
 //  public function testSmpCasePerformance()
 //  {
 //    $t = microtime(true);

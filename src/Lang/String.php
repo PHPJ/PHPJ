@@ -754,37 +754,27 @@ class String extends ObjectClass
    * <i>k</i>{@code )}
    * </ul>
    *
-   * @param   toffset   the starting offset of the subregion in this string.
-   * @param   other     the string argument.
-   * @param   ooffset   the starting offset of the subregion in the string
+   * @param   $toffset  int the starting offset of the subregion in this string.
+   * @param   $other    \PHPJ\Lang\String the string argument.
+   * @param   $ooffset  int the starting offset of the subregion in the string
    *                    argument.
-   * @param   len       the number of characters to compare.
-   * @return  {@code true} if the specified subregion of this string
+   * @param   $len      int the number of characters to compare.
+   * @return  boolean   {@code true} if the specified subregion of this string
    *          exactly matches the specified subregion of the string argument;
    *          {@code false} otherwise.
    */
-  //    public boolean regionMatches(int toffset, String other, int ooffset,
-  //            int len) {
-  //  char ta[] = value;
-  //        int to = toffset;
-  //        char pa[] = other . value;
-  //        int po = ooffset;
-  //        // Note: toffset, ooffset, or len might be near -1>>>1.
-  //        if ((ooffset < 0) || (toffset < 0)
-  //            || (toffset > (long){
-  //          value . length - len})
-  //                || (ooffset > (long)other . value . length - len)) {
-  //    return false;
-  //  }
-  //        while (len-- > 0) {
-  //          if (ta {
-  //            [to++] != pa}
-  //          [po++]) {
-  //            return false;
-  //          }
-  //        }
-  //        return true;
-  //    }
+  public function regionMatches($toffset, String $other, $ooffset, $len)
+  {
+    if (!$this->preValidateRegionMatches($toffset, $other, $ooffset, $len)) {
+      return false;
+    }
+    while ($len-- > 0) {
+      if ($this->value[$toffset++] != $other->value[$ooffset++]) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   /**
    * Tests if two string regions are equal.
@@ -822,61 +812,49 @@ class String extends ObjectClass
    * </pre></blockquote>
    * </ul>
    *
-   * @param   ignoreCase   if {@code true}, ignore case when comparing
-   *                       characters.
-   * @param   toffset      the starting offset of the subregion in this
+   * @param   $toffset     int - the starting offset of the subregion in this
    *                       string.
-   * @param   other        the string argument.
-   * @param   ooffset      the starting offset of the subregion in the string
+   * @param   $other       \PHPJ\Lang\String - the string argument.
+   * @param   $ooffset     int - the starting offset of the subregion in the string
    *                       argument.
-   * @param   len          the number of characters to compare.
-   * @return  {@code true} if the specified subregion of this string
+   * @param   $len         int - the number of characters to compare.
+   * @return  boolean      {@code true} if the specified subregion of this string
    *          matches the specified subregion of the string argument;
    *          {@code false} otherwise. Whether the matching is exact
    *          or case insensitive depends on the {@code ignoreCase}
    *          argument.
    */
-  //    public boolean regionMatches(boolean ignoreCase, int toffset,
-  //            String other, int ooffset, int len) {
-  //  char ta[] = value;
-  //        int to = toffset;
-  //        char pa[] = other . value;
-  //        int po = ooffset;
-  //        // Note: toffset, ooffset, or len might be near -1>>>1.
-  //        if ((ooffset < 0) || (toffset < 0)
-  //            || (toffset > (long){
-  //          value . length - len})
-  //                || (ooffset > (long)other . value . length - len)) {
-  //    return false;
-  //  }
-  //        while (len-- > 0) {
-  //          char c1 = ta[to++];
-  //            char c2 = pa[po++];
-  //            if (c1 == c2) {
-  //              continue;
-  //            }
-  //            if (ignoreCase) {
-  //              // If characters don't match but case may be ignored,
-  //              // try converting both characters to uppercase.
-  //              // If the results match, then the comparison scan should
-  //              // continue.
-  //              char u1 = Character . toUpperCase(c1);
-  //                char u2 = Character . toUpperCase(c2);
-  //                if (u1 == u2) {
-  //                  continue;
-  //                }
-  //                // Unfortunately, conversion to uppercase does not work properly
-  //                // for the Georgian alphabet, which has strange rules about case
-  //                // conversion.  So we need to make one last check before
-  //                // exiting.
-  //                if (Character . toLowerCase(u1) == Character . toLowerCase(u2)) {
-  //                  continue;
-  //                }
-  //            }
-  //            return false;
-  //        }
-  //        return true;
-  //    }
+  public function regionMatchesIgnoreCase($toffset, String $other, $ooffset, $len)
+  {
+    if (!$this->preValidateRegionMatches($toffset, $other, $ooffset, $len)) {
+      return false;
+    }
+    while ($len-- > 0) {
+      $c1 = $this->value[$toffset++];
+      $c2 = $other->value[$ooffset++];
+      if ($c1 === $c2) {
+        continue;
+      }
+      if (strtoupper($c1) === strtoupper($c2)) {
+        continue;
+      }
+      if (strtolower($c1) === strtolower($c2)) {
+        continue;
+      }
+      return false;
+    }
+    return true;
+  }
+
+  protected function preValidateRegionMatches($toffset, String $other, $ooffset,  $len)
+  {
+    // Note: toffset, ooffset, or len might be near -1>>>1.
+    return ($ooffset >= 0
+            && ($toffset >= 0)
+            && ($toffset <= $this->length() - $len)
+            && ($ooffset <= $other->length() - $len)
+    );
+  }
 
   /**
    * Tests if the substring of this string beginning at the
