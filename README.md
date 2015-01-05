@@ -14,9 +14,6 @@ Sources
 
 http://docs.oracle.com/javase/8/docs/api/
 
-Start from Lang
-http://docs.oracle.com/javase/8/docs/api/java/lang/package-frame.html
-
 ## Contribute
 1. fork & clone
 2. ```composer install```
@@ -28,3 +25,16 @@ http://docs.oracle.com/javase/8/docs/api/java/lang/package-frame.html
 
 - Lang
   - Object
+  - String
+  - Number
+  - Math
+  - StrictMath
+  - Integer
+
+## Problems and solutions:
+- Method overloading
+  Solution: factory method
+- Object math operators
+  Solutions: 
+  1. php5-operator [http://pecl.php.net/package/operator] [http://webreflection.blogspot.ru/2008/06/from-future-php-javascript-like-number.html]
+  2. Extending GMP class [http://php.net/manual/en/class.gmp.php]
