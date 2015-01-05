@@ -13,7 +13,7 @@ use PhpOption\Option;
  * @package PHPJ\Lang
  * @todo implement Interfaces
  */
-class String extends Object
+class String extends ObjectClass
 {
 
   /**

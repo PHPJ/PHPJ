@@ -6,19 +6,19 @@
 namespace PHPJ\Tests\Lang;
 
 
-use PHPJ\Lang\Object;
+use PHPJ\Lang\ObjectClass;
 use PHPJ\Tests\Test;
 
 class ObjectTest extends Test
 {
   protected function getClassName()
   {
-    return 'PHPJ\Lang\Object';
+    return 'PHPJ\Lang\ObjectClass';
   }
 
   public function testClone()
   {
-    $object = new Object();
+    $object = new ObjectClass();
     $clone = $object->getClone();
     $this->assertTrue($clone !== $object);
     $this->assertTrue($clone == $object);
@@ -30,26 +30,26 @@ class ObjectTest extends Test
 
   public function testEquals()
   {
-    $object = new Object();
+    $object = new ObjectClass();
     $objectCopy = $object;
     $clone = clone $object;
 
     $this->assertTrue($object->equals($object));
     $this->assertTrue($object->equals($objectCopy));
     $this->assertFalse($object->equals($clone));
-    $this->assertFalse($object->equals(new Object()));
+    $this->assertFalse($object->equals(new ObjectClass()));
     $this->assertFalse($object->equals(null));
   }
 
   public function testGetClass()
   {
-    $object = new Object();
+    $object = new ObjectClass();
     $this->assertEquals($this->getClassName(), $object->getClass());
   }
 
   public function testGetClassReflection()
   {
-    $object = new Object();
+    $object = new ObjectClass();
     $r = $object->getClassReflection();
 
     $this->assertEquals($this->getClassName(), $r->getName());
@@ -57,13 +57,13 @@ class ObjectTest extends Test
 
   public function testHashCode()
   {
-    $object = new Object();
+    $object = new ObjectClass();
     $this->assertEquals(spl_object_hash($object), $object->hashCode());
   }
 
   public function testToString()
   {
-    $object = new Object();
+    $object = new ObjectClass();
 
     $this->assertInstanceOf('PHPJ\Lang\String', $object->toString());
 

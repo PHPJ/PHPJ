@@ -9,7 +9,7 @@ namespace PHPJ\Lang;
  * Class Math
  * @package PHPJ\Lang
  */
-final class Math extends Object
+final class Math extends ObjectClass
 {
 
 

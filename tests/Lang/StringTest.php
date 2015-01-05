@@ -6,7 +6,7 @@
 namespace PHPJ\Tests\Lang;
 
 
-use PHPJ\Lang\Object;
+use PHPJ\Lang\ObjectClass;
 use PHPJ\Lang\String;
 use PHPJ\Tests\Test;
 
@@ -146,7 +146,7 @@ class StringTest extends Test
     $this->assertTrue($this->string->equals(clone $this->string));
     $this->assertTrue($this->string->equals(new String(self::STRING_VALUE)));
     $this->assertFalse($this->string->equals(new String(self::STRING_VALUE.' ')));
-    $this->assertFalse($this->string->equals(new Object()));
+    $this->assertFalse($this->string->equals(new ObjectClass()));
     $this->assertFalse($this->string->equals(null));
   }
 

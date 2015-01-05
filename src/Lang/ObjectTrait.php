@@ -11,14 +11,17 @@ use ReflectionClass;
  * Class Object
  * @package PHPJ\Lang
  */
-interface Object
+trait ObjectTrait
 {
 
   /**
    * PHP legacy hack method. Retrieves original value.
    * @return null
    */
-  public function getOriginalValue();
+  public function getOriginalValue()
+  {
+    return null;
+  }
 
   /**
    * Creates and returns a copy of this object. The precise meaning
@@ -27,7 +30,10 @@ interface Object
    * Use native PHP {@code __clone) to add cloning functionality
    * @return static
    */
-  public function getClone();
+  public final function getClone()
+  {
+    return clone $this;
+  }
 
 
   /**
@@ -38,23 +44,32 @@ interface Object
    * general contract for the {@code hashCode} method, which states
    * that equal objects must have equal hash codes.
    *
-   * @param   \PHPJ\Lang\Object $object the reference object with which to compare.
+   * @param   Object $object the reference object with which to compare.
    * @return  bool {@code true} if this object is the same as the obj
    *          argument; {@code false} otherwise.
    * @see \PHPJ\Lang\Object::hashCode
    */
-  public function equals(Object $object = null);
+  public function equals(Object $object = null)
+  {
+    return $object && $object->hashCode() === $this->hashCode();
+  }
 
   /**
    * @return string
    * @todo return Class maybe
    */
-  public function getClass();
+  public final function getClass()
+  {
+    return get_called_class();
+  }
 
   /**
    * @return ReflectionClass
    */
-  public function getClassReflection();
+  public final function getClassReflection()
+  {
+    return new ReflectionClass($this);
+  }
 
   /**
    * Returns a hash code value for the object.
@@ -62,7 +77,10 @@ interface Object
    * @return  string a hash code value for this object.
    * @see     \PHPJ\Lang\Object::equals
    */
-  public function hashCode();
+  public function hashCode()
+  {
+    return spl_object_hash($this);
+  }
 
   /**
    * Returns a string representation of the object. In general, the
@@ -74,7 +92,10 @@ interface Object
    *
    * @return \PHPJ\Lang\String a string representation of the object.
    */
-  public function toString();
+  public function toString()
+  {
+    return new String(sprintf("%s@%s", $this->getClass(), $this->hashCode()));
+  }
 
   /**
    * Final method that calls {@code toString}
@@ -84,6 +105,9 @@ interface Object
    * @return string
    * @see    \PHPJ\Lang\Object::toString
    */
-  public function __toString();
+  public final function __toString()
+  {
+    return $this->toString()->getOriginalValue();
+  }
 
 }

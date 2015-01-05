@@ -3,8 +3,10 @@
 namespace PHPJ\Lang;
 
 // TODO determine java.io.Serializable interface
-abstract class Number extends Object implements Serializable
+abstract class Number extends \GMP implements Object, Serializable
 {
+  use ObjectTrait;
+
   /**
    * Returns the value of the specified number as an <code>int</code>.
    * This may involve rounding or truncation.

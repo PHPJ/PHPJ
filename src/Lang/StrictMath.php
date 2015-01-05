@@ -6,7 +6,7 @@
 namespace PHPJ\Lang;
 
 
-final class StrictMath extends Object
+final class StrictMath extends ObjectClass
 {
   private function __construct(){
 
