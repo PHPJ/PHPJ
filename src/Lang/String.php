@@ -714,21 +714,26 @@ class String extends ObjectClass
    *        produces the same result
    * </ul>
    *
-   * @param  anotherString
+   * @param  $anotherString \PHPJ\Lang\String
    *         The {@code String} to compare this {@code String} against
    *
-   * @return  boolean {@code true} if the argument is not {@code null} and it
+   * @return  boolean
+   *          {@code true} if the argument is not {@code null} and it
    *          represents an equivalent {@code String} ignoring case; {@code
    *          false} otherwise
    *
    * @see  #equals(Object)
    */
-  //public function equalsIgnoreCase(String anotherString) {
-  //      return (this == anotherString) ? true
-  //        : (anotherString != null)
-  //          && (anotherString . value . length == value . length)
-  //          && regionMatches(true, 0, anotherString, 0, value . length);
-  //}
+  public function equalsIgnoreCase(String $anotherString = null)
+  {
+    return ($this === $anotherString)
+      ? true
+      : 0 === strcasecmp($this->value, $anotherString->value);
+        //original Java
+        //($anotherString !== null)
+        //&& ($anotherString->length() == $this->length())
+        //&& $this->regionMatchesIgnoreCase(0, $anotherString, 0, $this->length());
+  }
 
 
   /**
@@ -763,11 +768,14 @@ class String extends ObjectClass
    *          exactly matches the specified subregion of the string argument;
    *          {@code false} otherwise.
    */
-  public function regionMatches($toffset, String $other, $ooffset, $len)
+  public function regionMatches($toffset, String $other = null, $ooffset, $len)
   {
     if (!$this->preValidateRegionMatches($toffset, $other, $ooffset, $len)) {
       return false;
     }
+
+    //return 0 === substr_compare($this->value, substr($other->value, $ooffset, $len), $toffset, $len);
+    #Original Java
     while ($len-- > 0) {
       if ($this->value[$toffset++] != $other->value[$ooffset++]) {
         return false;
@@ -824,7 +832,7 @@ class String extends ObjectClass
    *          or case insensitive depends on the {@code ignoreCase}
    *          argument.
    */
-  public function regionMatchesIgnoreCase($toffset, String $other, $ooffset, $len)
+  public function regionMatchesIgnoreCase($toffset, String $other = null, $ooffset, $len)
   {
     if (!$this->preValidateRegionMatches($toffset, $other, $ooffset, $len)) {
       return false;
@@ -846,10 +854,11 @@ class String extends ObjectClass
     return true;
   }
 
-  protected function preValidateRegionMatches($toffset, String $other, $ooffset,  $len)
+  protected function preValidateRegionMatches($toffset, String $other = null, $ooffset,  $len)
   {
     // Note: toffset, ooffset, or len might be near -1>>>1.
-    return ($ooffset >= 0
+    return ($other !== null
+            && ($ooffset >= 0)
             && ($toffset >= 0)
             && ($toffset <= $this->length() - $len)
             && ($ooffset <= $other->length() - $len)

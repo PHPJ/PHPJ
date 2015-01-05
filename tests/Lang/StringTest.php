@@ -143,11 +143,20 @@ class StringTest extends Test
 
   public function testEquals()
   {
+    $this->assertTrue($this->string->equals($this->string));
     $this->assertTrue($this->string->equals(clone $this->string));
     $this->assertTrue($this->string->equals(new String(self::STRING_VALUE)));
     $this->assertFalse($this->string->equals(new String(self::STRING_VALUE.' ')));
     $this->assertFalse($this->string->equals(new ObjectClass()));
     $this->assertFalse($this->string->equals(null));
+  }
+
+  public function testEqualsIgnoreCase()
+  {
+    $this->assertTrue($this->string->equalsIgnoreCase($this->string));
+    $this->assertTrue($this->string->equalsIgnoreCase(clone $this->string));
+    $this->assertFalse($this->string->equalsIgnoreCase(new String(self::STRING_VALUE. ' ')));
+    $this->assertFalse($this->string->equalsIgnoreCase(new String('test strini')));
   }
 
   /**
@@ -221,10 +230,11 @@ class StringTest extends Test
    */
   public function testPreValidateRegionMatches($boolean, $toffset, $compareWith, $oofset,  $len)
   {
+    $string = $compareWith ? new String($compareWith) : null;
     $r = new \ReflectionClass($this->getClassName());
     $m = $r->getMethod('preValidateRegionMatches');
     $m->setAccessible(true);
-    $this->assertEquals($boolean, $m->invoke($this->string, $toffset, new String($compareWith), $oofset, $len));
+    $this->assertEquals($boolean, $m->invoke($this->string, $toffset, $string, $oofset, $len));
   }
 
   public function dataPreValidateRegionMatches()
@@ -232,6 +242,7 @@ class StringTest extends Test
     return [
       [true,  0 , self::STRING_VALUE, 0, 1],
       [true,  0, self::STRING_VALUE, 0, strlen(self::STRING_VALUE)],
+      [false,  0 , null, 0, 1],
       [false, -1, self::STRING_VALUE, 0, 1],
       [false, 0 , self::STRING_VALUE, -1, 1],
       [false, strlen(self::STRING_VALUE), self::STRING_VALUE, 0, 1],
@@ -293,14 +304,14 @@ class StringTest extends Test
 //  {
 //    $t = microtime(true);
 //    for($i = 0;$i<100000;$i++){
-//      $this->string->compareToIgnoreCase(new String("Test Strini"));
+//      $this->string->regionMatchesIgnoreCase(1, new String("est"), 1, 3);
 //      //$c1 = strcasecmp(self::STRING_VALUE, "Test Strini");
 //    }
 //    $t1 = microtime(true) - $t;
 //    $t = microtime(true);
 //    for($i = 0;$i<100000;$i++){
-//      $this->string->_compareToIgnoreCase(new String("test strini"));
-//      //$c2 = strcasecmp(strtolower(self::STRING_VALUE), strtolower("test strini"));
+//      $this->string->_regionMatchesIgnoreCase(1, new String("est"), 1, 3);
+//      //$c2 = strcasecmp(self::STRING_VALUE, "test Strini");
 //    }
 //    $t2 = microtime(true) - $t;
 //    var_dump($t1, $t2);
