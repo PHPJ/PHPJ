@@ -3,7 +3,7 @@
  * @author Yury Kozyrev [https://github.com/urakozz]
  */
 
-namespace PHPJ\Utils;
+namespace PHPJ\Util;
 
 use PHPJ\Lang\Object;
 use PHPJ\Lang\ObjectTrait;

@@ -390,20 +390,37 @@ class StringTest extends Test
     ];
   }
 
+  public function testToCharArray()
+  {
+    $this->assertEquals(self::STRING_VALUE, implode('',$this->string->toCharArray()->toArray()));
+  }
 
+  public function testJoin()
+  {
+    $this->assertEquals("T Te Test", String::join(' ', new \ArrayIterator(['T', 'Te', 'Test']))->getOriginalValue());
+    $this->assertEquals("T Te Test", String::join(' ', new \ArrayIterator(['T', new String('Te'), 'Test']))->getOriginalValue());
+  }
+  public function testJoinArgs()
+  {
+    $this->assertEquals("T Te Test", String::joinArgs(' ', 'T', 'Te', 'Test')->getOriginalValue());
+    $this->assertEquals("T Te Test", String::joinArgs(' ', 'T', new String('Te'), 'Test')->getOriginalValue());
+  }
 
 
 //  public function testSmpCasePerformance()
 //  {
+//    $str = str_repeat('Straße', 1000);
 //    $t = microtime(true);
-//    for($i = 0;$i<100000;$i++){
-//      $this->string->regionMatchesIgnoreCase(1, new String("est"), 1, 3);
+//    for($i = 0;$i<1000;$i++){
+//      $this->string = new String($str);
+//      $this->string->length();
 //      //$c1 = strcasecmp(self::STRING_VALUE, "Test Strini");
 //    }
 //    $t1 = microtime(true) - $t;
 //    $t = microtime(true);
-//    for($i = 0;$i<100000;$i++){
-//      $this->string->_regionMatchesIgnoreCase(1, new String("est"), 1, 3);
+//    for($i = 0;$i<1000;$i++){
+//      $this->string = new String($str);
+//      $this->string->toCharArray();
 //      //$c2 = strcasecmp(self::STRING_VALUE, "test Strini");
 //    }
 //    $t2 = microtime(true) - $t;

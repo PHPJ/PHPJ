@@ -3,7 +3,7 @@
  * @author Yury Kozyrev [https://github.com/urakozz]
  */
 
-namespace PHPJ\Tests\Utils;
+namespace PHPJ\Tests\Util;
 
 
 use PHPJ\Tests\Test;
@@ -12,6 +12,6 @@ class LocaleTest extends Test{
 
   protected function getClassName()
   {
-    return '\PHPJ\Utils\Locale';
+    return '\PHPJ\Util\Locale';
   }
 }

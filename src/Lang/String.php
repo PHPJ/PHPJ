@@ -6,7 +6,7 @@
 namespace PHPJ\Lang;
 
 use PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException;
-use PHPJ\Utils\Locale;
+use PHPJ\Util\Locale;
 use PhpOption\Option;
 
 /**
@@ -27,6 +27,9 @@ class String extends ObjectClass
 
   /** @var  int */
   private $hash = 0;
+
+  /** @var array|\SplFixedArray  */
+  private $charArray;
 
   /**
    * @param string $string
@@ -1833,10 +1836,11 @@ class String extends ObjectClass
    *
    * Note that if an element is null, then {@code "null"} is added.
    *
-   * @param  delimiter the delimiter that separates each element
-   * @param  elements the elements to join together.
+   * @param  string|\PHPJ\Lang\String $delimiter
+   *         the delimiter that separates each element
    *
-   * @return a new {@code String} that is composed of the {@code elements}
+   * @return \PHPJ\Lang\String
+   *         a new {@code String} that is composed of the {@code elements}
    *         separated by the {@code delimiter}
    *
    * @throws NullPointerException If {@code delimiter} or {@code elements}
@@ -1855,6 +1859,12 @@ class String extends ObjectClass
   //        }
   //        return joiner . toString();
   //    }
+  public static function joinArgs($delimiter)
+  {
+    $args = func_get_args();
+    array_shift($args);
+    return self::join($delimiter, new \ArrayIterator($args));
+  }
 
   /**
    * Returns a new {@code String} composed of copies of the
@@ -1878,13 +1888,15 @@ class String extends ObjectClass
    *
    * Note that if an individual element is {@code null}, then {@code "null"} is added.
    *
-   * @param  delimiter a sequence of characters that is used to separate each
+   * @param  string|\PHPJ\Lang\String $delimiter
+   *         delimiter a sequence of characters that is used to separate each
    *         of the {@code elements} in the resulting {@code String}
-   * @param  elements an {@code Iterable} that will have its {@code elements}
+   * @param  \Traversable $sequence
+   *         elements an {@code Iterable} that will have its {@code elements}
    *         joined together.
    *
-   * @return a new {@code String} that is composed from the {@code elements}
-   *         argument
+   * @return \PHPJ\Lang\String
+   *         a new {@code String} that is composed from the {@code elements} argument
    *
    * @throws NullPointerException If {@code delimiter} or {@code elements}
    *         is {@code null}
@@ -1903,6 +1915,15 @@ class String extends ObjectClass
   //        }
   //        return joiner . toString();
   //    }
+  public static function join($delimiter, \Traversable $sequence)
+  {
+    $delimiter = (string) $delimiter;
+    $array = [];
+    foreach ($sequence as $cs) {
+      $array[] = (string)$cs;
+    }
+    return new String(implode($delimiter, $array));
+  }
 
   /**
    * Converts all of the characters in this {@code String} to lower
@@ -1945,16 +1966,16 @@ class String extends ObjectClass
   /**
    * Converts this string to a new character array.
    *
-   * @return  a newly allocated character array whose length is the length
+   * @return  array|\SplFixedArray a newly allocated character array whose length is the length
    *          of this string and whose contents are initialized to contain
    *          the character sequence represented by this string.
    */
-  //    public char[] toCharArray(){
-  //                  // Cannot use Arrays.copyOf because of class initialization order issues
-  //                  char result[] = new char[value . length];
-  //        System . arraycopy(value, 0, result, 0, value . length);
-  //        return result;
-  //    }
+  public function toCharArray()
+  {
+    return Option::fromValue($this->charArray)->getOrCall(function () {
+      return $this->charArray = \SplFixedArray::fromArray(preg_split('//u', $this->value));
+    });
+  }
 
   /**
    * Returns a formatted string using the specified format string and
