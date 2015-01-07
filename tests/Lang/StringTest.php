@@ -397,11 +397,13 @@ class StringTest extends Test
 
   public function testJoin()
   {
+    $this->assertEquals("", String::join(' ', new \ArrayIterator())->getOriginalValue());
     $this->assertEquals("T Te Test", String::join(' ', new \ArrayIterator(['T', 'Te', 'Test']))->getOriginalValue());
     $this->assertEquals("T Te Test", String::join(' ', new \ArrayIterator(['T', new String('Te'), 'Test']))->getOriginalValue());
   }
   public function testJoinArgs()
   {
+    $this->assertEquals("", String::joinArgs(' ')->getOriginalValue());
     $this->assertEquals("T Te Test", String::joinArgs(' ', 'T', 'Te', 'Test')->getOriginalValue());
     $this->assertEquals("T Te Test", String::joinArgs(' ', 'T', new String('Te'), 'Test')->getOriginalValue());
   }
