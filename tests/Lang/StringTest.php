@@ -408,6 +408,43 @@ class StringTest extends Test
     $this->assertEquals("T Te Test", String::joinArgs(' ', 'T', new String('Te'), 'Test')->getOriginalValue());
   }
 
+  /**
+   * @param $string
+   * @param $char
+   * @param $position
+   *
+   * @dataProvider dataLastIndexOf
+   */
+  public function testLastIndexOf($string, $char, $position, $from)
+  {
+    $this->assertEquals($position, (new String($string))->lastIndexOf($char, $from));
+  }
+
+  /**
+   * @expectedException \InvalidArgumentException
+   * @expectedExceptionMessage Only single character accepted as $char
+   */
+  public function testLastIndexOfException()
+  {
+    $this->string->lastIndexOf('Te');
+  }
+
+  public function dataLastIndexOf()
+  {
+    return [
+      ['Straße', 'ß', 4, null],
+      ['Straße', new String('ß'), 4, null],
+      ['Straße', 'ß', 4, null],
+      ['Straße', 'e', 5, null],
+      ['Straße', 'e', -1, 4],
+      ['Straße', ' ', -1, null],
+      ['Se se', 's', 3, null],
+      ['Se se', 's', 3, 100],
+      ['Se se', 'e', 1, 2],
+      ['Se se', 's', -1, -1],
+    ];
+  }
+
 
 //  public function testSmpCasePerformance()
 //  {

@@ -914,337 +914,44 @@ class String extends ObjectClass
     return $this->startsWith($suffix, $this->length() - $suffix->length());
   }
 
-
-
-  /**
-   * Returns the index within this string of the first occurrence of
-   * the specified character. If a character with value
-   * {@code ch} occurs in the character sequence represented by
-   * this {@code String} object, then the index (in Unicode
-   * code units) of the first such occurrence is returned. For
-   * values of {@code ch} in the range from 0 to 0xFFFF
-   * (inclusive), this is the smallest value <i>k</i> such that:
-   * <blockquote><pre>
-   * this.charAt(<i>k</i>) == ch
-   * </pre></blockquote>
-   * is true. For other values of {@code ch}, it is the
-   * smallest value <i>k</i> such that:
-   * <blockquote><pre>
-   * this.codePointAt(<i>k</i>) == ch
-   * </pre></blockquote>
-   * is true. In either case, if no such character occurs in this
-   * string, then {@code -1} is returned.
-   *
-   * @param   ch   a character (Unicode code point).
-   * @return  the index of the first occurrence of the character in the
-   *          character sequence represented by this object, or
-   *          {@code -1} if the character does not occur.
-   */
-  //    public int indexOf(int ch) {
-  //  return indexOf(ch, 0);
-  //}
-
-  /**
-   * Returns the index within this string of the first occurrence of the
-   * specified character, starting the search at the specified index.
-   * <p>
-   * If a character with value {@code ch} occurs in the
-   * character sequence represented by this {@code String}
-   * object at an index no smaller than {@code fromIndex}, then
-   * the index of the first such occurrence is returned. For values
-   * of {@code ch} in the range from 0 to 0xFFFF (inclusive),
-   * this is the smallest value <i>k</i> such that:
-   * <blockquote><pre>
-   * (this.charAt(<i>k</i>) == ch) {@code &&} (<i>k</i> &gt;= fromIndex)
-   * </pre></blockquote>
-   * is true. For other values of {@code ch}, it is the
-   * smallest value <i>k</i> such that:
-   * <blockquote><pre>
-   * (this.codePointAt(<i>k</i>) == ch) {@code &&} (<i>k</i> &gt;= fromIndex)
-   * </pre></blockquote>
-   * is true. In either case, if no such character occurs in this
-   * string at or after position {@code fromIndex}, then
-   * {@code -1} is returned.
-   *
-   * <p>
-   * There is no restriction on the value of {@code fromIndex}. If it
-   * is negative, it has the same effect as if it were zero: this entire
-   * string may be searched. If it is greater than the length of this
-   * string, it has the same effect as if it were equal to the length of
-   * this string: {@code -1} is returned.
-   *
-   * <p>All indices are specified in {@code char} values
-   * (Unicode code units).
-   *
-   * @param   ch          a character (Unicode code point).
-   * @param   fromIndex   the index to start the search from.
-   * @return  the index of the first occurrence of the character in the
-   *          character sequence represented by this object that is greater
-   *          than or equal to {@code fromIndex}, or {@code -1}
-   *          if the character does not occur.
-   */
-  //    public int indexOf(int ch, int fromIndex) {
-  //  final int max = value . length;
-  //        if (fromIndex < 0) {
-  //          fromIndex = 0;
-  //        } else {
-  //          if (fromIndex >= max) {
-  //            // Note: fromIndex might be near -1>>>1.
-  //            return -1;
-  //          }
-  //        }
-  //
-  //        if (ch < Character . MIN_SUPPLEMENTARY_CODE_POINT) {
-  //          // handle most cases here (ch is a BMP code point or a
-  //          // negative value (invalid code point))
-  //          final char[] value = this . value;
-  //            for (int i = fromIndex; i < max {
-  //              ;
-  //            } i++) {
-  //            if (value {
-  //              [i] == ch}) {
-  //              return i;
-  //            }
-  //          }
-  //            return -1;
-  //        } else {
-  //          return indexOfSupplementary(ch, fromIndex);
-  //        }
-  //    }
-
-  /**
-   * Handles (rare) calls of indexOf with a supplementary character.
-   */
-  //    private int indexOfSupplementary(int ch, int fromIndex) {
-  //  if (Character . isValidCodePoint(ch)) {
-  //    final char[] value = this . value;
-  //            final char hi = Character . highSurrogate(ch);
-  //            final char lo = Character . lowSurrogate(ch);
-  //            final int max = value . length - 1;
-  //            for (int i = fromIndex; i < max {
-  //              ;
-  //            } i++) {
-  //      if (value {
-  //        [i] == hi && value}
-  //      [i + 1] == lo) {
-  //        return i;
-  //      }
-  //            }
-  //        }
-  //  return -1;
-  //}
-
   /**
    * Returns the index within this string of the last occurrence of
-   * the specified character. For values of {@code ch} in the
-   * range from 0 to 0xFFFF (inclusive), the index (in Unicode code
-   * units) returned is the largest value <i>k</i> such that:
-   * <blockquote><pre>
-   * this.charAt(<i>k</i>) == ch
-   * </pre></blockquote>
-   * is true. For other values of {@code ch}, it is the
-   * largest value <i>k</i> such that:
-   * <blockquote><pre>
-   * this.codePointAt(<i>k</i>) == ch
-   * </pre></blockquote>
-   * is true.  In either case, if no such character occurs in this
-   * string, then {@code -1} is returned.  The
-   * {@code String} is searched backwards starting at the last
-   * character.
+   * the specified character.
    *
-   * @param   ch   a character (Unicode code point).
-   * @return  the index of the last occurrence of the character in the
-   *          character sequence represented by this object, or
-   *          {@code -1} if the character does not occur.
-   */
-  //    public int lastIndexOf(int ch) {
-  //  return lastIndexOf(ch, value . length - 1);
-  //}
-
-  /**
-   * Returns the index within this string of the last occurrence of
-   * the specified character, searching backward starting at the
-   * specified index. For values of {@code ch} in the range
-   * from 0 to 0xFFFF (inclusive), the index returned is the largest
-   * value <i>k</i> such that:
-   * <blockquote><pre>
-   * (this.charAt(<i>k</i>) == ch) {@code &&} (<i>k</i> &lt;= fromIndex)
-   * </pre></blockquote>
-   * is true. For other values of {@code ch}, it is the
-   * largest value <i>k</i> such that:
-   * <blockquote><pre>
-   * (this.codePointAt(<i>k</i>) == ch) {@code &&} (<i>k</i> &lt;= fromIndex)
-   * </pre></blockquote>
-   * is true. In either case, if no such character occurs in this
-   * string at or before position {@code fromIndex}, then
-   * {@code -1} is returned.
-   *
-   * <p>All indices are specified in {@code char} values
-   * (Unicode code units).
-   *
-   * @param   ch          a character (Unicode code point).
-   * @param   fromIndex   the index to start the search from. There is no
+   * @param   $char string|\PHPJ\Lang\String
+   * @param   $fromIndex integer
+   *          the index to start the search from. There is no
    *          restriction on the value of {@code fromIndex}. If it is
    *          greater than or equal to the length of this string, it has
    *          the same effect as if it were equal to one less than the
    *          length of this string: this entire string may be searched.
    *          If it is negative, it has the same effect as if it were -1:
    *          -1 is returned.
-   * @return  the index of the last occurrence of the character in the
+   * @return  integer
+   *          the index of the last occurrence of the character in the
    *          character sequence represented by this object that is less
    *          than or equal to {@code fromIndex}, or {@code -1}
    *          if the character does not occur before that point.
    */
-  //    public int lastIndexOf(int ch, int fromIndex) {
-  //  if (ch < Character . MIN_SUPPLEMENTARY_CODE_POINT) {
-  //    // handle most cases here (ch is a BMP code point or a
-  //    // negative value (invalid code point))
-  //    final char[] value = this . value;
-  //            int i = Math . min(fromIndex, value . length - 1);
-  //            for (; i >= 0; i--) {
-  //              if (value {
-  //                [i] == ch}) {
-  //                return i;
-  //              }
-  //            }
-  //            return -1;
-  //        } else {
-  //    return lastIndexOfSupplementary(ch, fromIndex);
-  //  }
-  //}
+  public function lastIndexOf($char, $fromIndex = null)
+  {
+    $char = (string)$char;
+    if (mb_strlen($char) > 1) {
+      throw new \InvalidArgumentException("Only single character accepted as \$char");
+    }
+    if (null === $fromIndex) {
+      $fromIndex = $this->length() - 1;
+    }
+    $fromIndex = (int)$fromIndex;
+    $i = Math::min($fromIndex, $this->length() - 1);
+    for (; $i >= 0; $i--) {
+      if ($this->charAt($i) === $char) {
+        return $i;
+      }
+    }
+    return -1;
+  }
 
-  /**
-   * Handles (rare) calls of lastIndexOf with a supplementary character.
-   */
-  //    private int lastIndexOfSupplementary(int ch, int fromIndex) {
-  //  if (Character . isValidCodePoint(ch)) {
-  //    final char[] value = this . value;
-  //            char hi = Character . highSurrogate(ch);
-  //            char lo = Character . lowSurrogate(ch);
-  //            int i = Math . min(fromIndex, value . length - 2);
-  //            for (; i >= 0; i--) {
-  //              if (value {
-  //                [i] == hi && value}
-  //              [i + 1] == lo) {
-  //                return i;
-  //              }
-  //            }
-  //        }
-  //  return -1;
-  //}
-
-  /**
-   * Returns the index within this string of the first occurrence of the
-   * specified substring.
-   *
-   * <p>The returned index is the smallest value <i>k</i> for which:
-   * <blockquote><pre>
-   * this.startsWith(str, <i>k</i>)
-   * </pre></blockquote>
-   * If no such value of <i>k</i> exists, then {@code -1} is returned.
-   *
-   * @param   str   the substring to search for.
-   * @return  the index of the first occurrence of the specified substring,
-   *          or {@code -1} if there is no such occurrence.
-   */
-  //    public int indexOf(String str) {
-  //  return indexOf(str, 0);
-  //}
-
-  /**
-   * Returns the index within this string of the first occurrence of the
-   * specified substring, starting at the specified index.
-   *
-   * <p>The returned index is the smallest value <i>k</i> for which:
-   * <blockquote><pre>
-   * <i>k</i> &gt;= fromIndex {@code &&} this.startsWith(str, <i>k</i>)
-   * </pre></blockquote>
-   * If no such value of <i>k</i> exists, then {@code -1} is returned.
-   *
-   * @param   str         the substring to search for.
-   * @param   fromIndex   the index from which to start the search.
-   * @return  the index of the first occurrence of the specified substring,
-   *          starting at the specified index,
-   *          or {@code -1} if there is no such occurrence.
-   */
-  //    public int indexOf(String str, int fromIndex) {
-  //  return indexOf(value, 0, value . length,
-  //    str . value, 0, str . value . length, fromIndex);
-  //}
-
-  /**
-   * Code shared by String and AbstractStringBuilder to do searches. The
-   * source is the character array being searched, and the target
-   * is the string being searched for.
-   *
-   * @param   source       the characters being searched.
-   * @param   sourceOffset offset of the source string.
-   * @param   sourceCount  count of the source string.
-   * @param   target       the characters being searched for.
-   * @param   fromIndex    the index to begin searching from.
-   */
-  //    static int indexOf(char[] source, int sourceOffset, int sourceCount,
-  //            String target, int fromIndex) {
-  //  return indexOf(source, sourceOffset, sourceCount,
-  //    target . value, 0, target . value . length,
-  //    fromIndex);
-  //}
-
-  /**
-   * Code shared by String and StringBuffer to do searches. The
-   * source is the character array being searched, and the target
-   * is the string being searched for.
-   *
-   * @param   source       the characters being searched.
-   * @param   sourceOffset offset of the source string.
-   * @param   sourceCount  count of the source string.
-   * @param   target       the characters being searched for.
-   * @param   targetOffset offset of the target string.
-   * @param   targetCount  count of the target string.
-   * @param   fromIndex    the index to begin searching from.
-   */
-  //    static int indexOf(char[] source, int sourceOffset, int sourceCount,
-  //            char[] target, int targetOffset, int targetCount,
-  //            int fromIndex) {
-  //  if (fromIndex >= sourceCount) {
-  //    return (targetCount == 0 ? sourceCount : -1);
-  //  }
-  //  if (fromIndex < 0) {
-  //    fromIndex = 0;
-  //  }
-  //  if (targetCount == 0) {
-  //    return fromIndex;
-  //  }
-  //
-  //  char first = target[targetOffset];
-  //        int max = sourceOffset + (sourceCount - targetCount);
-  //
-  //        for (int i = sourceOffset + fromIndex; i <= max {
-  //          ;
-  //        } i++) {
-  //    /* Look for first character. */
-  //    if (source {
-  //      [i] != first}) {
-  //      while (++i <= max && source {
-  //        [i] != first});
-  //    }
-  //
-  //    /* Found first character, now look at the rest of v2 */
-  //    if (i <= max) {
-  //      int j = i + 1;
-  //                int end = j + targetCount - 1;
-  //                for (int k = targetOffset + 1; j < end && source {
-  //                  [j]
-  //                  == target}[k]; j++, k++);
-  //
-  //                if (j == end) {
-  //                  /* Found whole string. */
-  //                  return i - sourceOffset;
-  //                }
-  //            }
-  //  }
-  //        return -1;
-  //    }
 
   /**
    * Returns the index within this string of the last occurrence of the
@@ -1365,6 +1072,120 @@ class String extends ObjectClass
   //            return start - sourceOffset + 1;
   //        }
   //    }
+
+  /**
+   * Returns the index within this string of the first occurrence of the
+   * specified substring.
+   *
+   * <p>The returned index is the smallest value <i>k</i> for which:
+   * <blockquote><pre>
+   * this.startsWith(str, <i>k</i>)
+   * </pre></blockquote>
+   * If no such value of <i>k</i> exists, then {@code -1} is returned.
+   *
+   * @param   str   the substring to search for.
+   * @return  the index of the first occurrence of the specified substring,
+   *          or {@code -1} if there is no such occurrence.
+   */
+  //    public int indexOf(String str) {
+  //  return indexOf(str, 0);
+  //}
+
+  /**
+   * Returns the index within this string of the first occurrence of the
+   * specified substring, starting at the specified index.
+   *
+   * <p>The returned index is the smallest value <i>k</i> for which:
+   * <blockquote><pre>
+   * <i>k</i> &gt;= fromIndex {@code &&} this.startsWith(str, <i>k</i>)
+   * </pre></blockquote>
+   * If no such value of <i>k</i> exists, then {@code -1} is returned.
+   *
+   * @param   str         the substring to search for.
+   * @param   fromIndex   the index from which to start the search.
+   * @return  the index of the first occurrence of the specified substring,
+   *          starting at the specified index,
+   *          or {@code -1} if there is no such occurrence.
+   */
+  //    public int indexOf(String str, int fromIndex) {
+  //  return indexOf(value, 0, value . length,
+  //    str . value, 0, str . value . length, fromIndex);
+  //}
+
+  /**
+   * Code shared by String and AbstractStringBuilder to do searches. The
+   * source is the character array being searched, and the target
+   * is the string being searched for.
+   *
+   * @param   source       the characters being searched.
+   * @param   sourceOffset offset of the source string.
+   * @param   sourceCount  count of the source string.
+   * @param   target       the characters being searched for.
+   * @param   fromIndex    the index to begin searching from.
+   */
+  //    static int indexOf(char[] source, int sourceOffset, int sourceCount,
+  //            String target, int fromIndex) {
+  //  return indexOf(source, sourceOffset, sourceCount,
+  //    target . value, 0, target . value . length,
+  //    fromIndex);
+  //}
+
+  /**
+   * Code shared by String and StringBuffer to do searches. The
+   * source is the character array being searched, and the target
+   * is the string being searched for.
+   *
+   * @param   source       the characters being searched.
+   * @param   sourceOffset offset of the source string.
+   * @param   sourceCount  count of the source string.
+   * @param   target       the characters being searched for.
+   * @param   targetOffset offset of the target string.
+   * @param   targetCount  count of the target string.
+   * @param   fromIndex    the index to begin searching from.
+   */
+  //    static int indexOf(char[] source, int sourceOffset, int sourceCount,
+  //            char[] target, int targetOffset, int targetCount,
+  //            int fromIndex) {
+  //  if (fromIndex >= sourceCount) {
+  //    return (targetCount == 0 ? sourceCount : -1);
+  //  }
+  //  if (fromIndex < 0) {
+  //    fromIndex = 0;
+  //  }
+  //  if (targetCount == 0) {
+  //    return fromIndex;
+  //  }
+  //
+  //  char first = target[targetOffset];
+  //        int max = sourceOffset + (sourceCount - targetCount);
+  //
+  //        for (int i = sourceOffset + fromIndex; i <= max {
+  //          ;
+  //        } i++) {
+  //    /* Look for first character. */
+  //    if (source {
+  //      [i] != first}) {
+  //      while (++i <= max && source {
+  //        [i] != first});
+  //    }
+  //
+  //    /* Found first character, now look at the rest of v2 */
+  //    if (i <= max) {
+  //      int j = i + 1;
+  //                int end = j + targetCount - 1;
+  //                for (int k = targetOffset + 1; j < end && source {
+  //                  [j]
+  //                  == target}[k]; j++, k++);
+  //
+  //                if (j == end) {
+  //                  /* Found whole string. */
+  //                  return i - sourceOffset;
+  //                }
+  //            }
+  //  }
+  //        return -1;
+  //    }
+
 
 
   /**
