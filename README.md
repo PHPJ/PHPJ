@@ -24,12 +24,16 @@ http://docs.oracle.com/javase/8/docs/api/
 ## Progress
 
 - Lang
-  - Object
-  - String
+  - Object (Alpha ready)
+  - String (Alpha ready)
+  - StringBuilder (inited)
   - Number
-  - Math
-  - StrictMath
   - Integer
+  - Math (Inited)
+  - StrictMath (inited)
+- Util
+  - Locale (inted)
+  - StringJoiner (inited)
 
 ## Problems and solutions:
 - Method overloading
