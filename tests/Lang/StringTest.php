@@ -92,8 +92,7 @@ class StringTest extends Test
     $string = $this->string->substring(0);
     $this->assertEquals(spl_object_hash($string), spl_object_hash($this->string));
 
-    $string = $this->string->substring(1);
-    $this->assertEquals("est String", $string->getOriginalValue());
+    $this->assertEquals("est String", (string)$this->string->substring(1));
 
     $string = $this->string->substring(2);
     $this->assertEquals("st String", $string->getOriginalValue());
@@ -115,6 +114,8 @@ class StringTest extends Test
     $this->assertEquals("est String", $string->getOriginalValue());
 
     $string = $this->string->substring(1, 4);
+    $this->assertEquals("est", $string->getOriginalValue());
+    $string = $this->string->subSequence(1, 4);
     $this->assertEquals("est", $string->getOriginalValue());
 
     $string = $this->string->substring($this->string->length(), $this->string->length());
