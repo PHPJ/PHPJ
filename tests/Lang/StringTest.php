@@ -9,6 +9,7 @@ namespace PHPJ\Tests\Lang;
 use PHPJ\Lang\ObjectClass;
 use PHPJ\Lang\String;
 use PHPJ\Tests\Test;
+use PHPJ\Util\Regex\Exceptions\PatternSyntaxException;
 
 class StringTest extends Test
 {
@@ -516,6 +517,27 @@ class StringTest extends Test
     $this->assertTrue($this->string->contains('Test'));
     $this->assertTrue($this->string->contains('String'));
     $this->assertFalse($this->string->contains('Bear'));
+  }
+
+  public function testSplit()
+  {
+    $string = new String('abc');
+    $array = $string->split('//');
+    $this->assertEquals('a',(string)$array[0]);
+    $this->assertEquals('b',(string)$array[1]);
+    $this->assertEquals('c',(string)$array[2]);
+  }
+
+  /**
+   * @expectedException \PHPJ\Util\Regex\Exceptions\PatternSyntaxException
+   */
+  public function testSplitException()
+  {
+    $string = new String('abc');
+    $array = $string->split('//i/');
+    $this->assertEquals('a',(string)$array[0]);
+    $this->assertEquals('b',(string)$array[1]);
+    $this->assertEquals('c',(string)$array[2]);
   }
 
 //  public function testSmpCasePerformance()

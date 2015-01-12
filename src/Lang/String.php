@@ -7,6 +7,7 @@ namespace PHPJ\Lang;
 
 use PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException;
 use PHPJ\Util\Locale;
+use PHPJ\Util\Regex\Exceptions\PatternSyntaxException;
 use PhpOption\Option;
 
 /**
@@ -1502,13 +1503,14 @@ class String extends ObjectClass
    * </blockquote>
    *
    *
-   * @param  regex
+   * @param  $regex string
    *         the delimiting regular expression
    *
-   * @param  limit
+   * @param  $limit int
    *         the result threshold, as described above
    *
-   * @return  the array of strings computed by splitting this string
+   * @return  \PHPJ\Lang\String[]
+   *          the array of strings computed by splitting this string
    *          around matches of the given regular expression
    *
    * @throws  PatternSyntaxException
@@ -1519,60 +1521,17 @@ class String extends ObjectClass
    * @since 1.4
    * @spec JSR-51
    */
-  //    public String[] split(String regex, int limit) {
-  //  /* fastpath if the regex is a
-  //   (1)one-char String and this character is not one of the
-  //      RegEx's meta characters ".$|()[{^?*+\\", or
-  //   (2)two-char String and the first char is the backslash and
-  //      the second is not the ascii digit or ascii letter.
-  //   */
-  //  char ch = 0;
-  //        if (((regex . value . length == 1
-  //              && ".$|()[{^?*+\\" . indexOf(ch = regex . charAt(0)) == -1)
-  //             || (regex . length() == 2
-  //                 && regex . charAt(0) == '\\'
-  //                 && (((ch = regex . charAt(1)) - '0') | ('9' - ch)) < 0
-  //                 && ((ch - 'a') | ('z' - ch)) < 0
-  //                 && ((ch - 'A') | ('Z' - ch)) < 0))
-  //            && (ch < Character . MIN_HIGH_SURROGATE
-  //                || ch > Character . MAX_LOW_SURROGATE)
-  //        ) {
-  //          int off = 0;
-  //            int next = 0;
-  //            boolean limited = limit > 0;
-  //            ArrayList < String> list = new ArrayList <> ();
-  //            while ((next = indexOf(ch, off)) != -1) {
-  //              if (!limited || list.size() < limit - 1) {
-  //                list.add(substring(off, next));
-  //                    off = next + 1;
-  //                } else {    // last one
-  //                //assert (list.size() == limit - 1);
-  //                list.add(substring(off, value . length));
-  //                    off = value . length;
-  //                    break;
-  //                }
-  //            }
-  //            // If no match was found, return this
-  //            if (off == 0) {
-  //              return new String[]}{
-  //            this};
-  //
-  //            // Add remaining segment
-  //            if (!limited || list.size() < limit)
-  //                list.add(substring(off, value . length));
-  //
-  //            // Construct result
-  //            int resultSize = list.size();
-  //            if (limit == 0) {
-  //              while (resultSize > 0 && list.get(resultSize - 1) . length() == 0) {
-  //                resultSize--;
-  //              }
-  //            }
-  //            String[] result = new String[resultSize];
-  //            return list.subList(0, resultSize) . toArray(result);
-  //        }
-  //        return Pattern . compile(regex) . split(this, limit);
-  //    }
+  public function split($regex, $limit = 0) {
+    $regex = (string)$regex;
+    if(false === @preg_match($regex, null)){
+      throw new PatternSyntaxException("Invalid Regular expression");
+    }
+    $array = preg_split((string)$regex, $this->value, $limit, PREG_SPLIT_NO_EMPTY);
+    foreach($array as &$value){
+      $value = new String($value);
+    }
+    return $array;
+  }
 
   /**
    * Splits this string around matches of the given <a
@@ -1582,20 +1541,6 @@ class String extends ObjectClass
    * #split(String, int) split} method with the given expression and a limit
    * argument of zero.  Trailing empty strings are therefore not included in
    * the resulting array.
-   *
-   * <p> The string {@code "boo:and:foo"}, for example, yields the following
-   * results with these expressions:
-   *
-   * <blockquote><table cellpadding=1 cellspacing=0 summary="Split examples showing regex and result">
-   * <tr>
-   *  <th>Regex</th>
-   *  <th>Result</th>
-   * </tr>
-   * <tr><td align=center>:</td>
-   *     <td>{@code { "boo", "and", "foo" }}</td></tr>
-   * <tr><td align=center>o</td>
-   *     <td>{@code { "b", "", ":and:f" }}</td></tr>
-   * </table></blockquote>
    *
    *
    * @param  regex
@@ -1766,7 +1711,7 @@ class String extends ObjectClass
   public function toCharArray()
   {
     return Option::fromValue($this->charArray)->getOrCall(function () {
-      return $this->charArray = \SplFixedArray::fromArray(preg_split('//u', $this->value));
+      return $this->charArray = \SplFixedArray::fromArray(preg_split('//u', $this->value, 0, PREG_SPLIT_NO_EMPTY));
     });
   }
 
