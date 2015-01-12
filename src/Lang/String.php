@@ -1078,31 +1078,21 @@ class String extends ObjectClass
    *          or {@code -1} if there is no such occurrence.
    */
   public function indexOf($string, $fromIndex = 0) {
-    $pos = mb_strpos((string)$string, $fromIndex);
+    $pos = mb_strpos($this->value, (string)$string, $fromIndex);
     if(false === $pos){
       return -1;
     }
     return $pos;
   }
 
+  public function indexOfIgnoreCase($string, $fromIndex = 0) {
+    $pos = mb_stripos($this->value, (string)$string, $fromIndex);
+    if(false === $pos){
+      return -1;
+    }
+    return $pos;
+  }
 
-  /**
-   * Code shared by String and AbstractStringBuilder to do searches. The
-   * source is the character array being searched, and the target
-   * is the string being searched for.
-   *
-   * @param   source       the characters being searched.
-   * @param   sourceOffset offset of the source string.
-   * @param   sourceCount  count of the source string.
-   * @param   target       the characters being searched for.
-   * @param   fromIndex    the index to begin searching from.
-   */
-  //    static int indexOf(char[] source, int sourceOffset, int sourceCount,
-  //            String target, int fromIndex) {
-  //  return indexOf(source, sourceOffset, sourceCount,
-  //    target . value, 0, target . value . length,
-  //    fromIndex);
-  //}
 
   /**
    * Code shared by String and StringBuffer to do searches. The
@@ -1179,11 +1169,14 @@ class String extends ObjectClass
    * This method is defined so that the {@code String} class can implement
    * the {@link CharSequence} interface.
    *
-   * @param   beginIndex   the begin index, inclusive.
-   * @param   endIndex     the end index, exclusive.
-   * @return  the specified subsequence.
+   * @param   $beginIndex   int
+   *          the begin index, inclusive.
+   * @param   $endIndex     int
+   *          the end index, exclusive.
+   * @return  int
+   *          the specified subsequence.
    *
-   * @throws  IndexOutOfBoundsException
+   * @throws  StringIndexOutOfBoundsException
    *          if {@code beginIndex} or {@code endIndex} is negative,
    *          if {@code endIndex} is greater than {@code length()},
    *          or if {@code beginIndex} is greater than {@code endIndex}
@@ -1191,9 +1184,9 @@ class String extends ObjectClass
    * @since 1.4
    * @spec JSR-51
    */
-  //    public CharSequence subSequence(int beginIndex, int endIndex) {
-  //  return this . substring(beginIndex, endIndex);
-  //}
+  public function subSequence($beginIndex, $endIndex) {
+    return $this->substring($beginIndex, $endIndex);
+  }
 
   /**
    * Concatenates the specified string to the end of this string.

@@ -458,6 +458,46 @@ class StringTest extends Test
     ];
   }
 
+  /**
+   * @param $string
+   * @param $char
+   * @param $position
+   * @dataProvider dataIndexOf
+   */
+  public function testIndexOf($string, $char, $position)
+  {
+    $pos = (new String($string))->indexOf($char);
+    $this->assertEquals($position, $pos);
+  }
+
+  /**
+   * @param $string
+   * @param $char
+   * @param $position
+   * @dataProvider dataIndexOf
+   */
+  public function testIndexOfIgnoreCase($string, $char, $position)
+  {
+    $pos = (new String($string))->indexOfIgnoreCase(mb_strtoupper((string)$char));
+    $this->assertEquals($position, $pos);
+    $pos = (new String($string))->indexOfIgnoreCase(mb_strtolower((string)$char));
+    $this->assertEquals($position, $pos);
+  }
+
+  public function dataIndexOf()
+  {
+    return [
+      ['Straße', 'ß', 4],
+      ['Straße', 'ße', 4],
+      ['Straße', new String('ß'), 4],
+      ['Straße', new String('ße'), 4],
+      ['StraßeS', 'S', 0],
+      ['StraßeS', 'St', 0],
+      ['Straße', 'e', 5],
+      ['eStraße', 'e', 0],
+      ['Straße', 'ç', -1],
+    ];
+  }
 
 //  public function testSmpCasePerformance()
 //  {
