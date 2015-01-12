@@ -6,6 +6,7 @@
 namespace PHPJ\Lang;
 
 use PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException;
+use PHPJ\Lang\Interfaces\CharSequence;
 use PHPJ\Util\Locale;
 use PHPJ\Util\Regex\Exceptions\PatternSyntaxException;
 use PhpOption\Option;
@@ -15,7 +16,7 @@ use PhpOption\Option;
  * @package PHPJ\Lang
  * @todo implement Interfaces
  */
-class String extends ObjectClass
+class String extends ObjectClass implements CharSequence
 {
 
   /**
