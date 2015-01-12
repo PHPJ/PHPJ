@@ -918,7 +918,7 @@ class String extends ObjectClass
    * Returns the index within this string of the last occurrence of
    * the specified character.
    *
-   * @param   $char string|\PHPJ\Lang\String
+   * @param   $string string|\PHPJ\Lang\String
    * @param   $fromIndex integer
    *          the index to start the search from. There is no
    *          restriction on the value of {@code fromIndex}. If it is
@@ -933,65 +933,19 @@ class String extends ObjectClass
    *          than or equal to {@code fromIndex}, or {@code -1}
    *          if the character does not occur before that point.
    */
-  public function lastIndexOf($char, $fromIndex = null)
+  public function lastIndexOf($string, $fromIndex = null)
   {
-    $char = (string)$char;
-    if (mb_strlen($char) > 1) {
-      throw new \InvalidArgumentException("Only single character accepted as \$char");
-    }
     if (null === $fromIndex) {
       $fromIndex = $this->length() - 1;
     }
-    $fromIndex = (int)$fromIndex;
-    $i = Math::min($fromIndex, $this->length() - 1);
-    for (; $i >= 0; $i--) {
-      if ($this->charAt($i) === $char) {
-        return $i;
-      }
+    $fromIndex = Math::min($fromIndex, $this->length() - 1);
+    $value = mb_substr($this->value, 0, $fromIndex+1);
+    $index = mb_strrpos($value, (string)$string);
+    if(false === $index || $index > $fromIndex){
+      return -1;
     }
-    return -1;
+    return $index;
   }
-
-
-  /**
-   * Returns the index within this string of the last occurrence of the
-   * specified substring.  The last occurrence of the empty string ""
-   * is considered to occur at the index value {@code this.length()}.
-   *
-   * <p>The returned index is the largest value <i>k</i> for which:
-   * <blockquote><pre>
-   * this.startsWith(str, <i>k</i>)
-   * </pre></blockquote>
-   * If no such value of <i>k</i> exists, then {@code -1} is returned.
-   *
-   * @param   str   the substring to search for.
-   * @return  the index of the last occurrence of the specified substring,
-   *          or {@code -1} if there is no such occurrence.
-   */
-  //    public int lastIndexOf(String str) {
-  //  return lastIndexOf(str, value . length);
-  //}
-
-  /**
-   * Returns the index within this string of the last occurrence of the
-   * specified substring, searching backward starting at the specified index.
-   *
-   * <p>The returned index is the largest value <i>k</i> for which:
-   * <blockquote><pre>
-   * <i>k</i> {@code <=} fromIndex {@code &&} this.startsWith(str, <i>k</i>)
-   * </pre></blockquote>
-   * If no such value of <i>k</i> exists, then {@code -1} is returned.
-   *
-   * @param   str         the substring to search for.
-   * @param   fromIndex   the index to start the search from.
-   * @return  the index of the last occurrence of the specified substring,
-   *          searching backward from the specified index,
-   *          or {@code -1} if there is no such occurrence.
-   */
-  //    public int lastIndexOf(String str, int fromIndex) {
-  //  return lastIndexOf(value, 0, value . length,
-  //    str . value, 0, str . value . length, fromIndex);
-  //}
 
   /**
    * Code shared by String and AbstractStringBuilder to do searches. The
@@ -1004,8 +958,7 @@ class String extends ObjectClass
    * @param   target       the characters being searched for.
    * @param   fromIndex    the index to begin searching from.
    */
-  //    static int lastIndexOf(char[] source, int sourceOffset, int sourceCount,
-  //            String target, int fromIndex) {
+  //    static int lastIndexOf(char[] source, int sourceOffset, int sourceCount, String target, int fromIndex) {
   //  return lastIndexOf(source, sourceOffset, sourceCount,
   //    target . value, 0, target . value . length,
   //    fromIndex);
@@ -1016,80 +969,94 @@ class String extends ObjectClass
    * source is the character array being searched, and the target
    * is the string being searched for.
    *
-   * @param   source       the characters being searched.
-   * @param   sourceOffset offset of the source string.
-   * @param   sourceCount  count of the source string.
-   * @param   target       the characters being searched for.
-   * @param   targetOffset offset of the target string.
-   * @param   targetCount  count of the target string.
-   * @param   fromIndex    the index to begin searching from.
-   */
-  //    static int lastIndexOf(char[] source, int sourceOffset, int sourceCount,
-  //            char[] target, int targetOffset, int targetCount,
-  //            int fromIndex) {
-  //  /*
-  //   * Check arguments; return immediately where possible. For
-  //   * consistency, don't check for null str.
-  //   */
-  //  int rightIndex = sourceCount - targetCount;
-  //        if (fromIndex < 0) {
-  //          return -1;
-  //        }
-  //        if (fromIndex > rightIndex) {
-  //          fromIndex = rightIndex;
-  //        }
-  //        /* Empty string always matches. */
-  //        if (targetCount == 0) {
-  //          return fromIndex;
-  //        }
-  //
-  //        int strLastIndex = targetOffset + targetCount - 1;
-  //        char strLastChar = target[strLastIndex];
-  //        int min = sourceOffset + targetCount - 1;
-  //        int i = min + fromIndex;
-  //
-  //    startSearchForLastChar:
-  //        while (true) {
-  //          while (i >= min && source {
-  //            [i] != strLastChar}) {
-  //            i--;
-  //          }
-  //          if (i < min) {
-  //            return -1;
-  //          }
-  //          int j = i - 1;
-  //            int start = j - (targetCount - 1);
-  //            int k = strLastIndex - 1;
-  //
-  //            while (j > start) {
-  //              if (source {
-  //                [j--] != target}
-  //              [k--]) {
-  //                i--;
-  //                continue startSearchForLastChar;
-  //              }
-  //            }
-  //            return start - sourceOffset + 1;
-  //        }
-  //    }
-
-  /**
-   * Returns the index within this string of the first occurrence of the
-   * specified substring.
+   * @param   $source       string|\PHPJ\Lang\String
+   *          the characters being searched.
+   * @param   $sourceOffset int
+   *          offset of the source string.
+   * @param   $sourceCount  int
+   *          count of the source string.
+   * @param   $target       string|\PHPJ\Lang\String
+   *          the characters being searched for.
+   * @param   [$targetOffset int]
+   *          offset of the target string.
+   * @param   [$targetCount  int]
+   *          count of the target string.
+   * @param   $fromIndex    int
+   *          the index to begin searching from.
    *
-   * <p>The returned index is the smallest value <i>k</i> for which:
-   * <blockquote><pre>
-   * this.startsWith(str, <i>k</i>)
-   * </pre></blockquote>
-   * If no such value of <i>k</i> exists, then {@code -1} is returned.
-   *
-   * @param   str   the substring to search for.
-   * @return  the index of the first occurrence of the specified substring,
-   *          or {@code -1} if there is no such occurrence.
+   * @return  int
+   *          the index of the last occurrence of the character in the
+   *          character sequence
+   * @todo make it work properly
    */
-  //    public int indexOf(String str) {
-  //  return indexOf(str, 0);
-  //}
+  public static function lastIndexOfString($source, $sourceOffset, $sourceCount, $target, $fromIndex)
+  {
+    $source = (string)$source;
+    $target = (string)$target;
+    $args = array_slice(func_get_args(), 4, 3);
+    $fromIndex = array_pop($args);
+    if (!empty($args) && count($args) !== 2) {
+      throw new \BadMethodCallException("Method should have 5 or 7 params");
+    }
+    $args = $args ?: [0, mb_strlen($target)];
+    list($targetOffset, $targetCount) = $args;
+    $subSource = mb_substr($source, $sourceOffset, $sourceCount);
+    $subTarget = mb_substr($target, $targetOffset, $targetCount);
+    $rightIndex = $sourceCount - $targetCount;
+    if ($fromIndex > $rightIndex) {
+      $fromIndex = $rightIndex;
+    }
+    $index = (new String($subSource))->lastIndexOf($subTarget, $fromIndex);
+    if ($index >= 0) {
+      $index += $sourceOffset;
+    }
+    return $index;
+    //  /*
+    //   * Check arguments; return immediately where possible. For
+    //   * consistency, don't check for null str.
+    //   */
+    //  int rightIndex = sourceCount - targetCount;
+    //        if (fromIndex < 0) {
+    //          return -1;
+    //        }
+    //        if (fromIndex > rightIndex) {
+    //          fromIndex = rightIndex;
+    //        }
+    //        /* Empty string always matches. */
+    //        if (targetCount == 0) {
+    //          return fromIndex;
+    //        }
+    //
+    //        int strLastIndex = targetOffset + targetCount - 1;
+    //        char strLastChar = target[strLastIndex];
+    //        int min = sourceOffset + targetCount - 1;
+    //        int i = min + fromIndex;
+    //
+    //    startSearchForLastChar:
+    //        while (true) {
+    //          while (i >= min && source {
+    //            [i] != strLastChar}) {
+    //            i--;
+    //          }
+    //          if (i < min) {
+    //            return -1;
+    //          }
+    //          int j = i - 1;
+    //            int start = j - (targetCount - 1);
+    //            int k = strLastIndex - 1;
+    //
+    //            while (j > start) {
+    //              if (source {
+    //                [j--] != target}
+    //              [k--]) {
+    //                i--;
+    //                continue startSearchForLastChar;
+    //              }
+    //            }
+    //            return start - sourceOffset + 1;
+    //        }
+    //    }
+  }
 
   /**
    * Returns the index within this string of the first occurrence of the
@@ -1101,16 +1068,23 @@ class String extends ObjectClass
    * </pre></blockquote>
    * If no such value of <i>k</i> exists, then {@code -1} is returned.
    *
-   * @param   str         the substring to search for.
-   * @param   fromIndex   the index from which to start the search.
-   * @return  the index of the first occurrence of the specified substring,
+   * @param   $string string
+   *          the substring to search for.
+   * @param   $fromIndex   int
+   *          the index from which to start the search.
+   * @return  int
+   *          the index of the first occurrence of the specified substring,
    *          starting at the specified index,
    *          or {@code -1} if there is no such occurrence.
    */
-  //    public int indexOf(String str, int fromIndex) {
-  //  return indexOf(value, 0, value . length,
-  //    str . value, 0, str . value . length, fromIndex);
-  //}
+  public function indexOf($string, $fromIndex = 0) {
+    $pos = mb_strpos((string)$string, $fromIndex);
+    if(false === $pos){
+      return -1;
+    }
+    return $pos;
+  }
+
 
   /**
    * Code shared by String and AbstractStringBuilder to do searches. The

@@ -420,15 +420,6 @@ class StringTest extends Test
     $this->assertEquals($position, (new String($string))->lastIndexOf($char, $from));
   }
 
-  /**
-   * @expectedException \InvalidArgumentException
-   * @expectedExceptionMessage Only single character accepted as $char
-   */
-  public function testLastIndexOfException()
-  {
-    $this->string->lastIndexOf('Te');
-  }
-
   public function dataLastIndexOf()
   {
     return [
@@ -445,6 +436,28 @@ class StringTest extends Test
     ];
   }
 
+  /**
+   * @param $string
+   * @param $char
+   *
+   * @dataProvider dataLastIndexOfString
+   */
+  public function testLastIndexOfString($string, $char, $position)
+  {
+    $pos = String::lastIndexOfString($string, 0, mb_strlen((string)$string), $char, mb_strlen((string)$string));
+    $this->assertEquals($position, $pos);
+  }
+
+  public function dataLastIndexOfString()
+  {
+    return [
+      ['Straße', 'ß', 4],
+      ['Straße', new String('ß'), 4],
+      ['Straße', 'ß', 4],
+      ['Straße', 'e', 5],
+    ];
+  }
+
 
 //  public function testSmpCasePerformance()
 //  {
@@ -452,14 +465,14 @@ class StringTest extends Test
 //    $t = microtime(true);
 //    for($i = 0;$i<1000;$i++){
 //      $this->string = new String($str);
-//      $this->string->length();
+//      $this->string->_lastIndexOf('S', 2);
 //      //$c1 = strcasecmp(self::STRING_VALUE, "Test Strini");
 //    }
 //    $t1 = microtime(true) - $t;
 //    $t = microtime(true);
 //    for($i = 0;$i<1000;$i++){
 //      $this->string = new String($str);
-//      $this->string->toCharArray();
+//      $this->string->lastIndexOf('S', 2);
 //      //$c2 = strcasecmp(self::STRING_VALUE, "test Strini");
 //    }
 //    $t2 = microtime(true) - $t;
