@@ -1316,13 +1316,15 @@ class String extends ObjectClass
    * Returns true if and only if this string contains the specified
    * sequence of char values.
    *
-   * @param s the sequence to search for
-   * @return true if this string contains {@code s}, false otherwise
+   * @param $s string
+   *        the sequence to search for
+   * @return boolean
+   *         true if this string contains {@code s}, false otherwise
    * @since 1.5
    */
-  //    public boolean contains(CharSequence s) {
-  //  return indexOf(s . toString()) > -1;
-  //}
+  public function contains($s) {
+    return $this->indexOf($s) > -1;
+  }
 
   /**
    * Replaces the first substring of this string that matches the given <a

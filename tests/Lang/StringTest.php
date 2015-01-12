@@ -511,6 +511,13 @@ class StringTest extends Test
     $this->assertEquals('0est String', $this->string->replace('T', '0')->getOriginalValue());
   }
 
+  public function testContains()
+  {
+    $this->assertTrue($this->string->contains('Test'));
+    $this->assertTrue($this->string->contains('String'));
+    $this->assertFalse($this->string->contains('Bear'));
+  }
+
 //  public function testSmpCasePerformance()
 //  {
 //    $str = str_repeat('Straße', 1000);
