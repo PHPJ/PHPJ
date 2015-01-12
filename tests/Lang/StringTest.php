@@ -500,6 +500,17 @@ class StringTest extends Test
     ];
   }
 
+  public function testConcat()
+  {
+    $this->assertEquals(self::STRING_VALUE.'0', $this->string->concat(new String('0')));
+  }
+
+  public function testReplace()
+  {
+    $this->assertEquals($this->string, $this->string->replace('T', 'T'));
+    $this->assertEquals('0est String', $this->string->replace('T', '0')->getOriginalValue());
+  }
+
 //  public function testSmpCasePerformance()
 //  {
 //    $str = str_repeat('Straße', 1000);

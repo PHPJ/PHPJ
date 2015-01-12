@@ -1203,21 +1203,16 @@ class String extends ObjectClass
    * "to".concat("get").concat("her") returns "together"
    * </pre></blockquote>
    *
-   * @param   str   the {@code String} that is concatenated to the end
-   *                of this {@code String}.
-   * @return  a string that represents the concatenation of this object's
+   * @param   $str \PHPJ\Lang\String
+   *          the {@code String} that is concatenated to the end
+   *          of this {@code String}.
+   * @return  \PHPJ\Lang\String
+   *          a string that represents the concatenation of this object's
    *          characters followed by the string argument's characters.
    */
-  //    public String concat(String str) {
-  //  int otherLen = str . length();
-  //        if (otherLen == 0) {
-  //          return this;
-  //        }
-  //        int len = value . length;
-  //        char buf[] = Arrays . copyOf(value, len + otherLen);
-  //        str . getChars(buf, len);
-  //        return new String(buf, true);
-  //    }
+  public function concat(String $str) {
+    return new String($this->value.(string)$str);
+  }
 
   /**
    * Returns a string resulting from replacing all occurrences of
@@ -1243,12 +1238,20 @@ class String extends ObjectClass
    * "JonL".replace('q', 'x') returns "JonL" (no change)
    * </pre></blockquote>
    *
-   * @param   oldChar   the old character.
-   * @param   newChar   the new character.
-   * @return  a string derived from this string by replacing every
+   * @param   $oldChar   string
+   *          the old character.
+   * @param   $newChar   string
+   *          the new character.
+   * @return  \PHPJ\Lang\String
+   *          a string derived from this string by replacing every
    *          occurrence of {@code oldChar} with {@code newChar}.
    */
-  //    public String replace(char oldChar, char newChar) {
+  public function replace($oldChar, $newChar)
+  {
+    if($oldChar === $newChar){
+      return $this;
+    }
+    return new String(str_replace($oldChar, $newChar, $this->value));
   //  if (oldChar != newChar) {
   //    int len = value . length;
   //            int i = -1;
@@ -1276,7 +1279,7 @@ class String extends ObjectClass
   //            }
   //        }
   //  return this;
-  //}
+  }
 
   /**
    * Tells whether or not this string matches the given <a
