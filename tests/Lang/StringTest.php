@@ -121,6 +121,9 @@ class StringTest extends Test
 
     $string = $this->string->substring($this->string->length(), $this->string->length());
     $this->assertEquals("", $string->getOriginalValue());
+
+    $string = $this->string->substring(0, 0);
+    $this->assertEquals("", $string->getOriginalValue());
   }
 
   /**
@@ -535,9 +538,6 @@ class StringTest extends Test
   {
     $string = new String('abc');
     $array = $string->split('//i/');
-    $this->assertEquals('a',(string)$array[0]);
-    $this->assertEquals('b',(string)$array[1]);
-    $this->assertEquals('c',(string)$array[2]);
   }
 
 //  public function testSmpCasePerformance()

@@ -16,7 +16,7 @@ use PhpOption\Option;
  * @package PHPJ\Lang
  * @todo implement Interfaces
  */
-class String extends ObjectClass implements CharSequence
+class String extends ObjectClass implements CharSequence, \ArrayAccess
 {
 
   /**
@@ -94,7 +94,7 @@ class String extends ObjectClass implements CharSequence
    */
   public function charAt($index)
   {
-    if (($index < 0) || ($index >= $this->length())) {
+    if (!$this->offsetExists($index)) {
       throw new StringIndexOutOfBoundsException($index);
     }
     return mb_substr($this->value, $index, 1);
@@ -182,7 +182,7 @@ class String extends ObjectClass implements CharSequence
     if ($beginIndex < 0) {
       throw new StringIndexOutOfBoundsException($beginIndex);
     }
-    $endIndex = $endIndex ?: $this->length();
+    $endIndex = null !== $endIndex ? $endIndex : $this->length();
     if ($endIndex > $this->length()) {
       throw new StringIndexOutOfBoundsException($endIndex);
     }
@@ -1175,7 +1175,7 @@ class String extends ObjectClass implements CharSequence
    *          the begin index, inclusive.
    * @param   $endIndex     int
    *          the end index, exclusive.
-   * @return  int
+   * @return  \PHPJ\Lang\String
    *          the specified subsequence.
    *
    * @throws  StringIndexOutOfBoundsException
@@ -1981,4 +1981,30 @@ class String extends ObjectClass implements CharSequence
    *          guaranteed to be from a pool of unique strings.
    */
   //public native String intern();
+
+
+  public function offsetExists($offset)
+  {
+    return ($offset >= 0) && ($offset < $this->length());
+  }
+
+  public function offsetGet($offset)
+  {
+    return $this->charAt($offset);
+  }
+
+  /**
+   * @param mixed $offset
+   * @param mixed $value
+   * @todo not safe
+   */
+  public function offsetSet($offset, $value)
+  {
+    throw new \BadMethodCallException("Method is not supported");
+  }
+
+  public function offsetUnset($offset)
+  {
+    throw new \BadMethodCallException("Method is not supported");
+  }
 }
