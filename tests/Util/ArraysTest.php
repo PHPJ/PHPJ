@@ -60,6 +60,64 @@ class ArraysTest extends Test
     $this->assertNull(Arrays::copyOf(null, 10));
   }
 
+  public function testFill()
+  {
+    $str = "S";
+    Arrays::fill($str, 1, 20, "\0");
+    $this->assertEquals(20, mb_strlen($str));
+    $this->assertEquals("S", $str[0]);
+    $this->assertEquals("\0", $str[19]);
+
+    $str = "S";
+    Arrays::fill($str, "\0");
+    $this->assertEquals(1, mb_strlen($str));
+    $this->assertEquals("\0", $str);
+
+    $array = [1,2,3];
+    Arrays::fill($array, null);
+    $this->assertEquals(3, count($array));
+    $this->assertEquals([null, null, null], $array);
+  }
+
+  public function testRangeCheck()
+  {
+    $this->invokeRangeCheck(3, 1, 2);
+    $this->assertTrue(true);
+  }
+
+  /**
+   * @expectedException \PHPJ\Lang\Exceptions\IllegalArgumentException
+   */
+  public function testRangeCheckException1()
+  {
+    $this->invokeRangeCheck(3, 2, 1);
+  }
+
+  /**
+   * @expectedException \PHPJ\Lang\Exceptions\ArrayIndexOutOfBoundsException
+   * @dataProvider dataRangeCheckException
+   */
+  public function testRangeCheckException2($arrayLength, $fromIndex, $toIndex)
+  {
+    $this->invokeRangeCheck($arrayLength, $fromIndex, $toIndex);
+  }
+
+  public function dataRangeCheckException()
+  {
+    return [
+      [3, -1, 2],
+      [3, 1, 300],
+    ];
+  }
+
+  protected function invokeRangeCheck()
+  {
+    $r = new \ReflectionClass($this->getClassName());
+    $m = $r->getMethod('rangeCheck');
+    $m->setAccessible(true);
+    $m->invokeArgs(null, func_get_args());
+  }
+
   public function testFillFromTo()
   {
     $str = "\0";
