@@ -5,12 +5,12 @@
 
 namespace PHPJ\Lang\Exceptions;
 
-
 class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException
 {
 
-  public function __construct($index)
+  public function __construct($index = null)
   {
-    parent::__construct("Array index out of range: " . $index);
+    $message = is_int($index) ? "Array index out of range: " . $index : $index;
+    parent::__construct($message);
   }
 }

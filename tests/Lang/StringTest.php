@@ -8,6 +8,7 @@ namespace PHPJ\Tests\Lang;
 
 use PHPJ\Lang\ObjectClass;
 use PHPJ\Lang\String;
+use PHPJ\Lang\StringBuilder;
 use PHPJ\Tests\Test;
 use PHPJ\Util\Regex\Exceptions\PatternSyntaxException;
 
@@ -538,6 +539,59 @@ class StringTest extends Test
   {
     $string = new String('abc');
     $array = $string->split('//i/');
+  }
+
+  /**
+   * @param $begin
+   * @param $end
+   * @param $dstBegin
+   *
+   * @expectedException \PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException
+   * @dataProvider dataGetCharsException
+   */
+  public function testGetCharsException($begin, $end, $dstBegin = 0)
+  {
+    $this->string->getChars($begin, $end, $dst, $dstBegin);
+  }
+
+  public function dataGetCharsException()
+  {
+    return array_merge($this->dataSubstringException(),[
+      [0,2, 100],
+    ]);
+  }
+
+  /**
+   * @dataProvider dataGetChars
+   */
+  public function testGetChars($srcBegin, $srcEnd, $dst, $dstBegin, $expected)
+  {
+    $dstReturn = $this->string->getChars($srcBegin, $srcEnd, $dst, $dstBegin);
+    $this->assertEquals($expected, $dst);
+    $this->assertEquals($expected, $dstReturn);
+  }
+
+  public function dataGetChars()
+  {
+    return [
+      [0, 3, '', 0, 'Tes'],
+      [1, 3, '', 0, 'es'],
+      [2, 3, '', 0, 's'],
+      [3, 3, '', 0, ''],
+      [3, 4, '', 0, 't'],
+      [0, 3, 'ß', 0, 'Tes'],
+      [0, 3, 'ßßß', 0, 'Tes'],
+      [0, 3, 'ßßßß', 0, 'Tesß'],
+      [0, 3, 'ßßßß', 1, 'ßTes'],
+      [0, 3, 'ßßßß', 3, 'ßßßTes'],
+    ];
+  }
+
+  public function testBuilder()
+  {
+//    $sb = new StringBuilder(16);
+//    $sb->append("string");
+//    var_dump($sb->toString());
   }
 
 //  public function testSmpCasePerformance()

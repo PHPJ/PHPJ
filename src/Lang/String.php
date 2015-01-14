@@ -5,6 +5,7 @@
 
 namespace PHPJ\Lang;
 
+use PHPJ\Lang\Exceptions\ArrayIndexOutOfBoundsException;
 use PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException;
 use PHPJ\Lang\Interfaces\CharSequence;
 use PHPJ\Util\Locale;
@@ -496,13 +497,58 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
   //}
 
   /**
-   * Copy characters from this string into dst starting at dstBegin.
-   * This method doesn't perform any range checking.
+   * Copies characters from this string into the destination character
+   * array.
+   * <p>
+   * The first character to be copied is at index {@code srcBegin};
+   * the last character to be copied is at index {@code srcEnd-1}
+   * (thus the total number of characters to be copied is
+   * {@code srcEnd-srcBegin}). The characters are copied into the
+   * subarray of {@code dst} starting at index {@code dstBegin}
+   * and ending at index:
+   * <blockquote><pre>
+   *     dstbegin + (srcEnd-srcBegin) - 1
+   * </pre></blockquote>
+   *
+   * @param      int $srcBegin
+   *             index of the first character in the string to copy.
+   * @param      int $srcEnd
+   *             index after the last character in the string to copy.
+   * @param      string $dst
+   *             the destination array.
+   * @param      int $dstBegin
+   *             the start offset in the destination array.
+   * @exception StringOutOfBoundsException If any of the following
+   *            is true:
+   *            <ul><li>{@code srcBegin} is negative.
+   *            <li>{@code srcBegin} is greater than {@code srcEnd}
+   *            <li>{@code srcEnd} is greater than the length of this
+   *                string
+   *            <li>{@code dstBegin} is negative
+   *            <li>{@code dstBegin+(srcEnd-srcBegin)} is larger than
+   *                {@code dst.length}</ul>
+   * @return string
    */
-  //void getChars(char dst[], int dstBegin)
-  //{
+  public function getChars($srcBegin, $srcEnd, &$dst, $dstBegin)
+  {
+    if ($srcBegin < 0)
+      throw new StringIndexOutOfBoundsException($srcBegin);
+    if (($srcEnd < 0) || ($srcEnd > $this->length()))
+      throw new StringIndexOutOfBoundsException($srcEnd);
+    if ($srcBegin > $srcEnd)
+      throw new StringIndexOutOfBoundsException("srcBegin > srcEnd");
+    if ($dstBegin > mb_strlen($dst))
+      throw new StringIndexOutOfBoundsException("dstBegin is too big: $dstBegin");
+
+    $src = preg_split('//u', $this->value, 0, PREG_SPLIT_NO_EMPTY);
+    $dst = preg_split('//u', $dst, 0, PREG_SPLIT_NO_EMPTY);
+    for($i = 0; $i < $srcEnd - $srcBegin; $i++){
+      $dst[$i + $dstBegin] = $src[$i + $srcBegin];
+    }
+    return $dst = implode('', $dst);
+
   //System.arraycopy(value, 0, dst, dstBegin, value.length);
-  //}
+  }
 
   /**
    * Copies characters from this string into the destination character
