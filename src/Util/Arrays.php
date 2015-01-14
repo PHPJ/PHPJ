@@ -28,6 +28,7 @@ class Arrays extends ObjectClass
     if (is_string($array)) {
       return (string)self::copyOfString(new String($array), $newLength);
     }
+    return null;
   }
 
   public static function copyOfFixedArray(\SplFixedArray $array, $newLength)

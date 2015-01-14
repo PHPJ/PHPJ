@@ -55,6 +55,11 @@ class ArraysTest extends Test
     $this->assertEquals(20, mb_strlen(Arrays::copyOf($string, 20)));
   }
 
+  public function testCopyOfNull()
+  {
+    $this->assertNull(Arrays::copyOf(null, 10));
+  }
+
   //  public function testPerformance()
   //  {
   //    $array  = 'str12str12';
