@@ -60,6 +60,13 @@ class ArraysTest extends Test
     $this->assertNull(Arrays::copyOf(null, 10));
   }
 
+  public function testFillFromTo()
+  {
+    $str = "\0";
+    Arrays::fillFromTo($str, 0, 200, "\0");
+    $this->assertEquals(200, mb_strlen($str));
+  }
+
   //  public function testPerformance()
   //  {
   //    $array  = 'str12str12';

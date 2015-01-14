@@ -10,6 +10,7 @@ use PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException;
 use PHPJ\Lang\Interfaces\Appendable;
 use PHPJ\Lang\Interfaces\CharSequence;
 use PHPJ\Util\Arrays;
+use PhpOption\Option;
 
 class AbstractStringBuilder extends ObjectClass implements Appendable, CharSequence
 {
@@ -19,11 +20,13 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   protected $value;
 
+  protected $valueCapacityCache;
+
   /**
    * @var int
    * The count is the number of characters used.
    */
-  protected $count;
+  protected $count = 0;
 
   /** @var int */
   protected $capacity;
@@ -56,7 +59,11 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   public function capacity()
   {
-    return $this->capacity = mb_strlen($this->value);
+    if($this->value !== $this->valueCapacityCache){
+      $this->valueCapacityCache = $this->value;
+      $this->capacity = mb_strlen($this->value);
+    }
+    return $this->capacity;
   }
 
   /**
@@ -107,9 +114,9 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     if ($newCapacity - $minimumCapacity < 0) {
       $newCapacity = $minimumCapacity;
     }
-    if ($newCapacity < 0) {
-      $newCapacity = PHP_INT_MAX;
-    }
+    //if ($newCapacity < 0) {
+    //  $newCapacity = PHP_INT_MAX;
+    //}
     $this->value = Arrays::copyOf($this->value, $newCapacity);
   }
 
@@ -135,14 +142,14 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    * index <i>k</i> in the new character sequence is the same as the
    * character at index <i>k</i> in the old sequence if <i>k</i> is less
    * than the length of the old character sequence; otherwise, it is the
-   * null character {@code '\u005Cu0000'}.
+   * null character {@code '\0'}.
    *
    * In other words, if the {@code newLength} argument is less than
    * the current length, the length is changed to the specified length.
    * <p>
    * If the {@code newLength} argument is greater than or equal
    * to the current length, sufficient null characters
-   * ({@code '\u005Cu0000'}) are appended so that
+   * ({@code '\0'}) are appended so that
    * length becomes the {@code newLength} argument.
    * <p>
    * The {@code newLength} argument must be greater than or equal
@@ -160,7 +167,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     }
     $this->ensureCapacityInternal($newLength);
     if($this->count < $newLength){
-      Arrays::fill($this->value, $this->count, $newLength, "\0");
+      Arrays::fillFromTo($this->value, $this->count, $newLength, "\0");
     }
     $this->count = $newLength;
   }
@@ -287,6 +294,8 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   public function toString()
   {
-    return new String(mb_substr($this->value, 0, $this->count));
+    return $this->count
+      ? new String(mb_substr($this->value, 0, $this->count))
+      : new String();
   }
 }

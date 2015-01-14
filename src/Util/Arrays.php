@@ -61,10 +61,21 @@ class Arrays extends ObjectClass
     return $array;
   }
 
-  public function fillFromTo(&$array, $fromIndex, $toIndex, $val)
+  /**
+   * Fill with 4 params
+   *
+   * @param $array
+   * @param $fromIndex
+   * @param $toIndex
+   * @param $val
+   * @return mixed
+   *
+   * @diff
+   */
+  public static function fillFromTo(&$array, $fromIndex, $toIndex, $val)
   {
     //$this->rangeCheck(count($array), $fromIndex, $toIndex);
-    for($i = $fromIndex; $i <= $toIndex; $i++){
+    for($i = $fromIndex; $i < $toIndex; $i++){
       $array[$i] = $val;
     }
     return $array;
