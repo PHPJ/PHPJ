@@ -5,7 +5,6 @@
 
 namespace PHPJ\Lang;
 
-
 use PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException;
 use PHPJ\Lang\Interfaces\Appendable;
 use PHPJ\Lang\Interfaces\CharSequence;
@@ -155,11 +154,11 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   public function setLength($newLength)
   {
-    if($newLength < 0){
+    if ($newLength < 0) {
       throw new StringIndexOutOfBoundsException($newLength);
     }
     $this->ensureCapacityInternal($newLength);
-    if($this->count < $newLength){
+    if ($this->count < $newLength) {
       Arrays::fillFromTo($this->value, $this->count, $newLength, "\0");
     }
     $this->count = $newLength;
@@ -192,10 +191,10 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    * dstbegin + (srcEnd-srcBegin) - 1
    * }</pre>
    *
-   * @param      int $srcBegin   start copying at this offset.
-   * @param      int $srcEnd     stop copying at this offset.
-   * @param      string $dst     the string to copy the data into.
-   * @param      int $dstBegin   offset into {@code dst}.
+   * @param      int $srcBegin start copying at this offset.
+   * @param      int $srcEnd stop copying at this offset.
+   * @param      string $dst the string to copy the data into.
+   * @param      int $dstBegin offset into {@code dst}.
    * @return     string
    * @throws     StringIndexOutOfBoundsException  if any of the following is true:
    *             <ul>
@@ -209,16 +208,20 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    *             {@code dst.length}
    *             </ul>
    */
-  public function getChars($srcBegin, $srcEnd, &$dst, $dstBegin){
-    if ($srcBegin < 0)
+  public function getChars($srcBegin, $srcEnd, &$dst, $dstBegin)
+  {
+    if ($srcBegin < 0) {
       throw new StringIndexOutOfBoundsException($srcBegin);
-    if (($srcEnd < 0) || ($srcEnd > $this->count))
+    }
+    if (($srcEnd < 0) || ($srcEnd > $this->count)) {
       throw new StringIndexOutOfBoundsException($srcEnd);
-    if ($srcBegin > $srcEnd)
+    }
+    if ($srcBegin > $srcEnd) {
       throw new StringIndexOutOfBoundsException("srcBegin > srcEnd");
+    }
 
     $dst = preg_split('//u', $dst, 0, PREG_SPLIT_NO_EMPTY);
-    for($i = 0; $i < $srcEnd - $srcBegin; $i ++){
+    for ($i = 0; $i < $srcEnd - $srcBegin; $i++) {
       $dst[$i + $dstBegin] = $this->value[$i + $srcBegin];
     }
     return $dst = implode('', $dst);
@@ -233,8 +236,8 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    * The index argument must be greater than or equal to
    * {@code 0}, and less than the length of this sequence.
    *
-   * @param      int $index   the index of the character to modify.
-   * @param      string $ch      the new character.
+   * @param      int $index the index of the character to modify.
+   * @param      string $ch the new character.
    * @throws     StringIndexOutOfBoundsException  if {@code index} is
    *             negative or greater than or equal to {@code length()}.
    * @todo refactor
@@ -255,11 +258,74 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   public function append($string, $start = null, $end = null)
   {
-    $string = $string instanceof String ? $string : new String($string);
+    if (null === $string) {
+      return $this->appendNull();
+    }
+    $string = $this->getAppendStringValue($string);
     $len = $string->length();
     $this->ensureCapacityInternal($this->length() + $len);
     $string->getChars(0, $len, $this->value, $this->length());
     $this->count += $len;
+    return $this;
+  }
+
+  protected function appendNull()
+  {
+    $c = $this->length();
+    $this->ensureCapacityInternal($c + 4);
+    $this->value[$c++] = 'n';
+    $this->value[$c++] = 'u';
+    $this->value[$c++] = 'l';
+    $this->value[$c++] = 'l';
+    $this->count = $c;
+    return $this;
+  }
+
+  protected function getAppendStringValue($string)
+  {
+    if ($string instanceof String) {
+      return $string;
+    }
+    if (is_bool($string)) {
+      return new String($string ? 'true' : 'false');
+    }
+
+    return new String((string)$string);
+  }
+
+  /**
+   * Removes the characters in a substring of this sequence.
+   * The substring begins at the specified {@code start} and extends to
+   * the character at index {@code end - 1} or to the end of the
+   * sequence if no such character exists. If
+   * {@code start} is equal to {@code end}, no changes are made.
+   *
+   * @param      int $start The beginning index, inclusive.
+   * @param      int $end The ending index, exclusive.
+   * @return     $this object.
+   * @throws     StringIndexOutOfBoundsException  if {@code start}
+   *             is negative, greater than {@code length()}, or
+   *             greater than {@code end}.
+   */
+  public function delete($start, $end)
+  {
+    $start = (int)$start;
+    $end = (int)$end;
+    if ($start < 0) {
+      throw new StringIndexOutOfBoundsException($start);
+    }
+    if ($end > $this->length()) {
+      $end = $this->length();
+    }
+    if ($start > $end) {
+      throw new StringIndexOutOfBoundsException();
+    }
+    $len = $end - $start;
+    if ($len > 0) {
+      System::arraycopy($this->value, $start + $len, $this->value, $start, $this->length() - $end);
+      $this->count -= $len;
+    }
+    $this->trimToSize();
     return $this;
   }
 

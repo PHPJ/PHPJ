@@ -24,9 +24,4 @@ class CharArray extends NativeArray
   {
     return new String(implode('', iterator_to_array($this)));
   }
-
-  public function length()
-  {
-    return $this->getSize();
-  }
 }

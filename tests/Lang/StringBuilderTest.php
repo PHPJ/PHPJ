@@ -111,4 +111,27 @@ class StringBuilderTest extends Test{
     $this->assertEquals("My Value", $sb->toString()->getOriginalValue());
     $this->assertEquals("My Value", (string)$sb);
   }
+
+  public function testAppendNull()
+  {
+    $sb = new StringBuilder();
+    $sb->append('This');
+    $sb->append(' ');
+    $sb->append('is ');
+    $sb->append(null);
+    $sb->append(' and ');
+    $sb->append(true);
+    $sb->append(' and ');
+    $sb->append(false);
+    $this->assertEquals("This is null and true and false", $sb->toString()->getOriginalValue());
+    $this->assertEquals("This is null and true and false", (string)$sb);
+  }
+
+  public function testDelete()
+  {
+    $sb = new StringBuilder();
+    $sb->append('This');
+    $sb->delete(1,3);
+    $this->assertEquals('Ts', (string)$sb);
+  }
 }
