@@ -541,11 +541,12 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
       throw new StringIndexOutOfBoundsException("dstBegin is too big: $dstBegin");
 
     $src = preg_split('//u', $this->value, 0, PREG_SPLIT_NO_EMPTY);
-    $dst = preg_split('//u', $dst, 0, PREG_SPLIT_NO_EMPTY);
+
+    $dst = $dst instanceof CharArray ? $dst : CharArray::fromString((string)$dst);
     for($i = 0; $i < $srcEnd - $srcBegin; $i++){
       $dst[$i + $dstBegin] = $src[$i + $srcBegin];
     }
-    return $dst = implode('', $dst);
+    return $dst;
 
   //System.arraycopy(value, 0, dst, dstBegin, value.length);
   }

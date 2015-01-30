@@ -109,5 +109,6 @@ class StringBuilderTest extends Test{
     $sb->append(' ');
     $sb->append('Value');
     $this->assertEquals("My Value", $sb->toString()->getOriginalValue());
+    $this->assertEquals("My Value", (string)$sb);
   }
 }

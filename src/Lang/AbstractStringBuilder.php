@@ -10,17 +10,14 @@ use PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException;
 use PHPJ\Lang\Interfaces\Appendable;
 use PHPJ\Lang\Interfaces\CharSequence;
 use PHPJ\Util\Arrays;
-use PhpOption\Option;
 
 class AbstractStringBuilder extends ObjectClass implements Appendable, CharSequence
 {
   /**
-   * @var string
+   * @var CharArray
    * The value is used for character storage.
    */
   protected $value;
-
-  protected $valueCapacityCache;
 
   /**
    * @var int
@@ -34,7 +31,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
   public function __construct($capacity)
   {
     $capacity = (int)$capacity;
-    $this->value = str_repeat("\0", $capacity);
+    $this->value = new CharArray($capacity);
   }
 
   /**
@@ -59,11 +56,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   public function capacity()
   {
-    if($this->value !== $this->valueCapacityCache){
-      $this->valueCapacityCache = $this->value;
-      $this->capacity = mb_strlen($this->value);
-    }
-    return $this->capacity;
+    return $this->value->getSize();
   }
 
   /**
@@ -117,7 +110,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     //if ($newCapacity < 0) {
     //  $newCapacity = PHP_INT_MAX;
     //}
-    $this->value = Arrays::copyOf($this->value, $newCapacity);
+    $this->value = Arrays::copyOfFixedArray($this->value, $newCapacity);
   }
 
   /**
@@ -130,7 +123,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
   public function trimToSize()
   {
     if ($this->count < $this->capacity()) {
-      $this->value = Arrays::copyOf($this->value, $this->count);
+      $this->value = Arrays::copyOfFixedArray($this->value, $this->count);
     }
   }
 
@@ -180,10 +173,11 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   public function charAt($index)
   {
+    $index = (int)$index;
     if (($index < 0) || ($index >= $this->length())) {
       throw new StringIndexOutOfBoundsException($index);
     }
-    return mb_substr($this->value, $index, 1);
+    return $this->value->offsetGet($index);
   }
 
   /**
@@ -223,10 +217,9 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     if ($srcBegin > $srcEnd)
       throw new StringIndexOutOfBoundsException("srcBegin > srcEnd");
 
-    $src = preg_split('//u', $this->value, 0, PREG_SPLIT_NO_EMPTY);
     $dst = preg_split('//u', $dst, 0, PREG_SPLIT_NO_EMPTY);
     for($i = 0; $i < $srcEnd - $srcBegin; $i ++){
-      $dst[$i + $dstBegin] = $src[$i + $srcBegin];
+      $dst[$i + $dstBegin] = $this->value[$i + $srcBegin];
     }
     return $dst = implode('', $dst);
   }
@@ -251,9 +244,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     if (($index < 0) || ($index >= $this->length())) {
       throw new StringIndexOutOfBoundsException($index);
     }
-    $src = preg_split('//u', $this->value, 0, PREG_SPLIT_NO_EMPTY);
-    $src[$index] = $ch;
-    $this->value = implode('', $src);
+    $this->value->offsetSet($index, $ch);
   }
 
   /**
@@ -265,9 +256,9 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
   public function append($string, $start = null, $end = null)
   {
     $string = $string instanceof String ? $string : new String($string);
-    $len = mb_strlen($string);
-    $this->ensureCapacityInternal($this->count + $len);
-    $string->getChars(0, $len, $this->value, $this->count);
+    $len = $string->length();
+    $this->ensureCapacityInternal($this->length() + $len);
+    $string->getChars(0, $len, $this->value, $this->length());
     $this->count += $len;
     return $this;
   }
@@ -295,7 +286,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
   public function toString()
   {
     return $this->count
-      ? new String(mb_substr($this->value, 0, $this->count))
+      ? new String($this->value->toString())
       : new String();
   }
 }

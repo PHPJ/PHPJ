@@ -567,23 +567,23 @@ class StringTest extends Test
   public function testGetChars($srcBegin, $srcEnd, $dst, $dstBegin, $expected)
   {
     $dstReturn = $this->string->getChars($srcBegin, $srcEnd, $dst, $dstBegin);
-    $this->assertEquals($expected, $dst);
-    $this->assertEquals($expected, $dstReturn);
+    $this->assertEquals($expected, (string)$dst);
+    $this->assertEquals($expected, (string)$dstReturn);
   }
 
   public function dataGetChars()
   {
     return [
-      [0, 3, '', 0, 'Tes'],
-      [1, 3, '', 0, 'es'],
-      [2, 3, '', 0, 's'],
-      [3, 3, '', 0, ''],
-      [3, 4, '', 0, 't'],
-      [0, 3, 'ß', 0, 'Tes'],
+      [0, 3, "\0\0\0", 0, 'Tes'],
+      [1, 3, "\0\0", 0, 'es'],
+      [2, 3, "\0", 0, 's'],
+      [3, 3, "", 0, ''],
+      [3, 4, "\0", 0, 't'],
+      [0, 3, "ß\0\0", 0, 'Tes'],
       [0, 3, 'ßßß', 0, 'Tes'],
       [0, 3, 'ßßßß', 0, 'Tesß'],
       [0, 3, 'ßßßß', 1, 'ßTes'],
-      [0, 3, 'ßßßß', 3, 'ßßßTes'],
+      [0, 3, "ßßßß\0\0", 3, 'ßßßTes'],
     ];
   }
 
