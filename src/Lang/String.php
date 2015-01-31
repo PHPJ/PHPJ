@@ -497,6 +497,19 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
   //}
 
   /**
+   * Copy characters from this string into dst starting at dstBegin.
+   * This method doesn't perform any range checking.
+   *
+   * @param CharArray $dst
+   * @param $dstBegin
+   */
+  public function getChars(CharArray $dst, $dstBegin)
+  {
+    $charArray = CharArray::fromString($this->value);
+    System::arraycopy($charArray, 0, $dst, $dstBegin, $charArray->length());
+  }
+
+  /**
    * Copies characters from this string into the destination character
    * array.
    * <p>
@@ -529,7 +542,7 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    *                {@code dst.length}</ul>
    * @return string
    */
-  public function getChars($srcBegin, $srcEnd, &$dst, $dstBegin)
+  public function getCharsFromTo($srcBegin, $srcEnd, &$dst, $dstBegin)
   {
     if ($srcBegin < 0)
       throw new StringIndexOutOfBoundsException($srcBegin);

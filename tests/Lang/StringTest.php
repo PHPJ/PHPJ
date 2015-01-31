@@ -551,7 +551,7 @@ class StringTest extends Test
    */
   public function testGetCharsException($begin, $end, $dstBegin = 0)
   {
-    $this->string->getChars($begin, $end, $dst, $dstBegin);
+    $this->string->getCharsFromTo($begin, $end, $dst, $dstBegin);
   }
 
   public function dataGetCharsException()
@@ -566,7 +566,7 @@ class StringTest extends Test
    */
   public function testGetChars($srcBegin, $srcEnd, $dst, $dstBegin, $expected)
   {
-    $dstReturn = $this->string->getChars($srcBegin, $srcEnd, $dst, $dstBegin);
+    $dstReturn = $this->string->getCharsFromTo($srcBegin, $srcEnd, $dst, $dstBegin);
     $this->assertEquals($expected, (string)$dst);
     $this->assertEquals($expected, (string)$dstReturn);
   }

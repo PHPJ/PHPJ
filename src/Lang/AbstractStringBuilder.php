@@ -266,7 +266,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     $string = $this->getAppendStringValue($string);
     $len = $string->length();
     $this->ensureCapacityInternal($this->length() + $len);
-    $string->getChars(0, $len, $this->value, $this->length());
+    $string->getCharsFromTo(0, $len, $this->value, $this->length());
     $this->count += $len;
     return $this;
   }
@@ -293,6 +293,30 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     }
 
     return new String((string)$string);
+  }
+
+  /**
+   * Appends the string representation of the {@code codePoint}
+   * argument to this sequence.
+   *
+   * @todo there is behavioral difference between Java and PHP
+   * (eg.: 233 = ß in PHP and something other in Java)
+   *
+   * @param   int $codePoint
+   *          a Unicode code point
+   * @return  $this
+   *          a reference to this object.
+   */
+  public function appendCodePoint($codePoint)
+  {
+    $char = mb_convert_encoding('&#' . intval($codePoint) . ';', 'UTF-8', 'HTML-ENTITIES');
+    //$char = hex2bin(dechex($codePoint));
+    $count = $this->length();
+    $this->ensureCapacityInternal($count + 1);
+    $this->value[$count] = $char;
+    ++$this->count;
+    return $this;
+
   }
 
   /**
@@ -331,16 +355,61 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     return $this;
   }
 
-  public function appendCodePoint($codePoint)
+  /**
+   * Removes the {@code char} at the specified position in this
+   * sequence. This sequence is shortened by one {@code char}.
+   *
+   * <p>Note: If the character at the given index is a supplementary
+   * character, this method does not remove the entire character. If
+   * correct handling of supplementary characters is required,
+   * determine the number of {@code char}s to remove by calling
+   * {@code Character.charCount(thisSequence.codePointAt(index))},
+   * where {@code thisSequence} is this sequence.
+   *
+   * @param       int $index
+   *              Index of {@code char} to remove
+   * @return      $this
+   * @throws      StringIndexOutOfBoundsException
+   *              if the {@code index}
+   *              is negative or greater than or equal to
+   *              {@code length()}.
+   */
+  public function deleteCharAt($index)
   {
-    $char = mb_convert_encoding('&#' . intval($codePoint) . ';', 'UTF-8', 'HTML-ENTITIES');
-    //$char = hex2bin(dechex($codePoint));
-    $count = $this->length();
-    $this->ensureCapacityInternal($count + 1);
-    $this->value[$count] = $char;
-    ++$this->count;
+    $index = (int)$index;
+    if (($index < 0) || ($index >= $this->length())) {
+      throw new StringIndexOutOfBoundsException($index);
+    }
+    System::arraycopy($this->value, $index + 1, $this->value, $index, $this->count - $index - 1);
+    $this->count--;
+    $this->trimToSize();
     return $this;
+  }
 
+  public function replace($start, $end, String $str)
+  {
+    if ($start < 0) {
+      throw new StringIndexOutOfBoundsException($start);
+    }
+    if ($start > $this->length()) {
+      throw new StringIndexOutOfBoundsException("start > length()");
+    }
+    if ($start > $end) {
+      throw new StringIndexOutOfBoundsException("start > end");
+    }
+
+    if ($end > $this->length()) {
+      $end = $this->length();
+    }
+    $len = $str->length();
+    $newCount = $this->length() + $len - ($end - $start);
+    $this->ensureCapacityInternal($newCount);
+
+    System::arraycopy($this->value, $end, $this->value, $start + $len, $this->length() - $end);
+    $str->getChars($this->value, $start);
+    $this->count = $newCount;
+    $this->trimToSize();
+    return $this;
   }
 
   /**

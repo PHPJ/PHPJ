@@ -6,6 +6,7 @@
 namespace PHPJ\Tests\Lang;
 
 
+use PHPJ\Lang\String;
 use PHPJ\Lang\StringBuilder;
 use PHPJ\Tests\Test;
 
@@ -135,6 +136,14 @@ class StringBuilderTest extends Test{
     $this->assertEquals('Ts', (string)$sb);
   }
 
+  public function testDeleteCharAt()
+  {
+    $sb = new StringBuilder();
+    $sb->append('This');
+    $sb->deleteCharAt(0);
+    $this->assertEquals('his', (string)$sb);
+  }
+
   public function testAppendCodePoint()
   {
     $sb = new StringBuilder();
@@ -146,5 +155,13 @@ class StringBuilderTest extends Test{
     //$string = '↗';
     //$sb->appendCodePoint(14845591);
     //$this->assertEquals('a↗', (string)$sb);
+  }
+
+  public function testReplace()
+  {
+    $sb = new StringBuilder();
+    $sb->append('This');
+    $sb->replace(0, 1, new String("String "));
+    $this->assertEquals('String his', (string)$sb);
   }
 }
