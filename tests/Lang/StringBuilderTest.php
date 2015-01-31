@@ -134,4 +134,17 @@ class StringBuilderTest extends Test{
     $sb->delete(1,3);
     $this->assertEquals('Ts', (string)$sb);
   }
+
+  public function testAppendCodePoint()
+  {
+    $sb = new StringBuilder();
+    $sb->appendCodePoint(97);
+    $this->assertEquals('a', (string)$sb);
+    $sb->appendCodePoint(223);
+    $this->assertEquals('aß', (string)$sb);
+
+    //$string = '↗';
+    //$sb->appendCodePoint(14845591);
+    //$this->assertEquals('a↗', (string)$sb);
+  }
 }

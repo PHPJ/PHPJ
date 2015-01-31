@@ -29,7 +29,7 @@ class CharArray extends NativeArray
       return parent::offsetSet($offset, $value);
     }
     throw new \InvalidArgumentException(
-      sprintf("Inserting value should be a single character. Trying to insert %s, offset %d", gettype($value), $offset)
+      sprintf("Inserting value should be a single character. Trying to insert %s, offset %d", $value, $offset)
     );
   }
 

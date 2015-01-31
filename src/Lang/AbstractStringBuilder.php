@@ -109,7 +109,8 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     //if ($newCapacity < 0) {
     //  $newCapacity = PHP_INT_MAX;
     //}
-    $this->value = Arrays::copyOfFixedArray($this->value, $newCapacity);
+    //$this->value = Arrays::copyOfFixedArray($this->value, $newCapacity);
+    $this->value->setSize($newCapacity);
   }
 
   /**
@@ -122,7 +123,8 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
   public function trimToSize()
   {
     if ($this->count < $this->capacity()) {
-      $this->value = Arrays::copyOfFixedArray($this->value, $this->count);
+      //$this->value = Arrays::copyOfFixedArray($this->value, $this->count);
+      $this->value->setSize($this->count);
     }
   }
 
@@ -327,6 +329,18 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     }
     $this->trimToSize();
     return $this;
+  }
+
+  public function appendCodePoint($codePoint)
+  {
+    $char = mb_convert_encoding('&#' . intval($codePoint) . ';', 'UTF-8', 'HTML-ENTITIES');
+    //$char = hex2bin(dechex($codePoint));
+    $count = $this->length();
+    $this->ensureCapacityInternal($count + 1);
+    $this->value[$count] = $char;
+    ++$this->count;
+    return $this;
+
   }
 
   /**
