@@ -598,17 +598,13 @@ class StringTest extends Test
 //  {
 //    $str = str_repeat('Straße', 1000);
 //    $t = microtime(true);
-//    for($i = 0;$i<1000;$i++){
-//      $this->string = new String($str);
-//      $this->string->_lastIndexOf('S', 2);
-//      //$c1 = strcasecmp(self::STRING_VALUE, "Test Strini");
+//    for($i = 0;$i<100000;$i++){
+//      if(is_string($str) && mb_strlen($str) === 1){}
 //    }
 //    $t1 = microtime(true) - $t;
 //    $t = microtime(true);
-//    for($i = 0;$i<1000;$i++){
-//      $this->string = new String($str);
-//      $this->string->lastIndexOf('S', 2);
-//      //$c2 = strcasecmp(self::STRING_VALUE, "test Strini");
+//    for($i = 0;$i<100000;$i++){
+//      if(is_string($str) && $str === mb_substr($str, 0, 1)){}
 //    }
 //    $t2 = microtime(true) - $t;
 //    var_dump($t1, $t2);

@@ -30,4 +30,31 @@ class CharArrayTest extends Test
     $this->assertInstanceOf(CharArray::class, $array);
     $this->assertEquals('str', (string)$array);
   }
+
+  public function testOffsetSet()
+  {
+    $chars = new CharArray(16);
+    $chars[0] = 'o';
+    $chars[1] = 'ß';
+    $this->assertEquals('oß', $chars->toString()->getOriginalValue());
+    $this->assertEquals('oß', (string)$chars);
+  }
+
+  /**
+   * @expectedException \InvalidArgumentException
+   */
+  public function testOffsetSetException()
+  {
+    $chars = new CharArray(16);
+    $chars[0] = 'ot';
+  }
+
+  /**
+   * @expectedException \InvalidArgumentException
+   */
+  public function testOffsetSetIntException()
+  {
+    $chars = new CharArray(16);
+    $chars[0] = 1;
+  }
 }
