@@ -26,8 +26,8 @@ http://docs.oracle.com/javase/8/docs/api/
 - Lang
   - Object (Alpha ready)
   - String (Alpha ready)
-  - AbstractStringBuilder (inited)
-  - StringBuilder (inited)
+  - AbstractStringBuilder (Alpha ready)
+  - StringBuilder (Alpha ready)
   - Number
   - Integer
   - Math (Inited)

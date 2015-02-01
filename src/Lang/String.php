@@ -36,10 +36,21 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
 
   /**
    * @param string $string
+   * @param null $offset
+   * @param null $count
    */
-  public function __construct($string = '')
+  public function __construct($string = '', $offset = null, $count = null)
   {
     $this->value = (string)$string;
+    if(is_integer($offset) && is_integer($count)){
+      if ($offset < 0) {
+        throw new StringIndexOutOfBoundsException($offset);
+      }
+      if ($count < 0) {
+        throw new StringIndexOutOfBoundsException($count);
+      }
+      $this->value = mb_substr($this->value, $offset, $count);
+    }
   }
 
   public function getOriginalValue()

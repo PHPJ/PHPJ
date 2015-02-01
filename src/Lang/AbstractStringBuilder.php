@@ -5,6 +5,7 @@
 
 namespace PHPJ\Lang;
 
+use PHPJ\Lang\Exceptions\IndexOutOfBoundsException;
 use PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException;
 use PHPJ\Lang\Interfaces\Appendable;
 use PHPJ\Lang\Interfaces\CharSequence;
@@ -254,8 +255,9 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
 
   /**
    * @param $string string
-   * @param $start  int
-   * @param $end    int
+   * @param $start  int [optional]
+   * @param $end    int [optional]
+   * @todo start end
    * @return Appendable
    */
   public function append($string, $start = null, $end = null)
@@ -413,6 +415,38 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
   }
 
   /**
+   * Returns a new {@code String} that contains a subsequence of
+   * characters currently contained in this sequence. The
+   * substring begins at the specified {@code start} and
+   * extends to the character at index {@code end - 1}.
+   *
+   * @param      int $start The beginning index, inclusive.
+   * @param      int $end [Optional] The ending index, exclusive.
+   * @return     \PHPJ\Lang\String
+   *             The new string.
+   * @throws     StringIndexOutOfBoundsException  if {@code start}
+   *             or {@code end} are negative or greater than
+   *             {@code length()}, or {@code start} is
+   *             greater than {@code end}.
+   */
+  public function substring($start, $end = null)
+  {
+    $end = $end === null ? $this->length() : $end;
+    $start = (int)$start;
+    $end = (int)$end;
+    if ($start < 0) {
+      throw new StringIndexOutOfBoundsException($start);
+    }
+    if ($end > $this->count) {
+      throw new StringIndexOutOfBoundsException($end);
+    }
+    if ($start > $end) {
+      throw new StringIndexOutOfBoundsException($end - $start);
+    }
+    return new String($this->value, $start, $end - $start);
+  }
+
+  /**
    * @param   $start   int - the start index, inclusive
    * @param   $end     int - the end index, exclusive
    *
@@ -426,8 +460,120 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   public function subSequence($start, $end)
   {
-    // TODO: Implement subSequence() method.
+    return $this->substring($start, $end);
   }
+
+  /**
+   * @param $dstOffset int
+   * @param null $str CharSequence|string
+   * @param null $start int [optional]
+   * @param null $end int [optional]
+   *
+   * @return $this
+   * @todo simplify
+   */
+  public function insert($dstOffset, $str, $start = null, $end = null)
+  {
+    if (($dstOffset < 0) || ($dstOffset > $this->length())) {
+      throw new StringIndexOutOfBoundsException($dstOffset);
+    }
+
+    $str = null === $str ? 'null' : $str;
+    $str = is_bool($str) ? ($str ? 'true' : 'false') : $str;
+
+    $str = $str instanceof CharArray ? $str : CharArray::fromString($str);
+
+    if ($str->length() === 1) {
+      $this->ensureCapacityInternal($this->count + 1);
+      System::arraycopy($this->value, $dstOffset, $this->value, $dstOffset + 1, $this->count - $dstOffset);
+      $this->value[$dstOffset] = (string)$str;
+      $this->count++;
+      $this->trimToSize();
+      return $this;
+    }
+
+    if (is_integer($start) && is_integer($end)) {
+      if (($start < 0) || ($end < 0) || ($start > $end) || ($end > $str->length())) {
+        throw new IndexOutOfBoundsException(
+          "start " . $start . ", end " . $end . ", s.length() " . $str->length()
+        );
+      }
+      $len = $end - $start;
+      $strCut = new CharArray($len);
+      $str = System::arraycopy($str, $start, $strCut, 0, $len);
+    }
+
+    $start = 0;
+    $end = $len = $str->length();
+    $this->ensureCapacityInternal($this->count + $len);
+    System::arraycopy($this->value, $dstOffset, $this->value, $dstOffset + $len, $this->count - $dstOffset);
+    for ($i = $start; $i < $end; $i++) {
+      $this->value[$dstOffset++] = $str[$i];
+    }
+    $this->count += $len;
+    return $this;
+
+  }
+
+  /**
+   * Returns the index within this string of the first occurrence of the
+   * specified substring, starting at the specified index.  The integer
+   * returned is the smallest value {@code k} for which:
+   * <pre>{@code
+   *     k >= Math.min(fromIndex, this.length()) &&
+   *                   this.toString().startsWith(str, k)
+   * }</pre>
+   * If no such value of <i>k</i> exists, then -1 is returned.
+   *
+   * @param   \PHPJ\Lang\String str
+   *          the substring for which to search.
+   * @param   int $fromIndex [Optional]
+   *          the index from which to start the search.
+   * @return  int
+   *          the index within this string of the first occurrence of the
+   *          specified substring, starting at the specified index.
+   */
+  public function indexOf(String $str, $fromIndex = null)
+  {
+    return (new String($this->value))->indexOf($str, $fromIndex);
+  }
+
+  /**
+   * Returns the index within this string of the last occurrence of the
+   * specified substring. The integer returned is the largest value <i>k</i>
+   * such that:
+   * <pre>{@code
+   *     k <= Math.min(fromIndex, this.length()) &&
+   *                   this.toString().startsWith(str, k)
+   * }</pre>
+   * If no such value of <i>k</i> exists, then -1 is returned.
+   *
+   * @param   \PHPJ\Lang\String str
+   *          the substring for which to search.
+   * @param   int $fromIndex [Optional]
+   *          the index from which to start the search.
+   * @return  int
+   *          the index within this string of the first occurrence of the
+   *          specified substring, starting at the specified index.
+   */
+  public function lastIndexOf(String $str, $fromIndex = null)
+  {
+    return (new String($this->value))->lastIndexOf($str, $fromIndex);
+  }
+
+  public function reverse()
+  {
+    $n = $this->count - 1;
+    for ($j = ($n - 1) >> 1; $j >= 0; $j--) {
+      $k = $n - $j;
+      $cj = $this->value[$j];
+      $ck = $this->value[$k];
+      $this->value[$j] = $ck;
+      $this->value[$k] = $cj;
+    }
+    return $this;
+  }
+
 
   /**
    * @return  \PHPJ\Lang\String - a string consisting of exactly this sequence of characters

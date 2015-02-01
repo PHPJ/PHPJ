@@ -164,4 +164,42 @@ class StringBuilderTest extends Test{
     $sb->replace(0, 1, new String("String "));
     $this->assertEquals('String his', (string)$sb);
   }
+
+  public function testSubstring()
+  {
+    $sb = new StringBuilder();
+    $sb->append('This is sub');
+    $s = $sb->substring(1);
+    $this->assertEquals('his is sub', $s->__toString());
+    $s = $sb->substring(1, 6);
+    $this->assertEquals('his i', $s->__toString());
+    $s = $sb->subSequence(1, 6);
+    $this->assertEquals('his i', (string)$s);
+  }
+
+  public function testInsert()
+  {
+    $sb = new StringBuilder();
+    $sb->append('This');
+    $sb->insert(2, " String ");
+    $this->assertEquals( "Th String is", (string)$sb);
+
+    $sb = new StringBuilder();
+    $sb->append('This');
+    $sb->insert(2, " String ", 1, 7);
+    $this->assertEquals( "ThStringis", (string)$sb);
+
+  }
+
+  public function testReverse()
+  {
+    $sb = new StringBuilder();
+    $sb->append('This');
+    $sb->reverse();
+    $this->assertEquals("sihT", $sb->toString());
+    $sb->append(1);
+    $sb->reverse();
+    $sb->append(1);
+    $this->assertEquals("1This1", $sb->toString());
+  }
 }
