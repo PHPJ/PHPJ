@@ -9,8 +9,18 @@ namespace PHPJ\Lang;
 class StringBuilder extends AbstractStringBuilder
 {
 
-  public function __construct($capacity=16)
+  public function __construct($string = null)
   {
-    parent::__construct($capacity);
+    if(is_int($string)){
+      return parent::__construct($string);
+    }
+    $string = new String($string);
+    parent::__construct($string->length() + 16);
+    $this->append($string);
+  }
+
+  public function toString()
+  {
+    return parent::toString();
   }
 }
