@@ -10,6 +10,14 @@ use PHPJ\Lang\Exceptions\ArrayIndexOutOfBoundsException;
 final class System extends ObjectClass
 {
 
+  /**
+   * @param NativeArray $src
+   * @param int $srcPos
+   * @param NativeArray $dest
+   * @param int $destPos
+   * @param int $length
+   * @return NativeArray
+   */
   public static function arraycopy(NativeArray $src, $srcPos, NativeArray $dest, $destPos, $length)
   {
     self::checkArrayCopy($src, $srcPos, $dest, $destPos, $length);
@@ -19,6 +27,13 @@ final class System extends ObjectClass
     return $dest;
   }
 
+  /**
+   * @param NativeArray $src
+   * @param int $srcPos
+   * @param NativeArray $dest
+   * @param int $destPos
+   * @param int $length
+   */
   protected static function checkArrayCopy(NativeArray $src, &$srcPos, NativeArray $dest, &$destPos, &$length)
   {
     self::checkIsPositive($srcPos);
@@ -32,6 +47,9 @@ final class System extends ObjectClass
     }
   }
 
+  /**
+   * @param int $index
+   */
   protected static function checkIsPositive(&$index)
   {
     $index = (int)$index;

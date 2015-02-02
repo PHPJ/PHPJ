@@ -31,6 +31,11 @@ class Arrays extends ObjectClass
     return null;
   }
 
+  /**
+   * @param \SplFixedArray $array
+   * @param int $newLength
+   * @return \SplFixedArray
+   */
   public static function copyOfFixedArray(\SplFixedArray $array, $newLength)
   {
     $array = clone $array;
@@ -38,6 +43,11 @@ class Arrays extends ObjectClass
     return $array;
   }
 
+  /**
+   * @param \PHPJ\Lang\String $string
+   * @param int $newLength
+   * @return \PHPJ\Lang\String
+   */
   public static function copyOfString(String $string, $newLength)
   {
     return $newLength > $string->length()
