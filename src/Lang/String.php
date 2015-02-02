@@ -32,7 +32,7 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
   /** @var  int */
   private $hash = 0;
 
-  /** @var array|\SplFixedArray  */
+  /** @var array|\SplFixedArray */
   private $charArray;
 
   /**
@@ -43,7 +43,7 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
   public function __construct($string = '', $offset = null, $count = null)
   {
     $this->value = (string)$string;
-    if(is_integer($offset) && is_integer($count)){
+    if (is_integer($offset) && is_integer($count)) {
       if ($offset < 0) {
         throw new StringIndexOutOfBoundsException($offset);
       }
@@ -233,16 +233,17 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    *
    * @return  int - a hash code value for this object.
    */
-    public function hashCode(){
-      $h = $this->hash;
-      if ($h == 0 && $this->length() > 0) {
-        foreach(preg_split("//u", $this->value, -1, PREG_SPLIT_NO_EMPTY) as $char){
-          $h = (int)(31 * $h + ord($char)) & 0xffffffff;
-        }
-        $this->hash = $h;
+  public function hashCode()
+  {
+    $h = $this->hash;
+    if ($h == 0 && $this->length() > 0) {
+      foreach (preg_split("//u", $this->value, -1, PREG_SPLIT_NO_EMPTY) as $char) {
+        $h = (int)(31 * $h + ord($char)) & 0xffffffff;
       }
-      return $h;
+      $this->hash = $h;
     }
+    return $h;
+  }
 
   /**
    * Compares this string to the specified object.  The result is {@code
@@ -316,7 +317,7 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
   public function compareTo(String $anotherString, $fast = false)
   {
     $res = strcmp($this->value, $anotherString->value);
-    if($fast || 0 === $res ){
+    if ($fast || 0 === $res) {
       return $res;
     }
 
@@ -333,8 +334,8 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
     $k = 0;
 
     while ($k < $lim) {
-      $c1 = mb_substr($v1,$k,1);
-      $c2 = mb_substr($v2,$k,1);
+      $c1 = mb_substr($v1, $k, 1);
+      $c2 = mb_substr($v2, $k, 1);
       if ($c1 != $c2) {
         return ord($c1) - ord($c2);
       }
@@ -357,7 +358,7 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
   public function compareToIgnoreCase(String $str, $fast = false)
   {
     $res = strcmp(strtolower($this->value), strtolower($str->value));
-    if($fast || 0 === $res){
+    if ($fast || 0 === $res) {
       return $res;
     }
     return $this->_compareToIgnoreCase($str);
@@ -556,24 +557,28 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    */
   public function getCharsFromTo($srcBegin, $srcEnd, &$dst, $dstBegin)
   {
-    if ($srcBegin < 0)
+    if ($srcBegin < 0) {
       throw new StringIndexOutOfBoundsException($srcBegin);
-    if (($srcEnd < 0) || ($srcEnd > $this->length()))
+    }
+    if (($srcEnd < 0) || ($srcEnd > $this->length())) {
       throw new StringIndexOutOfBoundsException($srcEnd);
-    if ($srcBegin > $srcEnd)
+    }
+    if ($srcBegin > $srcEnd) {
       throw new StringIndexOutOfBoundsException("srcBegin > srcEnd");
-    if ($dstBegin > mb_strlen($dst))
+    }
+    if ($dstBegin > mb_strlen($dst)) {
       throw new StringIndexOutOfBoundsException("dstBegin is too big: $dstBegin");
+    }
 
     $src = preg_split('//u', $this->value, 0, PREG_SPLIT_NO_EMPTY);
 
     $dst = $dst instanceof CharArray ? $dst : CharArray::fromString((string)$dst);
-    for($i = 0; $i < $srcEnd - $srcBegin; $i++){
+    for ($i = 0; $i < $srcEnd - $srcBegin; $i++) {
       $dst[$i + $dstBegin] = $src[$i + $srcBegin];
     }
     return $dst;
 
-  //System.arraycopy(value, 0, dst, dstBegin, value.length);
+    //System.arraycopy(value, 0, dst, dstBegin, value.length);
   }
 
   /**
@@ -689,8 +694,6 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
   //    public byte[] getBytes(){
   //        return StringCoding . encode(value, 0, value . length);
   //    }
-
-
 
   /**
    * Compares this string to the specified {@code StringBuffer}.  The result
@@ -812,10 +815,10 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
     return ($this === $anotherString)
       ? true
       : 0 === strcmp(mb_strtoupper($this->value), mb_strtoupper($anotherString->value));
-        //original Java
-        //($anotherString !== null)
-        //&& ($anotherString->length() == $this->length())
-        //&& $this->regionMatchesIgnoreCase(0, $anotherString, 0, $this->length());
+    //original Java
+    //($anotherString !== null)
+    //&& ($anotherString->length() == $this->length())
+    //&& $this->regionMatchesIgnoreCase(0, $anotherString, 0, $this->length());
   }
 
 
@@ -936,7 +939,7 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
     return true;
   }
 
-  protected function preValidateRegionMatches($toffset, String $other = null, $ooffset,  $len)
+  protected function preValidateRegionMatches($toffset, String $other = null, $ooffset, $len)
   {
     // Note: toffset, ooffset, or len might be near -1>>>1.
     return ($other !== null
@@ -965,10 +968,10 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    *          this.substring(toffset).startsWith(prefix)
    *          </pre>
    */
-      public function startsWith(String $prefix, $toffset = 0)
-      {
-        return $this->regionMatches($toffset, $prefix, 0, $prefix->length());
-      }
+  public function startsWith(String $prefix, $toffset = 0)
+  {
+    return $this->regionMatches($toffset, $prefix, 0, $prefix->length());
+  }
 
 
   /**
@@ -1013,9 +1016,9 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
       $fromIndex = $this->length() - 1;
     }
     $fromIndex = Math::min($fromIndex, $this->length() - 1);
-    $value = mb_substr($this->value, 0, $fromIndex+1);
+    $value = mb_substr($this->value, 0, $fromIndex + 1);
     $index = mb_strrpos($value, (string)$string);
-    if(false === $index || $index > $fromIndex){
+    if (false === $index || $index > $fromIndex) {
       return -1;
     }
     return $index;
@@ -1151,17 +1154,19 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    *          starting at the specified index,
    *          or {@code -1} if there is no such occurrence.
    */
-  public function indexOf($string, $fromIndex = 0) {
+  public function indexOf($string, $fromIndex = 0)
+  {
     $pos = mb_strpos($this->value, (string)$string, $fromIndex);
-    if(false === $pos){
+    if (false === $pos) {
       return -1;
     }
     return $pos;
   }
 
-  public function indexOfIgnoreCase($string, $fromIndex = 0) {
+  public function indexOfIgnoreCase($string, $fromIndex = 0)
+  {
     $pos = mb_stripos($this->value, (string)$string, $fromIndex);
-    if(false === $pos){
+    if (false === $pos) {
       return -1;
     }
     return $pos;
@@ -1224,8 +1229,6 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
   //        return -1;
   //    }
 
-
-
   /**
    * Returns a character sequence that is a subsequence of this sequence.
    *
@@ -1258,7 +1261,8 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    * @since 1.4
    * @spec JSR-51
    */
-  public function subSequence($beginIndex, $endIndex) {
+  public function subSequence($beginIndex, $endIndex)
+  {
     return $this->substring($beginIndex, $endIndex);
   }
 
@@ -1284,8 +1288,9 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    *          a string that represents the concatenation of this object's
    *          characters followed by the string argument's characters.
    */
-  public function concat(String $str) {
-    return new String($this->value.(string)$str);
+  public function concat(String $str)
+  {
+    return new String($this->value . (string)$str);
   }
 
   /**
@@ -1322,37 +1327,37 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    */
   public function replace($oldChar, $newChar)
   {
-    if($oldChar === $newChar){
+    if ($oldChar === $newChar) {
       return $this;
     }
     return new String(str_replace($oldChar, $newChar, $this->value));
-  //  if (oldChar != newChar) {
-  //    int len = value . length;
-  //            int i = -1;
-  //            char[] val = value; /* avoid getfield opcode */
-  //
-  //            while (++i < len) {
-  //              if (val {
-  //                [i] == oldChar}) {
-  //                break;
-  //              }
-  //            }
-  //            if (i < len) {
-  //              char buf[] = new char[len];
-  //                for (int j = 0; j < i {
-  //                  ;
-  //                } j++) {
-  //                buf[j] = val[j];
-  //                }
-  //                while (i < len) {
-  //                  char c = val[i];
-  //                    buf[i] = (c == oldChar) ? newChar : c;
-  //                    i++;
-  //                }
-  //                return new String(buf, true);
-  //            }
-  //        }
-  //  return this;
+    //  if (oldChar != newChar) {
+    //    int len = value . length;
+    //            int i = -1;
+    //            char[] val = value; /* avoid getfield opcode */
+    //
+    //            while (++i < len) {
+    //              if (val {
+    //                [i] == oldChar}) {
+    //                break;
+    //              }
+    //            }
+    //            if (i < len) {
+    //              char buf[] = new char[len];
+    //                for (int j = 0; j < i {
+    //                  ;
+    //                } j++) {
+    //                buf[j] = val[j];
+    //                }
+    //                while (i < len) {
+    //                  char c = val[i];
+    //                    buf[i] = (c == oldChar) ? newChar : c;
+    //                    i++;
+    //                }
+    //                return new String(buf, true);
+    //            }
+    //        }
+    //  return this;
   }
 
   /**
@@ -1396,7 +1401,8 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    *         true if this string contains {@code s}, false otherwise
    * @since 1.5
    */
-  public function contains($s) {
+  public function contains($s)
+  {
     return $this->indexOf($s) > -1;
   }
 
@@ -1594,13 +1600,14 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    * @since 1.4
    * @spec JSR-51
    */
-  public function split($regex, $limit = 0) {
+  public function split($regex, $limit = 0)
+  {
     $regex = (string)$regex;
-    if(false === @preg_match($regex, null)){
+    if (false === @preg_match($regex, null)) {
       throw new PatternSyntaxException("Invalid Regular expression");
     }
     $array = preg_split((string)$regex, $this->value, $limit, PREG_SPLIT_NO_EMPTY);
-    foreach($array as &$value){
+    foreach ($array as &$value) {
       $value = new String($value);
     }
     return $array;
@@ -1672,20 +1679,23 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
   //    }
   public static function join($delimiter)
   {
-    $args = func_get_args();
-    array_shift($args);
-    if(!isset($args[0])){
-      $args[0] = '';
-    }
-    $sequence = (is_array($args[0]) || $args[0] instanceof \Iterator)
-      ? $args[0]
-      : $args;
-
-    $sj = new StringJoiner((string) $delimiter);
+    $sequence = self::joinGetSequence(func_get_args());
+    $sj = new StringJoiner((string)$delimiter);
     foreach ($sequence as $cs) {
       $sj->add($cs);
     }
     return $sj->toString();
+  }
+
+  protected static function joinGetSequence($args)
+  {
+    $args = func_get_args();
+    array_shift($args);
+    $args[0] = isset($args[0]) ? isset($args[0]) : '';
+    $sequence = (is_array($args[0]) || $args[0] instanceof \Iterator)
+      ? $args[0]
+      : $args;
+    return $sequence;
   }
 
 
@@ -1714,7 +1724,6 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    * on the Unicode Standard version specified by the {@link java.lang.Character Character}
    * class. Since case mappings are not always 1:1 char mappings, the resulting
    * {@code String} may be a different length than the original {@code String}.
-
    * @param Locale $locale use the case transformation rules for this locale
    * @return \PHPJ\Lang\String
    *          the {@code String}, converted to uppercase.
@@ -2006,7 +2015,6 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    *          guaranteed to be from a pool of unique strings.
    */
   //public native String intern();
-
 
   public function offsetExists($offset)
   {
