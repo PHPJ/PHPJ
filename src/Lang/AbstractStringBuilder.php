@@ -25,9 +25,6 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   protected $count = 0;
 
-  /** @var int */
-  protected $capacity;
-
   public function __construct($capacity)
   {
     $capacity = (int)$capacity;
@@ -258,7 +255,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    * @param $start  int [optional]
    * @param $end    int [optional]
    * @todo start end
-   * @return Appendable
+   * @return $this
    */
   public function append($string, $start = null, $end = null)
   {
@@ -561,6 +558,12 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     return (new String($this->value))->lastIndexOf($str, $fromIndex);
   }
 
+  /**
+   * Causes this character sequence to be replaced by the reverse of
+   * the sequence.
+   *
+   * @return  $this reference to this object.
+   */
   public function reverse()
   {
     $n = $this->count - 1;

@@ -202,4 +202,20 @@ class StringBuilderTest extends Test{
     $sb->append(1);
     $this->assertEquals("1This1", $sb->toString());
   }
+
+  public function testGetChars()
+  {
+    $sb = new StringBuilder();
+    $sb->append('This is str');
+    $sb->getChars(2, 7, $dst, 0);
+    $this->assertEquals('is is', (string)$dst);
+  }
+
+  public function testSetCharAt()
+  {
+    $sb = new StringBuilder();
+    $sb->append('This');
+    $sb->setCharAt(2, 'u');
+    $this->assertEquals('Thus', (string)$sb);
+  }
 }

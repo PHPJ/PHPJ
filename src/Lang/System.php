@@ -7,7 +7,7 @@ namespace PHPJ\Lang;
 
 use PHPJ\Lang\Exceptions\ArrayIndexOutOfBoundsException;
 
-class System extends ObjectClass
+final class System extends ObjectClass
 {
 
   public static function arraycopy(NativeArray $src, $srcPos, NativeArray $dest, $destPos, $length)

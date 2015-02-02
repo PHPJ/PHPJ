@@ -35,7 +35,7 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
   private $charArray;
 
   /**
-   * @param string $string
+   * @param string|CharArray $string
    * @param null $offset
    * @param null $count
    */

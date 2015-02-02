@@ -25,8 +25,6 @@ use PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException;
  * arbitrary <tt>CharSequence</tt> instances as elements in a set or as keys in
  * a map. </p>
  *
- * @author Mike McCloskey
- * @since 1.4
  * @spec JSR-51
  */
 

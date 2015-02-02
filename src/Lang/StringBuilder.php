@@ -6,7 +6,7 @@
 namespace PHPJ\Lang;
 
 
-class StringBuilder extends AbstractStringBuilder
+final class StringBuilder extends AbstractStringBuilder
 {
 
   public function __construct($string = null)

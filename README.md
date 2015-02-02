@@ -32,6 +32,7 @@ http://docs.oracle.com/javase/8/docs/api/
   - Integer
   - Math (Inited)
   - StrictMath (inited)
+  - System (inited)
 - Util
   - Locale (inted)
   - StringJoiner (inited)
