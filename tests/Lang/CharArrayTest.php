@@ -27,7 +27,7 @@ class CharArrayTest extends Test
   public function testFrom()
   {
     $array = CharArray::fromString('str');
-    $this->assertInstanceOf(CharArray::class, $array);
+    $this->assertInstanceOf($this->getClassName(), $array);
     $this->assertEquals('str', (string)$array);
   }
 
