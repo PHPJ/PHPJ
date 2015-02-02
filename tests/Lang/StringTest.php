@@ -409,9 +409,9 @@ class StringTest extends Test
   }
   public function testJoinArgs()
   {
-    $this->assertEquals("", String::joinArgs(' ')->getOriginalValue());
-    $this->assertEquals("T Te Test", String::joinArgs(' ', 'T', 'Te', 'Test')->getOriginalValue());
-    $this->assertEquals("T Te Test", String::joinArgs(' ', 'T', new String('Te'), 'Test')->getOriginalValue());
+    $this->assertEquals("", String::join(' ')->getOriginalValue());
+    $this->assertEquals("T Te Test", String::join(' ', 'T', 'Te', 'Test')->getOriginalValue());
+    $this->assertEquals("T Te Test", String::join(' ', 'T', new String('Te'), 'Test')->getOriginalValue());
   }
 
   /**
