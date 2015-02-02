@@ -6,6 +6,7 @@
 namespace PHPJ\Lang;
 
 use PHPJ\Lang\Exceptions\ArrayIndexOutOfBoundsException;
+use PHPJ\Lang\Exceptions\NullPointerException;
 use PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException;
 use PHPJ\Lang\Interfaces\CharSequence;
 use PHPJ\Util\Locale;
@@ -1667,16 +1668,6 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    * @see java.util.StringJoiner
    * @since 1.8
    */
-  //    public static String join(CharSequence delimiter, CharSequence... elements) {
-  //  Objects . requireNonNull(delimiter);
-  //  Objects . requireNonNull(elements);
-  //  // Number of elements not likely worth Arrays.stream overhead.
-  //  StringJoiner joiner = new StringJoiner(delimiter);
-  //        for (CharSequence cs: elements) {
-  //          joiner . add(cs);
-  //        }
-  //        return joiner . toString();
-  //    }
   public static function join($delimiter)
   {
     $sequence = self::joinGetSequence(func_get_args());
@@ -1689,13 +1680,17 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
 
   protected static function joinGetSequence($args)
   {
-    $args = func_get_args();
     array_shift($args);
-    $args[0] = isset($args[0]) ? isset($args[0]) : '';
-    $sequence = (is_array($args[0]) || $args[0] instanceof \Iterator)
-      ? $args[0]
-      : $args;
-    return $sequence;
+    if (!isset($args[0])) {
+      return [];
+    }
+
+    $probableSequence = $args[0];
+    if (is_array($probableSequence) || $probableSequence instanceof \Iterator) {
+      return $probableSequence;
+    }
+
+    return $args;
   }
 
 
