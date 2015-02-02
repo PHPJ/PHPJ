@@ -385,6 +385,12 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     return $this;
   }
 
+  /**
+   * @param int $start
+   * @param int $end
+   * @param \PHPJ\Lang\String $str
+   * @return $this
+   */
   public function replace($start, $end, String $str)
   {
     if ($start < 0) {
@@ -406,7 +412,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
 
     System::arraycopy($this->value, $end, $this->value, $start + $len, $this->length() - $end);
     $str->getChars($this->value, $start);
-    $this->count = $newCount;
+    $this->count = (int)$newCount;
     $this->trimToSize();
     return $this;
   }
@@ -487,6 +493,10 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     return $this->insertCharArray($dstOffset, $str);
   }
 
+  /**
+   * @param $str
+   * @return CharArray
+   */
   protected function processStr($str)
   {
     $str = null === $str ? 'null' : $str;

@@ -38,8 +38,8 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
 
   /**
    * @param string|CharArray $string
-   * @param null $offset
-   * @param null $count
+   * @param int $offset
+   * @param int $count
    */
   public function __construct($string = '', $offset = null, $count = null)
   {
