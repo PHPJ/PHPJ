@@ -475,31 +475,40 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
       throw new StringIndexOutOfBoundsException($dstOffset);
     }
 
+    $str = $this->processStr($str);
+
+    if ($str->length() === 1) {
+      return $this->insertChar($dstOffset, $str);
+    }
+
+    if (is_integer($start) && is_integer($end)) {
+      $str = $this->processStrStartEnd($str, $start, $end);
+    }
+
+    return $this->insertCharArray($dstOffset, $str);
+  }
+
+  protected function processStr($str)
+  {
     $str = null === $str ? 'null' : $str;
     $str = is_bool($str) ? ($str ? 'true' : 'false') : $str;
 
     $str = $str instanceof CharArray ? $str : CharArray::fromString($str);
+    return $str;
+  }
 
-    if ($str->length() === 1) {
-      $this->ensureCapacityInternal($this->count + 1);
-      System::arraycopy($this->value, $dstOffset, $this->value, $dstOffset + 1, $this->count - $dstOffset);
-      $this->value[$dstOffset] = (string)$str;
-      $this->count++;
-      $this->trimToSize();
-      return $this;
-    }
+  protected function insertChar($dstOffset, $char)
+  {
+    $this->ensureCapacityInternal($this->count + 1);
+    System::arraycopy($this->value, $dstOffset, $this->value, $dstOffset + 1, $this->count - $dstOffset);
+    $this->value[$dstOffset] = (string)$char;
+    $this->count++;
+    $this->trimToSize();
+    return $this;
+  }
 
-    if (is_integer($start) && is_integer($end)) {
-      if (($start < 0) || ($end < 0) || ($start > $end) || ($end > $str->length())) {
-        throw new IndexOutOfBoundsException(
-          "start " . $start . ", end " . $end . ", s.length() " . $str->length()
-        );
-      }
-      $len = $end - $start;
-      $strCut = new CharArray($len);
-      $str = System::arraycopy($str, $start, $strCut, 0, $len);
-    }
-
+  protected function insertCharArray($dstOffset, CharArray $str)
+  {
     $start = 0;
     $end = $len = $str->length();
     $this->ensureCapacityInternal($this->count + $len);
@@ -509,7 +518,19 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     }
     $this->count += $len;
     return $this;
+  }
 
+  protected function processStrStartEnd(CharArray $str, $start, $end)
+  {
+    if (($start < 0) || ($end < 0) || ($start > $end) || ($end > $str->length())) {
+      throw new IndexOutOfBoundsException(
+        "start " . $start . ", end " . $end . ", s.length() " . $str->length()
+      );
+    }
+    $len = $end - $start;
+    $strCut = new CharArray($len);
+    $str = System::arraycopy($str, $start, $strCut, 0, $len);
+    return $str;
   }
 
   /**
