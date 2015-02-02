@@ -6,7 +6,7 @@
 namespace PHPJ\Lang;
 
 
-class CharArray extends NativeArray
+final class CharArray extends NativeArray
 {
   protected $escapeValidation = false;
 

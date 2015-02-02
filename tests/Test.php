@@ -13,10 +13,14 @@ abstract class Test extends PHPUnit_Framework_TestCase
     $name = $this->getClassName();
     $this->assertTrue(class_exists($name));
     $r = new \ReflectionClass($name);
-    if(!$r->isInternal()){
-      $class = $r->newInstanceWithoutConstructor();
-      $this->assertInstanceOf($name, $class);
-      $this->assertInstanceOf('PHPJ\Lang\Object', $class);
+    if($r->isInstantiable() && !$r->isInternal()){
+      try {
+        $class = $r->newInstanceWithoutConstructor();
+        $this->assertInstanceOf($name, $class);
+        $this->assertInstanceOf('PHPJ\Lang\Object', $class);
+      } catch (\ReflectionException $e) {
+        $this->markTestSkipped($e->getMessage());
+      }
     }
   }
 
