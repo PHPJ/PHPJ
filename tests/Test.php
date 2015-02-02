@@ -13,7 +13,7 @@ abstract class Test extends PHPUnit_Framework_TestCase
     $name = $this->getClassName();
     $this->assertTrue(class_exists($name));
     $r = new \ReflectionClass($name);
-    if(PHP_VERSION_ID >= 50600 || !$r->isInternal()){
+    if(!$r->isInternal()){
       $class = $r->newInstanceWithoutConstructor();
       $this->assertInstanceOf($name, $class);
       $this->assertInstanceOf('PHPJ\Lang\Object', $class);
