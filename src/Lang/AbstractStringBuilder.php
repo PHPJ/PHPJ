@@ -25,6 +25,9 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   protected $count = 0;
 
+  /**
+   * @param int $capacity
+   */
   public function __construct($capacity)
   {
     $capacity = (int)$capacity;

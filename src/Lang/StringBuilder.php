@@ -9,10 +9,14 @@ namespace PHPJ\Lang;
 final class StringBuilder extends AbstractStringBuilder
 {
 
+  /**
+   * @param string|int $string
+   */
   public function __construct($string = null)
   {
     if(is_int($string)){
-      return parent::__construct($string);
+      parent::__construct($string);
+      return;
     }
     $string = new String($string);
     parent::__construct($string->length() + 16);

@@ -87,8 +87,8 @@ final class StringJoiner extends ObjectClass
    */
   public function setEmptyValue($emptyValue)
   {
-    $this->emptyValue = (string)Objects::requireNonNull($emptyValue,
-      "The empty value must not be null");
+    Objects::requireNonNull($emptyValue, "The empty value must not be null");
+    $this->emptyValue = new String($emptyValue);
     return $this;
   }
 

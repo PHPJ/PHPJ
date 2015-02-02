@@ -16,9 +16,8 @@ namespace PHPJ\Lang\Exceptions;
 class StringIndexOutOfBoundsException extends IndexOutOfBoundsException
 {
 
-  public function __construct($index = null)
+  protected function getType()
   {
-    $message = is_int($index) ? "String index out of range: " . $index : $index;
-    parent::__construct($message);
+    return 'String';
   }
 }
