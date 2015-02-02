@@ -120,9 +120,9 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   public function trimToSize()
   {
-    if ($this->count < $this->capacity()) {
+    if ($this->length() < $this->capacity()) {
       //$this->value = Arrays::copyOfFixedArray($this->value, $this->count);
-      $this->value->setSize($this->count);
+      $this->value->setSize($this->length());
     }
   }
 
@@ -158,8 +158,8 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
       throw new StringIndexOutOfBoundsException($newLength);
     }
     $this->ensureCapacityInternal($newLength);
-    if ($this->count < $newLength) {
-      Arrays::fillFromTo($this->value, $this->count, $newLength, "\0");
+    if ($this->length() < $newLength) {
+      Arrays::fillFromTo($this->value, $this->length(), $newLength, "\0");
     }
     $this->count = $newLength;
   }
@@ -213,7 +213,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     if ($srcBegin < 0) {
       throw new StringIndexOutOfBoundsException($srcBegin);
     }
-    if (($srcEnd < 0) || ($srcEnd > $this->count)) {
+    if (($srcEnd < 0) || ($srcEnd > $this->length())) {
       throw new StringIndexOutOfBoundsException($srcEnd);
     }
     if ($srcBegin > $srcEnd) {
@@ -379,7 +379,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     if (($index < 0) || ($index >= $this->length())) {
       throw new StringIndexOutOfBoundsException($index);
     }
-    System::arraycopy($this->value, $index + 1, $this->value, $index, $this->count - $index - 1);
+    System::arraycopy($this->value, $index + 1, $this->value, $index, $this->length() - $index - 1);
     $this->count--;
     $this->trimToSize();
     return $this;
@@ -434,7 +434,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     if ($start < 0) {
       throw new StringIndexOutOfBoundsException($start);
     }
-    if ($end > $this->count) {
+    if ($end > $this->length()) {
       throw new StringIndexOutOfBoundsException($end);
     }
     if ($start > $end) {
@@ -467,7 +467,6 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    * @param null $end int [optional]
    *
    * @return $this
-   * @todo simplify
    */
   public function insert($dstOffset, $str, $start = null, $end = null)
   {
@@ -499,8 +498,8 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
 
   protected function insertChar($dstOffset, $char)
   {
-    $this->ensureCapacityInternal($this->count + 1);
-    System::arraycopy($this->value, $dstOffset, $this->value, $dstOffset + 1, $this->count - $dstOffset);
+    $this->ensureCapacityInternal($this->length() + 1);
+    System::arraycopy($this->value, $dstOffset, $this->value, $dstOffset + 1, $this->length() - $dstOffset);
     $this->value[$dstOffset] = (string)$char;
     $this->count++;
     $this->trimToSize();
@@ -511,8 +510,8 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
   {
     $start = 0;
     $end = $len = $str->length();
-    $this->ensureCapacityInternal($this->count + $len);
-    System::arraycopy($this->value, $dstOffset, $this->value, $dstOffset + $len, $this->count - $dstOffset);
+    $this->ensureCapacityInternal($this->length() + $len);
+    System::arraycopy($this->value, $dstOffset, $this->value, $dstOffset + $len, $this->length() - $dstOffset);
     for ($i = $start; $i < $end; $i++) {
       $this->value[$dstOffset++] = $str[$i];
     }
@@ -587,7 +586,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   public function reverse()
   {
-    $n = $this->count - 1;
+    $n = $this->length() - 1;
     for ($j = ($n - 1) >> 1; $j >= 0; $j--) {
       $k = $n - $j;
       $cj = $this->value[$j];
@@ -604,7 +603,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   public function toString()
   {
-    return $this->count
+    return $this->length()
       ? new String($this->value->toString())
       : new String();
   }
