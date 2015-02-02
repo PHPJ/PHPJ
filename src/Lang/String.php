@@ -515,7 +515,7 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    * This method doesn't perform any range checking.
    *
    * @param CharArray $dst
-   * @param $dstBegin
+   * @param integer $dstBegin
    */
   public function getChars(CharArray $dst, $dstBegin)
   {
@@ -554,7 +554,7 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    *            <li>{@code dstBegin} is negative
    *            <li>{@code dstBegin+(srcEnd-srcBegin)} is larger than
    *                {@code dst.length}</ul>
-   * @return string
+   * @return CharArray
    */
   public function getCharsFromTo($srcBegin, $srcEnd, &$dst, $dstBegin)
   {
@@ -571,6 +571,12 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
     //System.arraycopy(value, 0, dst, dstBegin, value.length);
   }
 
+  /**
+   * @param integer $srcBegin
+   * @param integer $srcEnd
+   * @param string $dst
+   * @param integer $dstBegin
+   */
   protected function validateCharsArguments($srcBegin, $srcEnd, &$dst, $dstBegin)
   {
     if ($srcBegin < 0) {
@@ -851,11 +857,11 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    * <i>k</i>{@code )}
    * </ul>
    *
-   * @param   $toffset  int the starting offset of the subregion in this string.
+   * @param   integer $toffset  int the starting offset of the subregion in this string.
    * @param   $other    \PHPJ\Lang\String the string argument.
-   * @param   $ooffset  int the starting offset of the subregion in the string
+   * @param   integer $ooffset  int the starting offset of the subregion in the string
    *                    argument.
-   * @param   $len      int the number of characters to compare.
+   * @param   integer $len      int the number of characters to compare.
    * @return  boolean   {@code true} if the specified subregion of this string
    *          exactly matches the specified subregion of the string argument;
    *          {@code false} otherwise.
