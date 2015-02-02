@@ -5,7 +5,6 @@
 
 namespace PHPJ\Lang;
 
-use PHPJ\Lang\Exceptions\ArrayIndexOutOfBoundsException;
 use PHPJ\Lang\Exceptions\NullPointerException;
 use PHPJ\Lang\Exceptions\StringIndexOutOfBoundsException;
 use PHPJ\Lang\Interfaces\CharSequence;
