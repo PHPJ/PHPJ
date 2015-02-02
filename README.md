@@ -35,7 +35,9 @@ http://docs.oracle.com/javase/8/docs/api/
   - System (inited)
 - Util
   - Locale (inted)
-  - StringJoiner (inited)
+  - StringJoiner (Alpha ready)
+  - Arrays (inited)
+  - Objects (inited)
 
 ## Problems and solutions:
 - Method overloading
