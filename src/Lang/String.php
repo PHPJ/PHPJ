@@ -558,6 +558,21 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    */
   public function getCharsFromTo($srcBegin, $srcEnd, &$dst, $dstBegin)
   {
+    $this->validateCharsArguments($srcBegin, $srcEnd, $dst, $dstBegin);
+
+    $src = preg_split('//u', $this->value, 0, PREG_SPLIT_NO_EMPTY);
+
+    $dst = $dst instanceof CharArray ? $dst : CharArray::fromString((string)$dst);
+    for ($i = 0; $i < $srcEnd - $srcBegin; $i++) {
+      $dst[$i + $dstBegin] = $src[$i + $srcBegin];
+    }
+    return $dst;
+
+    //System.arraycopy(value, 0, dst, dstBegin, value.length);
+  }
+
+  protected function validateCharsArguments($srcBegin, $srcEnd, &$dst, $dstBegin)
+  {
     if ($srcBegin < 0) {
       throw new StringIndexOutOfBoundsException($srcBegin);
     }
@@ -570,16 +585,6 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
     if ($dstBegin > mb_strlen($dst)) {
       throw new StringIndexOutOfBoundsException("dstBegin is too big: $dstBegin");
     }
-
-    $src = preg_split('//u', $this->value, 0, PREG_SPLIT_NO_EMPTY);
-
-    $dst = $dst instanceof CharArray ? $dst : CharArray::fromString((string)$dst);
-    for ($i = 0; $i < $srcEnd - $srcBegin; $i++) {
-      $dst[$i + $dstBegin] = $src[$i + $srcBegin];
-    }
-    return $dst;
-
-    //System.arraycopy(value, 0, dst, dstBegin, value.length);
   }
 
   /**
