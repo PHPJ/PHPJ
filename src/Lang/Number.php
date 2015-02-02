@@ -3,7 +3,7 @@
 namespace PHPJ\Lang;
 
 // TODO determine java.io.Serializable interface
-abstract class Number extends \GMP implements Object, Serializable
+abstract class Number extends \GMP implements Object
 {
   use ObjectTrait;
 
