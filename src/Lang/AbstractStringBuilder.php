@@ -532,6 +532,12 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
     return $this;
   }
 
+  /**
+   * @param CharArray $str
+   * @param int $start
+   * @param int $end
+   * @return CharArray
+   */
   protected function processStrStartEnd(CharArray $str, $start, $end)
   {
     if (($start < 0) || ($end < 0) || ($start > $end) || ($end > $str->length())) {
