@@ -21,6 +21,7 @@ final class System extends ObjectClass
   public static function arraycopy(NativeArray $src, $srcPos, NativeArray $dest, $destPos, $length)
   {
     self::checkArrayCopy($src, $srcPos, $dest, $destPos, $length);
+    $src = clone $src;
     for ($i = 0; $i < $length; $i++) {
       $dest[$destPos + $i] = $src[$srcPos + $i];
     }

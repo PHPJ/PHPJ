@@ -189,6 +189,11 @@ class StringBuilderTest extends Test{
     $sb->insert(2, " String ", 1, 7);
     $this->assertEquals( "ThStringis", (string)$sb);
 
+    $sb = new StringBuilder();
+    $sb->append('This');
+    $sb->insert(2, "0", 0);
+    $this->assertEquals( "Th0is", (string)$sb);
+
   }
 
   public function testReverse()

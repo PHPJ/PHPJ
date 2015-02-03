@@ -6,6 +6,7 @@
 namespace PHPJ\Tests\Lang;
 
 
+use PHPJ\Lang\CharArray;
 use PHPJ\Lang\NativeArray;
 use PHPJ\Lang\System;
 use PHPJ\Tests\Test;
@@ -34,6 +35,14 @@ class SystemTest extends Test{
     $this->assertEquals($res, $copyTo);
     $this->assertEquals($expected, implode('', $res->toArray()));
 
+  }
+
+  public function testCopy2()
+  {
+    $str = CharArray::fromString("Test");
+    $str->setSize(5);
+    $res = System::arraycopy($str, 1, $str, 2, 3);
+    $this->assertEquals("Teest", (string)$res);
   }
 
   public function dataCopy()
