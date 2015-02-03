@@ -236,7 +236,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
       throw new StringIndexOutOfBoundsException($srcEnd);
     }
     if ($srcBegin > $srcEnd) {
-      throw new StringIndexOutOfBoundsException("srcBegin > srcEnd");
+      throw new StringIndexOutOfBoundsException("srcBegin is greater than srcEnd");
     }
   }
 
@@ -410,10 +410,10 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
       throw new StringIndexOutOfBoundsException($start);
     }
     if ($start > $this->length()) {
-      throw new StringIndexOutOfBoundsException("start > length()");
+      throw new StringIndexOutOfBoundsException("start is greater than length()");
     }
     if ($start > $end) {
-      throw new StringIndexOutOfBoundsException("start > end");
+      throw new StringIndexOutOfBoundsException("start is greater than end");
     }
 
     if ($end > $this->length()) {
