@@ -213,21 +213,31 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   public function getChars($srcBegin, $srcEnd, &$dst, $dstBegin)
   {
-    if ($srcBegin < 0) {
-      throw new StringIndexOutOfBoundsException($srcBegin);
-    }
-    if (($srcEnd < 0) || ($srcEnd > $this->length())) {
-      throw new StringIndexOutOfBoundsException($srcEnd);
-    }
-    if ($srcBegin > $srcEnd) {
-      throw new StringIndexOutOfBoundsException("srcBegin > srcEnd");
-    }
+    $this->checkSrcBeginEnd($this->value, $srcBegin, $srcEnd);
 
     $dst = preg_split('//u', $dst, 0, PREG_SPLIT_NO_EMPTY);
     for ($i = 0; $i < $srcEnd - $srcBegin; $i++) {
       $dst[$i + $dstBegin] = $this->value[$i + $srcBegin];
     }
     return $dst = implode('', $dst);
+  }
+
+  /**
+   * @param CharArray $src
+   * @param int $srcBegin
+   * @param int $srcEnd
+   */
+  protected function checkSrcBeginEnd(CharArray $src, $srcBegin, $srcEnd)
+  {
+    if ($srcBegin < 0) {
+      throw new StringIndexOutOfBoundsException($srcBegin);
+    }
+    if ($srcEnd < 0 || $srcEnd > $src->length()) {
+      throw new StringIndexOutOfBoundsException($srcEnd);
+    }
+    if ($srcBegin > $srcEnd) {
+      throw new StringIndexOutOfBoundsException("srcBegin > srcEnd");
+    }
   }
 
   /**
@@ -247,7 +257,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   public function setCharAt($index, $ch)
   {
-    if (($index < 0) || ($index >= $this->length())) {
+    if ($index < 0 || $index >= $this->length()) {
       throw new StringIndexOutOfBoundsException($index);
     }
     $this->value->offsetSet($index, $ch);
@@ -479,7 +489,7 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   public function insert($dstOffset, $str, $start = null, $end = null)
   {
-    if (($dstOffset < 0) || ($dstOffset > $this->length())) {
+    if ($dstOffset < 0 || $dstOffset > $this->length()) {
       throw new StringIndexOutOfBoundsException($dstOffset);
     }
 
@@ -502,11 +512,17 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   protected function processStr($str)
   {
-    $str = null === $str ? 'null' : $str;
-    $str = is_bool($str) ? ($str ? 'true' : 'false') : $str;
+    if($str instanceof CharArray){
+      return $str;
+    }
+    if(null === $str){
+      $str = 'null';
+    }
+    if(is_bool($str)){
+      $str = $str ? 'true' : 'false';
+    }
 
-    $str = $str instanceof CharArray ? $str : CharArray::fromString($str);
-    return $str;
+    return CharArray::fromString($str);
   }
 
   protected function insertChar($dstOffset, $char)
@@ -540,11 +556,8 @@ class AbstractStringBuilder extends ObjectClass implements Appendable, CharSeque
    */
   protected function processStrStartEnd(CharArray $str, $start, $end)
   {
-    if (($start < 0) || ($end < 0) || ($start > $end) || ($end > $str->length())) {
-      throw new IndexOutOfBoundsException(
-        "start " . $start . ", end " . $end . ", s.length() " . $str->length()
-      );
-    }
+    $this->checkSrcBeginEnd($str, $start, $end);
+
     $len = $end - $start;
     $strCut = new CharArray($len);
     $str = System::arraycopy($str, $start, $strCut, 0, $len);
