@@ -21,7 +21,19 @@ final class System extends ObjectClass
   public static function arraycopy(NativeArray $src, $srcPos, NativeArray $dest, $destPos, $length)
   {
     self::checkArrayCopy($src, $srcPos, $dest, $destPos, $length);
-    $src = clone $src;
+    return self::arraycopyNoCheck(clone $src, $srcPos, $dest, $destPos, $length);
+  }
+
+  /**
+   * @param NativeArray $src
+   * @param int $srcPos
+   * @param NativeArray $dest
+   * @param int $destPos
+   * @param int $length
+   * @return NativeArray
+   */
+  public static function arraycopyNoCheck(NativeArray $src, $srcPos, NativeArray $dest, $destPos, $length)
+  {
     for ($i = 0; $i < $length; $i++) {
       $dest[$destPos + $i] = $src[$srcPos + $i];
     }

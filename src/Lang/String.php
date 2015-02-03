@@ -32,7 +32,7 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
   /** @var  int */
   private $hash = 0;
 
-  /** @var array|\SplFixedArray */
+  /** @var CharArray */
   private $charArray;
 
   /**
@@ -42,6 +42,9 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
    */
   public function __construct($string = '', $offset = null, $count = null)
   {
+    if($string instanceof CharArray){
+      $this->charArray = $string;
+    }
     $this->value = (string)$string;
     if (is_integer($offset) && is_integer($count)) {
       if ($offset < 0) {
@@ -51,6 +54,7 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
         throw new StringIndexOutOfBoundsException($count);
       }
       $this->value = mb_substr($this->value, $offset, $count);
+      $this->charArray = null;
     }
   }
 
@@ -559,15 +563,10 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
   {
     $this->validateCharsArguments($srcBegin, $srcEnd, $dst, $dstBegin);
 
-    $src = preg_split('//u', $this->value, 0, PREG_SPLIT_NO_EMPTY);
-
     $dst = $dst instanceof CharArray ? $dst : CharArray::fromString((string)$dst);
-    for ($i = 0; $i < $srcEnd - $srcBegin; $i++) {
-      $dst[$i + $dstBegin] = $src[$i + $srcBegin];
-    }
-    return $dst;
 
-    //System.arraycopy(value, 0, dst, dstBegin, value.length);
+    System::arraycopyNoCheck($this->toCharArray(), $srcBegin, $dst, $dstBegin, $srcEnd - $srcBegin);
+    return $dst;
   }
 
   /**
@@ -1744,14 +1743,14 @@ class String extends ObjectClass implements CharSequence, \ArrayAccess
   /**
    * Converts this string to a new character array.
    *
-   * @return  array|\SplFixedArray a newly allocated character array whose length is the length
+   * @return  CharArray a newly allocated character array whose length is the length
    *          of this string and whose contents are initialized to contain
    *          the character sequence represented by this string.
    */
   public function toCharArray()
   {
     return Option::fromValue($this->charArray)->getOrCall(function () {
-      return $this->charArray = \SplFixedArray::fromArray(preg_split('//u', $this->value, 0, PREG_SPLIT_NO_EMPTY));
+      return $this->charArray = CharArray::fromString($this->value);
     });
   }
 
