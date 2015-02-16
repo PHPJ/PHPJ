@@ -23,6 +23,16 @@ class Integer extends Number
   protected $value;
 
   /**
+   * @param $value
+   * @param null $radix
+   */
+  public function __construct($value, $radix = null)
+  {
+    $this->value = gmp_init($value, (int)$radix);
+  }
+
+
+  /**
    * Returns the value of the specified number as an <code>int</code>.
    * This may involve rounding or truncation.
    *
@@ -31,7 +41,7 @@ class Integer extends Number
    */
   public function intValue()
   {
-    // TODO: Implement intValue() method.
+    return gmp_intval($this->value);
   }
 
   /**
@@ -43,7 +53,7 @@ class Integer extends Number
    */
   public function longValue()
   {
-    // TODO: Implement longValue() method.
+    return gmp_intval($this->value);
   }
 
   /**
@@ -55,7 +65,7 @@ class Integer extends Number
    */
   public function floatValue()
   {
-    // TODO: Implement floatValue() method.
+    return (float)$this->value;
   }
 
   /**
@@ -67,6 +77,6 @@ class Integer extends Number
    */
   public function doubleValue()
   {
-    // TODO: Implement doubleValue() method.
+    return (double)$this->value;
   }
 }

@@ -41,6 +41,15 @@ final class System extends ObjectClass
   }
 
   /**
+   * @param $property
+   * @return \PHPJ\Lang\String
+   */
+  public static function getProperty($property){
+    throw new \Exception("Todo ".__FUNCTION__." ".__CLASS__);
+    return new String();
+  }
+
+  /**
    * @param NativeArray $src
    * @param int $srcPos
    * @param NativeArray $dest
