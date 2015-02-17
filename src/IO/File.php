@@ -9,7 +9,7 @@ use PHPJ\Lang\Object;
 use PHPJ\Lang\ObjectTrait;
 use PHPJ\Lang\String;
 
-class File extends \SplFileObject implements Object
+class File extends \SplFileInfo implements Object
 {
   use ObjectTrait;
 
@@ -22,13 +22,13 @@ class File extends \SplFileObject implements Object
   /** @var String */
   protected $path;
 
-  public function __construct ($file_name, $open_mode, $use_include_path, $context)
+  public function __construct($file_name)
   {
     $this->fs = DefaultFileSystem::getFileSystem();
     $path = $this->fs->fromURIPath(new String($file_name));
     $this->path = $this->fs->normalize($path);
     $this->prefixLength = $this->fs->prefixLength($this->path);
-    parent::__construct($this->path, $open_mode, $use_include_path, $context);
+    parent::__construct($file_name);
   }
 
   public function getPath()

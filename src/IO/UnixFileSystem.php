@@ -24,7 +24,7 @@ class UnixFileSystem extends FileSystem
   {
     $this->slash = DIRECTORY_SEPARATOR;
     $this->colon = PATH_SEPARATOR;
-    $this->fs = StaticCache::loadInjection('file_system', new Definition(SFilesystem::class));
+    $this->fs = new SFilesystem();// StaticCache::loadInjection('file_system', new Definition(SFilesystem::class));
   }
 
   /**
@@ -336,7 +336,7 @@ class UnixFileSystem extends FileSystem
    */
   public function compare(File $f1, File $f2)
   {
-    // TODO: Implement compare() method.
+    return $f1->getAbsolutePath()->compareTo($f2->getAbsolutePath());
   }
 
 }
