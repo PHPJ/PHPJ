@@ -69,6 +69,4 @@ abstract class Number extends \GMP implements Object
     return pack('s', self::intValue());
   }
 
-  /** @var int use serialVersionUID from JDK 1.0.2 for interoperability */
-  private static $serialVersionUID = -8742448824652078965;
 }

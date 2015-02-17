@@ -5,27 +5,37 @@
 
 namespace PHPJ\IO;
 
-use PHPJ\IO\Exceptions\IOException;
-use PHPJ\Lang\ObjectClass;
 use PHPJ\Lang\String;
-use PHPJ\Lang\System;
 
-abstract class FileSystem extends ObjectClass
+class UnixFileSystem extends FileSystem
 {
 
-  /* -- Normalization and construction -- */
+  private $slash;
+  private $colon;
+
+  public function __construct()
+  {
+    $this->slash = DIRECTORY_SEPARATOR;
+    $this->colon = DIRECTORY_SEPARATOR;
+  }
 
   /**
    * Return char
    * the local filesystem's name-separator character.
    */
-  abstract public function getSeparator();
+  public function getSeparator()
+  {
+    return $this->slash;
+  }
 
   /**
    * Return char
    * the local filesystem's path-separator character.
    */
-  abstract public function getPathSeparator();
+  public function getPathSeparator()
+  {
+    return $this->colon;
+  }
 
   /**
    * @param \PHPJ\Lang\String $path
@@ -33,15 +43,24 @@ abstract class FileSystem extends ObjectClass
    * Convert the given pathname string to normal form.  If the string is
    * already in normal form then it is simply returned.
    */
-  abstract public function normalize(String $path);
+  public function normalize(String $path)
+  {
+    return new String(preg_replace("/\/{2,}/", "/", (string)$path));
+  }
 
   /**
    * Compute the length of this pathname string's prefix.  The pathname
    * string must be in normal form.
    * @param \PHPJ\Lang\String $path
-   * @return \PHPJ\Lang\String
+   * @return int
    */
-  abstract public function prefixLength(String $path);
+  public function prefixLength(String $path)
+  {
+    if (!$path->getOriginalValue()) {
+      return 0;
+    }
+    return "/" === $path->charAt(0) ? 1 : 0;
+  }
 
   /**
    * Resolve the child pathname string against the parent.
@@ -51,7 +70,22 @@ abstract class FileSystem extends ObjectClass
    * @param \PHPJ\Lang\String $child
    * @return \PHPJ\Lang\String
    */
-  abstract public function resolve(String $parent, String $child);
+  public function resolve(String $parent, String $child)
+  {
+    if ($child->equals(new String(""))) {
+      return $parent;
+    }
+    if ($child->charAt(0) === '/') {
+      if ($parent->equals(new String("/"))) {
+        return $child;
+      }
+      return $parent->concat($child);
+    }
+    if ($parent->equals(new String("/"))) {
+      return $parent->concat($child);
+    }
+    return new String($parent->getOriginalValue() . '/' . $child->getOriginalValue());
+  }
 
   /**
    * Return the parent pathname string to be used when the parent-directory
@@ -59,7 +93,10 @@ abstract class FileSystem extends ObjectClass
    * pathname.
    * @return \PHPJ\Lang\String
    */
-  abstract public function getDefaultParent();
+  public function getDefaultParent()
+  {
+    return new String("/");
+  }
 
   /**
    * Post-process the given URI path string if necessary.  This is used on
@@ -70,53 +107,57 @@ abstract class FileSystem extends ObjectClass
    * @param \PHPJ\Lang\String $path
    * @return \PHPJ\Lang\String
    */
-  abstract public function fromURIPath(String $path);
-
-
-  /* -- Path operations -- */
+  public function fromURIPath(String $path)
+  {
+    $p = $path;
+    if ($p->endsWith(new String("/")) && ($p->getOriginalValue() && ($p->charAt(0) !== $p->getOriginalValue()))) {
+      // "/foo/" --> "/foo", but "/" --> "/"
+      $p = $p->substring(0, $p->length()-1);
+    }
+    return $p;
+  }
 
   /**
-   * Tell whether or not the given abstract pathname is absolute.
+   * Tell whether or not the given pathname is absolute.
    * @param File $f
    * @return bool
    */
-  abstract public function isAbsolute(File $f);
+  public function isAbsolute(File $f)
+  {
+    // TODO: Implement isAbsolute() method.
+  }
 
   /**
-   * Resolve the given abstract pathname into absolute form.  Invoked by the
+   * Resolve the given pathname into absolute form.  Invoked by the
    * getAbsolutePath and getCanonicalPath methods in the File class.
    * @param File $f
    * @return \PHPJ\Lang\String
    */
-  abstract public function resolveFile(File $f);
+  public function resolveFile(File $f)
+  {
+    // TODO: Implement resolveFile() method.
+  }
 
   /**
    * @param \PHPJ\Lang\String $path
    * @return \PHPJ\Lang\String
    */
-  abstract public function canonicalize(String $path);
-
-
-  /* -- Attribute accessors -- */
-
-  /* Constants for simple boolean attributes */
-  const BA_EXISTS = 0x01;
-  const BA_REGULAR = 0x02;
-  const BA_DIRECTORY = 0x04;
-  const BA_HIDDEN = 0x08;
+  public function canonicalize(String $path)
+  {
+    // TODO: Implement canonicalize() method.
+  }
 
   /**
    * Return the simple boolean attributes for the file or directory denoted
-   * by the given abstract pathname, or zero if it does not exist or some
+   * by the given pathname, or zero if it does not exist or some
    * other I/O error occurs.
    * @param File $f
    * @return int
    */
-  abstract public function getBooleanAttributes(File $f);
-
-  const ACCESS_READ = 0x04;
-  const ACCESS_WRITE = 0x02;
-  const ACCESS_EXECUTE = 0x01;
+  public function getBooleanAttributes(File $f)
+  {
+    // TODO: Implement getBooleanAttributes() method.
+  }
 
   /**
    * Check whether the file or directory denoted by the given abstract
@@ -127,11 +168,14 @@ abstract class FileSystem extends ObjectClass
    * @param bool $access
    * @return bool
    */
-  abstract public function checkAccess(File $f, $access);
+  public function checkAccess(File $f, $access)
+  {
+    // TODO: Implement checkAccess() method.
+  }
 
   /**
    * Set on or off the access permission (to owner only or to all) to the file
-   * or directory denoted by the given abstract pathname, based on the parameters
+   * or directory denoted by the given pathname, based on the parameters
    * enable, access and owneronly.
    * @param File $f
    * @param int $access
@@ -139,16 +183,22 @@ abstract class FileSystem extends ObjectClass
    * @param bool $owneronly
    * @return bool
    */
-  abstract public function setPermission(File $f, $access, $enable, $owneronly);
+  public function setPermission(File $f, $access, $enable, $owneronly)
+  {
+    // TODO: Implement setPermission() method.
+  }
 
   /**
    * Return the time at which the file or directory denoted by the given
-   * abstract pathname was last modified, or zero if it does not exist or
+   * pathname was last modified, or zero if it does not exist or
    * some other I/O error occurs.
    * @param File $f
    * @return int
    */
-  abstract public function getLastModifiedTime(File $f);
+  public function getLastModifiedTime(File $f)
+  {
+    // TODO: Implement getLastModifiedTime() method.
+  }
 
   /**
    * Return the length in bytes of the file denoted by the given abstract
@@ -157,10 +207,10 @@ abstract class FileSystem extends ObjectClass
    * @param File $f
    * @return int
    */
-  abstract public function  getLength(File $f);
-
-
-  /* -- File operations -- */
+  public function  getLength(File $f)
+  {
+    // TODO: Implement getLength() method.
+  }
 
   /**
    * Create a new empty file with the given pathname.  Return
@@ -170,15 +220,21 @@ abstract class FileSystem extends ObjectClass
    * @param \PHPJ\Lang\String $pathname
    * @return bool
    */
-  abstract public function createFileExclusively(String $pathname);
+  public function createFileExclusively(String $pathname)
+  {
+    // TODO: Implement createFileExclusively() method.
+  }
 
   /**
-   * Delete the file or directory denoted by the given abstract pathname,
+   * Delete the file or directory denoted by the given pathname,
    * returning <code>true</code> if and only if the operation succeeds.
    * @param File $f
    * @return bool
    */
-  abstract public function delete(File $f);
+  public function delete(File $f)
+  {
+    // TODO: Implement delete() method.
+  }
 
   /**
    * List the elements of the directory denoted by the given abstract
@@ -187,112 +243,88 @@ abstract class FileSystem extends ObjectClass
    * @param File $f
    * @return \String[]
    */
-  abstract public function listFile(File $f);
+  public function listFile(File $f)
+  {
+    // TODO: Implement listFile() method.
+  }
 
   /**
-   * Create a new directory denoted by the given abstract pathname,
+   * Create a new directory denoted by the given pathname,
    * returning <code>true</code> if and only if the operation succeeds.
    * @param File $f
    * @return bool
    */
-  abstract public function createDirectory(File $f);
+  public function createDirectory(File $f)
+  {
+    // TODO: Implement createDirectory() method.
+  }
 
   /**
-   * Rename the file or directory denoted by the first abstract pathname to
-   * the second abstract pathname, returning <code>true</code> if and only if
+   * Rename the file or directory denoted by the first pathname to
+   * the second pathname, returning <code>true</code> if and only if
    * the operation succeeds.
    * @param File $f1
    * @param File $f2
    * @return bool
    */
-  abstract public function rename(File $f1, File $f2);
+  public function rename(File $f1, File $f2)
+  {
+    // TODO: Implement rename() method.
+  }
 
   /**
    * Set the last-modified time of the file or directory denoted by the
-   * given abstract pathname, returning <code>true</code> if and only if the
+   * given pathname, returning <code>true</code> if and only if the
    * operation succeeds.
    * @param File $f
    * @param int $time
    * @return bool
    */
-  abstract public function setLastModifiedTime(File $f, $time);
+  public function setLastModifiedTime(File $f, $time)
+  {
+    // TODO: Implement setLastModifiedTime() method.
+  }
 
   /**
-   * Mark the file or directory denoted by the given abstract pathname as
+   * Mark the file or directory denoted by the given pathname as
    * read-only, returning <code>true</code> if and only if the operation
    * succeeds.
    * @param File $f
    * @return bool
    */
-  abstract public function setReadOnly(File $f);
-
-
-  /* -- Filesystem interface -- */
+  public function setReadOnly(File $f)
+  {
+    // TODO: Implement setReadOnly() method.
+  }
 
   /**
    * List the available filesystem roots.
    * @return File[]
    */
-  abstract public function listRoots();
-
-  /* -- Disk usage -- */
-  const SPACE_TOTAL = 0;
-  const SPACE_FREE = 1;
-  const SPACE_USABLE = 2;
+  public function listRoots()
+  {
+    // TODO: Implement listRoots() method.
+  }
 
   /**
    * @param File $f
    * @param int $t
    * @return int
    */
-  abstract public function getSpace(File $f, $t);
-
-  /* -- Basic infrastructure -- */
+  public function getSpace(File $f, $t)
+  {
+    // TODO: Implement getSpace() method.
+  }
 
   /**
-   * Compare two abstract pathnames lexicographically.
+   * Compare two pathnames lexicographically.
    * @param File $f1
    * @param File $f2
    * @return int
    */
-  abstract public function compare(File $f1, File $f2);
-
-  /**
-   * Compute the hash code of an abstract pathname.
-   * @param File $f
-   * @return int
-   */
-  public function hashCodeFile(File $f){
-    return (new String($f->getPath()))->hashCode() ^ 1234321;
-  }
-
-  // Flags for enabling/disabling performance optimizations for file
-  // name canonicalization
-  public static $useCanonCaches = true;
-  public static $useCanonPrefixCache = true;
-
-  /**
-   * @param \PHPJ\Lang\String $prop
-   * @param boolean $defaultVal
-   * @return bool
-   */
-  private static function getBooleanProperty(String $prop, $defaultVal = null)
+  public function compare(File $f1, File $f2)
   {
-    $val = System::getProperty($prop);
-    if ($val === null) {
-      return $defaultVal;
-    }
-    if ($val->equalsIgnoreCase(new String("true"))) {
-      return true;
-    } else {
-      return false;
-    }
+    // TODO: Implement compare() method.
   }
 
-  //static {
-  //  useCanonCaches      = getBooleanProperty("sun.io.useCanonCaches",
-  //    useCanonCaches);
-  //  useCanonPrefixCache = getBooleanProperty("sun.io.useCanonPrefixCache",
-  //    useCanonPrefixCache);
-  //}
 }

@@ -17,7 +17,8 @@
   "require": {
     "php": ">=5.6",
     "ext-intl": "*",
-    "phpoption/phpoption":"*"
+    "phpoption/phpoption":"*",
+    "kozz/static-cache":"*"
   },
 
   "autoload": {
