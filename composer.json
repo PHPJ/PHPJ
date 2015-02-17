@@ -19,6 +19,7 @@
     "ext-intl": "*",
     "ext-gmp": "*",
     "phpoption/phpoption":"*",
+    "symfony/filesystem":"*",
     "kozz/static-cache":"*"
   },
 

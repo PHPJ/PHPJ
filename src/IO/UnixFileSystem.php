@@ -5,7 +5,11 @@
 
 namespace PHPJ\IO;
 
+use Kozz\Components\Cache\StaticCache;
 use PHPJ\Lang\String;
+use PHPJ\Lang\System;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\Filesystem\Filesystem as SFilesystem;
 
 class UnixFileSystem extends FileSystem
 {
@@ -13,10 +17,14 @@ class UnixFileSystem extends FileSystem
   private $slash;
   private $colon;
 
+  /** @var SFilesystem */
+  protected $fs;
+
   public function __construct()
   {
     $this->slash = DIRECTORY_SEPARATOR;
-    $this->colon = DIRECTORY_SEPARATOR;
+    $this->colon = PATH_SEPARATOR;
+    $this->fs = StaticCache::loadInjection('file_system', new Definition(SFilesystem::class));
   }
 
   /**
@@ -124,7 +132,8 @@ class UnixFileSystem extends FileSystem
    */
   public function isAbsolute(File $f)
   {
-    // TODO: Implement isAbsolute() method.
+    return $this->fs->isAbsolutePath($f->getPath());
+    //return $f->getPrefixLength() != 0;
   }
 
   /**
@@ -135,7 +144,10 @@ class UnixFileSystem extends FileSystem
    */
   public function resolveFile(File $f)
   {
-    // TODO: Implement resolveFile() method.
+    if($this->isAbsolute($f)){
+      return $f->getPath();
+    }
+    return $this->resolve(System::getProperty("user.dir"), $f->getPath());
   }
 
   /**
@@ -197,7 +209,7 @@ class UnixFileSystem extends FileSystem
    */
   public function getLastModifiedTime(File $f)
   {
-    // TODO: Implement getLastModifiedTime() method.
+    return $f->getMTime();
   }
 
   /**
@@ -233,7 +245,7 @@ class UnixFileSystem extends FileSystem
    */
   public function delete(File $f)
   {
-    // TODO: Implement delete() method.
+    $this->fs->remove($f->getAbsolutePath());
   }
 
   /**
@@ -256,7 +268,7 @@ class UnixFileSystem extends FileSystem
    */
   public function createDirectory(File $f)
   {
-    // TODO: Implement createDirectory() method.
+    $this->fs->mkdir($f->getAbsolutePath());
   }
 
   /**
@@ -269,7 +281,7 @@ class UnixFileSystem extends FileSystem
    */
   public function rename(File $f1, File $f2)
   {
-    // TODO: Implement rename() method.
+    $this->fs->rename($f1->getAbsolutePath(), $f2->getAbsolutePath());
   }
 
   /**
@@ -280,9 +292,9 @@ class UnixFileSystem extends FileSystem
    * @param int $time
    * @return bool
    */
-  public function setLastModifiedTime(File $f, $time)
+  public function setLastModifiedTime(File $f, $time = null)
   {
-    // TODO: Implement setLastModifiedTime() method.
+    $this->fs->touch($f->getAbsolutePath(), $time);
   }
 
   /**

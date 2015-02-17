@@ -6,9 +6,12 @@
 namespace PHPJ\Lang;
 
 use PHPJ\Lang\Exceptions\ArrayIndexOutOfBoundsException;
+use PHPJ\Util\Properties;
+use PhpOption\Option;
 
 final class System extends ObjectClass
 {
+  protected static $props;
 
   /**
    * @param NativeArray $src
@@ -45,8 +48,17 @@ final class System extends ObjectClass
    * @return \PHPJ\Lang\String
    */
   public static function getProperty($property){
-    throw new \Exception("Todo ".__FUNCTION__." ".__CLASS__);
-    return new String();
+    return self::getProperties()->offsetGet($property);
+  }
+
+  /**
+   * @return Properties
+   */
+  public static function getProperties()
+  {
+    return Option::fromValue(self::$props)->getOrCall(function(){
+      return self::$props = new Properties();
+    });
   }
 
   /**

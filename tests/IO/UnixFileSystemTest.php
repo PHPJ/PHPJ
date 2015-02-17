@@ -72,5 +72,6 @@ class UnixFileSystemTest extends Test
     $this->assertEquals("/uri", (string)$res);
     $res = $this->fs->fromURIPath(new String("/uri/"));
     $this->assertEquals("/uri", (string)$res);
+    var_dump($_SERVER['DOCUMENT_ROOT'] ?: $_SERVER['PWD']);
   }
 }
