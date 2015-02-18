@@ -24,7 +24,7 @@ class UnixFileSystem extends FileSystem
   {
     $this->slash = DIRECTORY_SEPARATOR;
     $this->colon = PATH_SEPARATOR;
-    $this->fs = new SFilesystem();// StaticCache::loadInjection('file_system', new Definition(SFilesystem::class));
+    $this->fs = StaticCache::loadInjection('symfony_fs', new Definition(SFilesystem::class));
   }
 
   /**
