@@ -18,7 +18,7 @@ class Integer extends Number
     ];
 
   /**
-   * @var int
+   * @var \GMP
    */
   protected $value;
 

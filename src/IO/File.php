@@ -19,7 +19,7 @@ class File extends \SplFileInfo implements Object
   /** @var FileSystem */
   protected $fs;
 
-  /** @var String */
+  /** @var \PHPJ\Lang\String */
   protected $path;
 
   public function __construct($file_name)

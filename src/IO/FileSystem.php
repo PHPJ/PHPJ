@@ -39,7 +39,7 @@ abstract class FileSystem extends ObjectClass
    * Compute the length of this pathname string's prefix.  The pathname
    * string must be in normal form.
    * @param \PHPJ\Lang\String $path
-   * @return \PHPJ\Lang\String
+   * @return int
    */
   abstract public function prefixLength(String $path);
 
