@@ -5,7 +5,6 @@
   "keywords": ["Java", "OOP", "Objects"],
   "homepage": "http://github.com/phpj/phpj",
   "license": "MIT",
-
   "authors": [
     {
       "name": "Yury Kozyrev",
@@ -13,16 +12,14 @@
       "homepage": "https://github.com/urakozz"
     }
   ],
-
   "require": {
     "php": ">=5.5.0",
     "ext-intl": "*",
     "ext-gmp": "*",
-    "phpoption/phpoption":"*",
-    "symfony/filesystem":"*",
-    "kozz/static-cache":"*"
+    "phpoption/phpoption": "~1.4",
+    "symfony/filesystem": "~2.6",
+    "kozz/static-cache": "~0.1"
   },
-
   "autoload": {
     "psr-4": {
       "PHPJ\\": "src/"
@@ -41,6 +38,5 @@
       "dev-master": "1.0-dev"
     }
   },
-
   "minimum-stability": "stable"
 }
