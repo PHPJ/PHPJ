@@ -182,7 +182,16 @@ class UnixFileSystem extends FileSystem
    */
   public function checkAccess(File $f, $access)
   {
-    // TODO: Implement checkAccess() method.
+
+    switch($access){
+      case self::ACCESS_READ:
+        return $f->isReadable();
+      case self::ACCESS_WRITE:
+        return $f->isWritable();
+      case self::ACCESS_EXECUTE:
+        return $f->isExecutable();
+    }
+    return false;
   }
 
   /**
@@ -221,7 +230,7 @@ class UnixFileSystem extends FileSystem
    */
   public function  getLength(File $f)
   {
-    // TODO: Implement getLength() method.
+    return $f->getSize();
   }
 
   /**
@@ -234,7 +243,7 @@ class UnixFileSystem extends FileSystem
    */
   public function createFileExclusively(String $pathname)
   {
-    // TODO: Implement createFileExclusively() method.
+    $this->fs->touch($pathname->getOriginalValue());
   }
 
   /**
@@ -325,7 +334,36 @@ class UnixFileSystem extends FileSystem
    */
   public function getSpace(File $f, $t)
   {
-    // TODO: Implement getSpace() method.
+    switch($t) {
+      case self::SPACE_FREE:
+        return disk_free_space($f->getAbsolutePath()->getOriginalValue());
+      case self::SPACE_TOTAL:
+        return disk_total_space("/");
+      case self::SPACE_USABLE:
+        return $this->getBytesFromIni(ini_get("memory_limit"));
+      default:
+        return null;
+    }
+  }
+
+  protected function getBytesFromIni($val)
+  {
+      $val = trim($val);
+      $last = strtolower($val[strlen($val)-1]);
+      switch($last) {
+        case 'g':
+          $val *= 1024;
+          break;
+        case 'm':
+          $val *= 1024;
+          break;
+        case 'k':
+          $val *= 1024;
+          break;
+        default:
+          $val = (int)$val;
+      }
+      return $val;
   }
 
   /**
@@ -338,5 +376,6 @@ class UnixFileSystem extends FileSystem
   {
     return $f1->getAbsolutePath()->compareTo($f2->getAbsolutePath());
   }
+
 
 }

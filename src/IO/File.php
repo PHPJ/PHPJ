@@ -8,6 +8,7 @@ namespace PHPJ\IO;
 use PHPJ\Lang\Object;
 use PHPJ\Lang\ObjectTrait;
 use PHPJ\Lang\String;
+use PHPJ\Lang\System;
 
 class File extends \SplFileInfo implements Object
 {
@@ -28,17 +29,22 @@ class File extends \SplFileInfo implements Object
     $path = $this->fs->fromURIPath(new String($file_name));
     $this->path = $this->fs->normalize($path);
     $this->prefixLength = $this->fs->prefixLength($this->path);
-    parent::__construct($file_name);
+    parent::__construct($this->path);
   }
 
-  public function getPath()
+  public function getName()
   {
     return new String($this->getBasename());
   }
 
+  public function getPath()
+  {
+    return $this->path;
+  }
+
   public function getAbsolutePath()
   {
-    return new String($this->getPathname());
+    return new String($this->getRealPath());
   }
 
   public function getCanonicalPath()
@@ -46,8 +52,103 @@ class File extends \SplFileInfo implements Object
     return $this->getAbsolutePath();
   }
 
+  public function getParent()
+  {
+    $path = explode(System::getProperty('file.separator'), $this->path);
+    array_pop($path);
+    if(empty($path)){
+      return null;
+    }
+    $path = implode(System::getProperty('file.separator'), $path);
+
+    return new String($path);
+  }
+
+  public function getParentFile()
+  {
+    if($path = $this->getParent()){
+      return new static($path);
+    }
+    return null;
+  }
+
   public function getPrefixLength()
   {
     return $this->prefixLength;
+  }
+
+  public function getFreeSpace()
+  {
+    return $this->fs->getSpace($this, FileSystem::SPACE_FREE);
+  }
+
+  public function getTotalSpace()
+  {
+    return $this->fs->getSpace($this, FileSystem::SPACE_TOTAL);
+  }
+
+  public function getUsableSpace()
+  {
+    return $this->fs->getSpace($this, FileSystem::SPACE_USABLE);
+  }
+
+
+  public function canRead()
+  {
+    return $this->fs->checkAccess($this, FileSystem::ACCESS_READ);
+  }
+
+  public function canWrite()
+  {
+    return $this->fs->checkAccess($this, FileSystem::ACCESS_WRITE);
+  }
+
+  public function canExecute()
+  {
+    return $this->fs->checkAccess($this, FileSystem::ACCESS_EXECUTE);
+  }
+
+  public function exists()
+  {
+    return $this->isReadable();
+    //return ((fs.getBooleanAttributes(this) & FileSystem.BA_EXISTS) != 0);
+  }
+
+  public function isDirectory()
+  {
+    return $this->isDir();
+    //return ((fs.getBooleanAttributes(this) & FileSystem.BA_DIRECTORY) != 0);
+  }
+
+  public function isFile()
+  {
+    return parent::isFile();
+    //return ((fs.getBooleanAttributes(this) & FileSystem.BA_REGULAR) != 0);
+  }
+
+  public function isHidden()
+  {
+    return 0 === strpos($this->getBasename(), ".");
+    //return ((fs.getBooleanAttributes(this) & FileSystem.BA_HIDDEN) != 0);
+  }
+
+  public function getLastModified()
+  {
+    return $this->fs->getLastModifiedTime($this);
+  }
+
+  public function length()
+  {
+    return $this->fs->getLength($this);
+  }
+
+  public function createNewFile()
+  {
+    $this->fs->createFileExclusively($this->path);
+  }
+
+  public function delete()
+  {
+    $this->fs->delete($this);
   }
 }

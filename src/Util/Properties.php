@@ -14,9 +14,9 @@ class Properties extends \ArrayObject
   public function __construct($input = [], $flags = 0, $iterator_class = "ArrayIterator")
   {
     parent::__construct([]);
-    $this['os.name'] = new String($_SERVER['_system_name']);
-    $this['os.arch'] = new String($_SERVER['_system_arch']);
-    $this['os.version'] = new String($_SERVER['_system_version']);
+//    $this['os.name'] = new String($_SERVER['_system_name']);
+//    $this['os.arch'] = new String($_SERVER['_system_arch']);
+//    $this['os.version'] = new String($_SERVER['_system_version']);
     $this['file.separator'] = new String(DIRECTORY_SEPARATOR);
     $this['path.separator'] = new String(PATH_SEPARATOR);
     $this['line.separator'] = new String("\n");
