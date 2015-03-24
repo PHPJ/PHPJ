@@ -151,4 +151,9 @@ class File extends \SplFileInfo implements Object
   {
     $this->fs->delete($this);
   }
+
+  public function hashCode()
+  {
+    return $this->fs->hashCodeFile($this);
+  }
 }

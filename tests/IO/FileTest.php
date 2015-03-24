@@ -59,6 +59,11 @@ class FileTest  extends Test
     $this->fileRoot = new File("composer.json");
   }
 
+  public function testGetPrefixLen()
+  {
+    $this->assertEquals(0, $this->file->getPrefixLength());
+  }
+
   public function testGetName()
   {
     $this->assertEquals("IO", (string)$this->dir->getName());
@@ -115,6 +120,7 @@ class FileTest  extends Test
   public function testGetAbsolutePath()
   {
     $this->assertContains("/", (string)$this->file->getAbsolutePath());
+    $this->assertContains("/", (string)$this->file->getCanonicalPath());
     $this->assertContains("/", (string)$this->fileAbs->getAbsolutePath());
     $this->assertContains("/", (string)$this->dir->getAbsolutePath());
     $this->assertContains("/", (string)$this->dirAbs->getAbsolutePath());
@@ -177,5 +183,10 @@ class FileTest  extends Test
     $this->assertTrue($file->exists());
     $file->delete();
     $this->assertFalse($file->exists());
+  }
+
+  public function testHashCodeFile()
+  {
+    $this->assertInternalType('integer', $this->file->hashCode());
   }
 }

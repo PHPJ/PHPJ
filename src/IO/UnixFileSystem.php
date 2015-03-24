@@ -62,9 +62,9 @@ class UnixFileSystem extends FileSystem
    * @param \PHPJ\Lang\String $path
    * @return int
    */
-  public function prefixLength(String $path)
+  public function prefixLength(String $path = null)
   {
-    if (!$path->getOriginalValue()) {
+    if (null === $path || !$path->getOriginalValue()) {
       return 0;
     }
     return "/" === $path->charAt(0) ? 1 : 0;
@@ -156,19 +156,23 @@ class UnixFileSystem extends FileSystem
    */
   public function canonicalize(String $path)
   {
-    // TODO: Implement canonicalize() method.
+    return new String(realpath($path->getOriginalValue()));
   }
 
   /**
    * Return the simple boolean attributes for the file or directory denoted
    * by the given pathname, or zero if it does not exist or some
    * other I/O error occurs.
+   * @todo
    * @param File $f
    * @return int
    */
   public function getBooleanAttributes(File $f)
   {
-    // TODO: Implement getBooleanAttributes() method.
+    if(!$f->exists()){
+      return 0;
+    }
+    return 1;
   }
 
   /**
@@ -204,9 +208,9 @@ class UnixFileSystem extends FileSystem
    * @param bool $owneronly
    * @return bool
    */
-  public function setPermission(File $f, $access, $enable, $owneronly)
+  public function setPermission(File $f, $access, $enable = null, $owneronly = null)
   {
-    // TODO: Implement setPermission() method.
+    $this->fs->chmod($f->getAbsolutePath(), $access);
   }
 
   /**
@@ -228,7 +232,7 @@ class UnixFileSystem extends FileSystem
    * @param File $f
    * @return int
    */
-  public function  getLength(File $f)
+  public function getLength(File $f)
   {
     return $f->getSize();
   }
