@@ -5,6 +5,7 @@
 
 namespace PHPJ\IO;
 
+use PHPJ\Lang\NativeArray;
 use PHPJ\Lang\Object;
 use PHPJ\Lang\ObjectTrait;
 use PHPJ\Lang\String;
@@ -25,9 +26,9 @@ class File extends \SplFileInfo implements Object
 
   public function __construct($file_name)
   {
-    $this->fs = DefaultFileSystem::getFileSystem();
-    $path = $this->fs->fromURIPath(new String($file_name));
-    $this->path = $this->fs->normalize($path);
+    $this->fs           = DefaultFileSystem::getFileSystem();
+    $path               = $this->fs->fromURIPath(new String($file_name));
+    $this->path         = $this->fs->normalize($path);
     $this->prefixLength = $this->fs->prefixLength($this->path);
     parent::__construct($this->path);
   }
@@ -56,7 +57,7 @@ class File extends \SplFileInfo implements Object
   {
     $path = explode(System::getProperty('file.separator'), $this->path);
     array_pop($path);
-    if(empty($path)){
+    if (empty($path)) {
       return null;
     }
     $path = implode(System::getProperty('file.separator'), $path);
@@ -66,7 +67,7 @@ class File extends \SplFileInfo implements Object
 
   public function getParentFile()
   {
-    if($path = $this->getParent()){
+    if ($path = $this->getParent()) {
       return new static($path);
     }
     return null;
@@ -152,8 +153,63 @@ class File extends \SplFileInfo implements Object
     $this->fs->delete($this);
   }
 
+  public function deleteOnExit()
+  {
+    //todo
+  }
+
   public function hashCode()
   {
     return $this->fs->hashCodeFile($this);
+  }
+
+  public function setExecutable($executable, $ownerOnly = true)
+  {
+    $this->fs->setPermission($this, FileSystem::ACCESS_EXECUTE, $executable, $ownerOnly);
+  }
+
+  public function setWritable($writable, $ownerOnly = true)
+  {
+    $this->fs->setPermission($this, FileSystem::ACCESS_WRITE, $writable, $ownerOnly);
+  }
+
+  public function setReadable($readable, $ownerOnly = true)
+  {
+    $this->fs->setPermission($this, FileSystem::ACCESS_READ, $readable, $ownerOnly);
+  }
+
+  /**
+   * Desc
+   *
+   * @param null $filter
+   * @todo filter
+   *
+   * @return array
+   */
+  public function listPaths($filter = null)
+  {
+    $it    = $this->fs->listFile($this);
+    $array = new NativeArray();
+    foreach ($it as $path) {
+      $array[] = new String($path->getBasename());
+    }
+
+    return $array;
+  }
+
+  public function listFiles($filter = null)
+  {
+    $it    = $this->fs->listFile($this);
+    $array = new NativeArray();
+    foreach ($it as $path) {
+      $array[] = new self($path->getBasename($this->getPath()));
+    }
+
+    return $array;
+  }
+
+  public function mkdir()
+  {
+    $this->fs->createDirectory($this);
   }
 }

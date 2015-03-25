@@ -24,7 +24,7 @@ class UnixFileSystem extends FileSystem
   {
     $this->slash = DIRECTORY_SEPARATOR;
     $this->colon = PATH_SEPARATOR;
-    $this->fs = StaticCache::loadInjection('symfony_fs', new Definition(SFilesystem::class));
+    $this->fs    = StaticCache::loadInjection('symfony_fs', new Definition(SFilesystem::class));
   }
 
   /**
@@ -120,7 +120,7 @@ class UnixFileSystem extends FileSystem
     $p = $path;
     if ($p->endsWith(new String("/")) && ($p->getOriginalValue() && ($p->charAt(0) !== $p->getOriginalValue()))) {
       // "/foo/" --> "/foo", but "/" --> "/"
-      $p = $p->substring(0, $p->length()-1);
+      $p = $p->substring(0, $p->length() - 1);
     }
     return $p;
   }
@@ -144,7 +144,7 @@ class UnixFileSystem extends FileSystem
    */
   public function resolveFile(File $f)
   {
-    if($this->isAbsolute($f)){
+    if ($this->isAbsolute($f)) {
       return $f->getPath();
     }
     return $this->resolve(System::getProperty("user.dir"), $f->getPath());
@@ -163,16 +163,19 @@ class UnixFileSystem extends FileSystem
    * Return the simple boolean attributes for the file or directory denoted
    * by the given pathname, or zero if it does not exist or some
    * other I/O error occurs.
-   * @todo
+   *
    * @param File $f
    * @return int
    */
   public function getBooleanAttributes(File $f)
   {
-    if(!$f->exists()){
+    if (!$f->exists()) {
       return 0;
     }
-    return 1;
+
+    $mode = substr(sprintf('%o', $f->getPerms()), -4);
+    $mode = intval($mode, 8);
+    return $mode;
   }
 
   /**
@@ -187,7 +190,7 @@ class UnixFileSystem extends FileSystem
   public function checkAccess(File $f, $access)
   {
 
-    switch($access){
+    switch ($access) {
       case self::ACCESS_READ:
         return $f->isReadable();
       case self::ACCESS_WRITE:
@@ -210,7 +213,28 @@ class UnixFileSystem extends FileSystem
    */
   public function setPermission(File $f, $access, $enable = null, $owneronly = null)
   {
-    $this->fs->chmod($f->getAbsolutePath(), $access);
+    $mode = $this->generateAccessMode($f, $enable, $owneronly);
+    $this->fs->chmod($f->getAbsolutePath(), $mode);
+  }
+
+  /**
+   * Desc
+   *
+   * @param File $f
+   * @param $access
+   * @param null $enable
+   * @param null $owneronly
+   * @todo owneronly
+   *
+   * @return int
+   */
+  protected function generateAccessMode(File $f, $access, $enable = null, $owneronly = null)
+  {
+    $mode = $this->getBooleanAttributes($f);
+    $newMode = $enable
+      ? $mode | $access // 0660 | 0x04 = 0664
+      : $mode & ~ $access; // 0664 &~ 0x04 = 0660
+    return $newMode;
   }
 
   /**
@@ -270,7 +294,12 @@ class UnixFileSystem extends FileSystem
    */
   public function listFile(File $f)
   {
-    // TODO: Implement listFile() method.
+    return $this->getListIterator($f);
+  }
+
+  public function getListIterator(File $f)
+  {
+    return new \DirectoryIterator($f->getPath());
   }
 
   /**
@@ -281,7 +310,7 @@ class UnixFileSystem extends FileSystem
    */
   public function createDirectory(File $f)
   {
-    $this->fs->mkdir($f->getAbsolutePath());
+    $this->fs->mkdir($f->getPath());
   }
 
   /**
@@ -338,7 +367,7 @@ class UnixFileSystem extends FileSystem
    */
   public function getSpace(File $f, $t)
   {
-    switch($t) {
+    switch ($t) {
       case self::SPACE_FREE:
         return disk_free_space($f->getAbsolutePath()->getOriginalValue());
       case self::SPACE_TOTAL:
@@ -352,22 +381,22 @@ class UnixFileSystem extends FileSystem
 
   protected function getBytesFromIni($val)
   {
-      $val = trim($val);
-      $last = strtolower($val[strlen($val)-1]);
-      switch($last) {
-        case 'g':
-          $val *= 1024;
-          break;
-        case 'm':
-          $val *= 1024;
-          break;
-        case 'k':
-          $val *= 1024;
-          break;
-        default:
-          $val = (int)$val;
-      }
-      return $val;
+    $val  = trim($val);
+    $last = strtolower($val[strlen($val) - 1]);
+    switch ($last) {
+      case 'g':
+        $val *= 1024;
+        break;
+      case 'm':
+        $val *= 1024;
+        break;
+      case 'k':
+        $val *= 1024;
+        break;
+      default:
+        $val = (int)$val;
+    }
+    return $val;
   }
 
   /**
@@ -380,6 +409,5 @@ class UnixFileSystem extends FileSystem
   {
     return $f1->getAbsolutePath()->compareTo($f2->getAbsolutePath());
   }
-
 
 }

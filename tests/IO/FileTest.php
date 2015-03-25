@@ -189,4 +189,106 @@ class FileTest  extends Test
   {
     $this->assertInternalType('integer', $this->file->hashCode());
   }
+
+  /**
+   * Desc
+   *
+   * @dataProvider dataBitwiseEnable
+   *
+   * @return void
+   */
+  public function testBitwiseEnable($from, $append, $expected)
+  {
+    $this->assertEquals($expected, sprintf("%04o", intval($from, 8) | $append));
+    $strOct = sprintf("%04o", intval($from, 8) | $append);
+    $oct = octdec($strOct);
+
+    $this->assertEquals($oct, intval($from, 8) | $append);
+  }
+
+  /**
+   * Desc
+   *
+   * @dataProvider dataBitwiseDisable
+   *
+   * @return void
+   */
+  public function testBitwiseDisable($from, $append, $expected)
+  {
+    $this->assertEquals($expected, sprintf("%04o", intval($from, 8) & ~$append));
+  }
+
+  public function dataBitwiseEnable()
+  {
+    return [
+      ["0660", 0x04, "0664"],
+      ["0660", 0x02, "0662"],
+      ["0660", 0x01, "0661"],
+
+      ["0661", 0x04, "0665"],
+      ["0661", 0x02, "0663"],
+      ["0661", 0x01, "0661"],
+
+      ["0662", 0x04, "0666"],
+      ["0662", 0x02, "0662"],
+      ["0662", 0x01, "0663"],
+
+      ["0664", 0x04, "0664"],
+      ["0664", 0x02, "0666"],
+      ["0664", 0x01, "0665"],
+
+      ["0663", 0x04, "0667"],
+      ["0663", 0x02, "0663"],
+      ["0663", 0x01, "0663"],
+
+      ["0665", 0x04, "0665"],
+      ["0665", 0x02, "0667"],
+      ["0665", 0x01, "0665"],
+
+      ["0666", 0x04, "0666"],
+      ["0666", 0x02, "0666"],
+      ["0666", 0x01, "0667"],
+
+      ["0667", 0x04, "0667"],
+      ["0667", 0x02, "0667"],
+      ["0667", 0x01, "0667"],
+    ];
+  }
+
+  public function dataBitwiseDisable()
+  {
+    return [
+      ["0660", 0x04, "0660"],
+      ["0660", 0x02, "0660"],
+      ["0660", 0x01, "0660"],
+
+      ["0661", 0x04, "0661"],
+      ["0661", 0x02, "0661"],
+      ["0661", 0x01, "0660"],
+
+      ["0662", 0x04, "0662"],
+      ["0662", 0x02, "0660"],
+      ["0662", 0x01, "0662"],
+
+      ["0664", 0x04, "0660"],
+      ["0664", 0x02, "0664"],
+      ["0664", 0x01, "0664"],
+
+      ["0663", 0x04, "0663"],
+      ["0663", 0x02, "0661"],
+      ["0663", 0x01, "0662"],
+
+      ["0665", 0x04, "0661"],
+      ["0665", 0x02, "0665"],
+      ["0665", 0x01, "0664"],
+
+      ["0666", 0x04, "0662"],
+      ["0666", 0x02, "0664"],
+      ["0666", 0x01, "0666"],
+
+      ["0667", 0x04, "0663"],
+      ["0667", 0x02, "0665"],
+      ["0667", 0x01, "0666"],
+    ];
+  }
 }

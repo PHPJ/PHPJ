@@ -115,6 +115,9 @@ class UnixFileSystemTest extends Test
   public function testGetBooleanAttrs()
   {
     $this->assertEquals(0, $this->fs->getBooleanAttributes(new File("nonexists")));
-    $this->assertEquals(1, $this->fs->getBooleanAttributes(new File("composer.json")));
+    $this->assertEquals(
+      octdec(substr(sprintf('%o', fileperms("composer.json")), -4)),
+      $this->fs->getBooleanAttributes(new File("composer.json"))
+    );
   }
 }
