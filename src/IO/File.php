@@ -27,16 +27,11 @@ class File extends \SplFileInfo implements Object
 
   public function __construct($file_name)
   {
-    $this->fs           = $this->getFileSystem();
+    $this->fs           = DefaultFileSystem::getFileSystem();
     $path               = $this->fs->fromURIPath(new String($file_name));
     $this->path         = $this->fs->normalize($path);
     $this->prefixLength = $this->fs->prefixLength($this->path);
     parent::__construct($this->path);
-  }
-
-  protected static function getFileSystem()
-  {
-    return DefaultFileSystem::getFileSystem();
   }
 
   public function getName()
@@ -238,7 +233,7 @@ class File extends \SplFileInfo implements Object
 
   public static function listRoots()
   {
-    return self::getFileSystem()->listRoots();
+    return DefaultFileSystem::getFileSystem()->listRoots();
   }
 
   public static function createFmpFile(String $prefix = null, String $suffix = null, File $directory = null)
