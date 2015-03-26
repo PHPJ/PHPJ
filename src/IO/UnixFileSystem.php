@@ -297,6 +297,12 @@ class UnixFileSystem extends FileSystem
     return $this->getListIterator($f);
   }
 
+  /**
+   * Desc
+   *
+   * @param File $f
+   * @return \DirectoryIterator
+   */
   public function getListIterator(File $f)
   {
     return new \DirectoryIterator($f->getPath());
@@ -323,7 +329,7 @@ class UnixFileSystem extends FileSystem
    */
   public function rename(File $f1, File $f2)
   {
-    $this->fs->rename($f1->getAbsolutePath(), $f2->getAbsolutePath());
+    return $this->fs->rename($f1->getPath(), $f2->getPath());
   }
 
   /**
@@ -336,7 +342,7 @@ class UnixFileSystem extends FileSystem
    */
   public function setLastModifiedTime(File $f, $time = null)
   {
-    $this->fs->touch($f->getAbsolutePath(), $time);
+    return $this->fs->touch($f->getPath(), $time);
   }
 
   /**
@@ -348,7 +354,9 @@ class UnixFileSystem extends FileSystem
    */
   public function setReadOnly(File $f)
   {
-    // TODO: Implement setReadOnly() method.
+    $string = sprintf('%o', $this->getBooleanAttributes($f));
+    $string[3] = "4";
+    return $this->fs->chmod($f->getAbsolutePath(), octdec($string));
   }
 
   /**

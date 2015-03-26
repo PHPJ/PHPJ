@@ -190,6 +190,14 @@ abstract class FileSystem extends ObjectClass
   abstract public function listFile(File $f);
 
   /**
+   * Desc
+   *
+   * @param File $f
+   * @return \DirectoryIterator
+   */
+  abstract public function getListIterator(File $f);
+
+  /**
    * Create a new directory denoted by the given abstract pathname,
    * returning <code>true</code> if and only if the operation succeeds.
    * @param File $f

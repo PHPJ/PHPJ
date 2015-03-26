@@ -38,6 +38,9 @@ http://docs.oracle.com/javase/8/docs/api/
   - StringJoiner (Alpha ready)
   - Arrays (inited)
   - Objects (inited)
+- IO
+  - File (Alpha ready)
+  - UnixFileSystem (Alpha ready)
 
 ## Problems and solutions:
 - Method overloading

@@ -5,6 +5,7 @@
 
 namespace PHPJ\IO;
 
+use PHPJ\Lang\Exceptions\IllegalArgumentException;
 use PHPJ\Lang\NativeArray;
 use PHPJ\Lang\Object;
 use PHPJ\Lang\ObjectTrait;
@@ -26,11 +27,16 @@ class File extends \SplFileInfo implements Object
 
   public function __construct($file_name)
   {
-    $this->fs           = DefaultFileSystem::getFileSystem();
+    $this->fs           = $this->getFileSystem();
     $path               = $this->fs->fromURIPath(new String($file_name));
     $this->path         = $this->fs->normalize($path);
     $this->prefixLength = $this->fs->prefixLength($this->path);
     parent::__construct($this->path);
+  }
+
+  protected static function getFileSystem()
+  {
+    return DefaultFileSystem::getFileSystem();
   }
 
   public function getName()
@@ -188,9 +194,8 @@ class File extends \SplFileInfo implements Object
    */
   public function listPaths($filter = null)
   {
-    $it    = $this->fs->listFile($this);
     $array = new NativeArray();
-    foreach ($it as $path) {
+    foreach ($this->fs->getListIterator($this) as $path) {
       $array[] = new String($path->getBasename());
     }
 
@@ -199,10 +204,9 @@ class File extends \SplFileInfo implements Object
 
   public function listFiles($filter = null)
   {
-    $it    = $this->fs->listFile($this);
     $array = new NativeArray();
-    foreach ($it as $path) {
-      $array[] = new self($path->getBasename($this->getPath()));
+    foreach ($this->fs->getListIterator($this) as $path) {
+      $array[] = new self($this->fs->resolve($this->getPath(), new String($path->getPath())));
     }
 
     return $array;
@@ -211,5 +215,42 @@ class File extends \SplFileInfo implements Object
   public function mkdir()
   {
     $this->fs->createDirectory($this);
+  }
+
+  public function renameTo(File $file)
+  {
+    return $this->fs->rename($this, $file);
+  }
+
+  public function setLastModified($time)
+  {
+    $time = (int)$time;
+    if ($time < 0) {
+      throw new IllegalArgumentException("Negative time");
+    }
+    return $this->fs->setLastModifiedTime($this, $time);
+  }
+
+  public function setReadOnly()
+  {
+    return $this->fs->setReadOnly($this);
+  }
+
+  public static function listRoots()
+  {
+    return self::getFileSystem()->listRoots();
+  }
+
+  public static function createFmpFile(String $prefix = null, String $suffix = null, File $directory = null)
+  {
+    $directory = $directory ?: new File(sys_get_temp_dir());
+    $directory = $directory->getPath();
+    $suffix    = (string)($suffix ?: 'tmp');
+    $prefix    = (string)($prefix ?: uniqid('tmp_file'));
+    $name      = tempnam($directory, $prefix);
+    $name      = sprintf("%s.%s", $name, $suffix);
+    $file      = new File($name);
+    $file->createNewFile();
+    return $file;
   }
 }
