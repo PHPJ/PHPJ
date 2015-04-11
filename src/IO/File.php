@@ -11,6 +11,7 @@ use PHPJ\Lang\Object;
 use PHPJ\Lang\ObjectTrait;
 use PHPJ\Lang\String;
 use PHPJ\Lang\System;
+use PhpOption\Option;
 
 class File extends \SplFileInfo implements Object
 {
@@ -24,6 +25,8 @@ class File extends \SplFileInfo implements Object
 
   /** @var \PHPJ\Lang\String */
   protected $path;
+
+  protected $perms;
 
   public function __construct($file_name)
   {
@@ -178,6 +181,18 @@ class File extends \SplFileInfo implements Object
   {
     $this->fs->setPermission($this, FileSystem::ACCESS_READ, $readable, $ownerOnly);
   }
+
+//  public function getPerms()
+//  {
+//    return Option::fromValue($this->perms)->getOrCall(function(){
+//      $this->perms = parent::getPerms();
+//    });
+//  }
+//
+//  public function setPerms($perms)
+//  {
+//    $this->perms = $perms;
+//  }
 
   /**
    * Desc

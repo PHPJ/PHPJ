@@ -291,4 +291,24 @@ class FileTest  extends Test
       ["0667", 0x01, "0666"],
     ];
   }
+
+  public function testSet()
+  {
+    $file = new File(uniqid('.test_'));
+    $this->assertFalse($file->exists());
+    $file->createNewFile();
+    $this->assertTrue($file->exists());
+
+    $this->assertTrue($file->isReadable());
+    $this->assertTrue($file->isWritable());
+    $this->assertFalse($file->isExecutable());
+    $file->setReadable(true);
+    $file->setWritable(true);
+    $file->setExecutable(true);
+
+//    var_dump($file->isReadable());
+//    var_dump($file->isWritable());
+//    var_dump($file->isExecutable());
+
+  }
 }
